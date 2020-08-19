@@ -1,0 +1,39 @@
+version: "3"
+services:
+  sql:
+    build: ./database
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: warehouse_sql
+    environment:
+      DATABASE_HOST: smart-warehouse-backend
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: smart-warehouse-database
+      MYSQL_USER: ADMIN
+      MYSQL_PASSWORD: adminpassword
+    networks:
+      - ware-house
+
+  server:
+    build: ./server
+    container_name: warehouse_nodejs
+    environment:
+      DATABASE_HOST: warehouse_sql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: smart-warehouse-database
+      MYSQL_USER: ADMIN
+      MYSQL_PASSWORD: adminpassword
+    ports:
+      - "8000:8000"
+    depends_on:
+      - sql
+    volumes:
+      - ./server:/app
+    restart: on-failure
+    networks:
+      - ware-house
+    command: nodemon server.js
+    command: nodemon -L server.js
+
+networks:
+  ware-house:
+    external: true
