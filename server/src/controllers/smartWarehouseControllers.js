@@ -102,78 +102,249 @@ exports.productBalance = (req, res, next) => {
   res.send("PRODUCT BALANCE");
 };
 
+//########################################################################################################################
+
 //  DESCRIPTION   - Get the list of all registered user
 //  ROUTE         - [GET] /api/smart-warehouse/users
 //  ACCESS        - PRIVATE (admin)
 exports.getUser = (req, res, next) => {
-  res.send("LIST OF ALL USER");
+  try {
+    const SQL = `SELECT * FROM user`;
+    connection.query(SQL, (error, result, field) => {
+      if (result.length > 0) {
+        res.json(result);
+      } else
+        res
+          .status(404)
+          .json({ success: false, message: "Can't get the information" });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Update the information of specific user
-//  ROUTE         - [PUT] /api/smart-warehouse/users/:id
+//  ROUTE         - [PUT] /api/smart-warehouse/users
 //  ACCESS        - PRIVATE (admin)
 exports.updateUser = (req, res, next) => {
-  res.send("UPDATE USER");
+  try {
+    const {
+      username,
+      firstname,
+      lastname,
+      role,
+      status,
+      password,
+      id,
+    } = req.body;
+    const SQL = `UPDATE user
+    SET username= ${mysql.escape(username)}, firstname = ${mysql.escape(
+      firstname
+    )}, lastname = ${mysql.escape(lastname)},password = ${mysql.escape(
+      password
+    )},role = ${mysql.escape(role)}, status = ${mysql.escape(status)}
+    WHERE id = ${mysql.escape(id)};`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(200).json({
+        success: true,
+        message: "Update user information successfully",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Delete / deactive specific user
-//  ROUTE         - [DELETE] /api/smart-warehouse/users/:id
+//  ROUTE         - [DELETE] /api/smart-warehouse/users
 //  ACCESS        - PRIVATE (admin)
 exports.deleteUser = (req, res, next) => {
-  res.send("DELETE USER");
+  try {
+    const { username, detail } = req.body;
+    const SQL = `UPDATE user SET status = 2, detail = ${mysql.escape(
+      detail
+    )} WHERE username = ${mysql.escape(username)};`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(200).json({
+        success: true,
+        message:
+          "Deactivate user successfully. This user has no longer available",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Create new user
 //  ROUTE         - [POST] /api/smart-warehouse/users
 //  ACCESS        - PRIVATE (admin)
 exports.createUser = (req, res, next) => {
-  res.send("CREATE NEW USER");
+  try {
+    const { username, firstname, lastname, password, role, status } = req.body;
+    const SQL = `INSERT INTO user(username, firstname, lastname, password, role, status) VALUES (${mysql.escape(
+      username
+    )},${mysql.escape(firstname)},${mysql.escape(lastname)},${mysql.escape(
+      password
+    )},${mysql.escape(role)}, ${mysql.escape(status)})`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(201).json({
+        success: true,
+        message: "Successfully created a new user account",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
+//########################################################################################################################
 
 //  DESCRIPTION   - Get the list of all registered product
 //  ROUTE         - [GET] /api/smart-warehouse/products
 //  ACCESS        - PRIVATE (admin)
 exports.getProduct = (req, res, next) => {
-  res.send("LIST OF ALL PRODUCT");
+  try {
+    const SQL = `SELECT * FROM product`;
+    connection.query(SQL, (error, result, field) => {
+      if (result.length > 0) {
+        res.json(result);
+      } else
+        res
+          .status(404)
+          .json({ success: false, message: "Can't get the information" });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Update the information of specific product
-//  ROUTE         - [PUT] /api/smart-warehouse/products/:id
+//  ROUTE         - [PUT] /api/smart-warehouse/products
 //  ACCESS        - PRIVATE (admin)
 exports.updateProduct = (req, res, next) => {
-  res.send("UPDATE PRODUCT");
+  try {
+    const {
+      id,
+      product_id,
+      product_name,
+      company_name,
+      location,
+      detail,
+    } = req.body;
+    const SQL = `UPDATE product
+    SET product_id = ${mysql.escape(product_id)}, product_name = ${mysql.escape(
+      product_name
+    )}, company_name = ${mysql.escape(company_name)}, location = ${mysql.escape(
+      location
+    )}, detail = ${mysql.escape(detail)}
+    WHERE id = ${mysql.escape(id)};`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(200).json({
+        success: true,
+        message: "Update product information successfully",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Delete / remove specific product
-//  ROUTE         - [DELETE] /api/smart-warehouse/products/:id
+//  ROUTE         - [DELETE] /api/smart-warehouse/products
 //  ACCESS        - PRIVATE (admin)
 exports.deleteProduct = (req, res, next) => {
-  res.send("DELETE PRODUCT");
+  try {
+    const { product_id, detail } = req.body;
+    console.log(product_id, detail);
+    const SQL = `UPDATE product SET status = 2, detail = ${mysql.escape(
+      detail
+    )} WHERE product_id = ${mysql.escape(product_id)};`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(200).json({
+        success: true,
+        message: "Remove product successfully",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Create new product
 //  ROUTE         - [POST] /api/smart-warehouse/products
 //  ACCESS        - PRIVATE (admin)
 exports.createProduct = (req, res, next) => {
-  res.send("CREATE NEW PRODUCT");
+  try {
+    const {
+      product_id,
+      product_name,
+      company_name,
+      location,
+      detail,
+      status,
+    } = req.body;
+    const SQL = `INSERT INTO product(product_id, product_name, company_name, location, detail, status) VALUES (${mysql.escape(
+      product_id
+    )},${mysql.escape(product_name)},${mysql.escape(
+      company_name
+    )},${mysql.escape(location)},${mysql.escape(detail)},${mysql.escape(
+      status
+    )})`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(201).json({
+        success: true,
+        message: "Successfully created a new product",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
+//########################################################################################################################
 
 //  DESCRIPTION   - Get the list of all roles
 //  ROUTE         - [GET] /api/smart-warehouse/roles
 //  ACCESS        - PRIVATE (admin)
 exports.getRole = (req, res, next) => {
-  res.send("LIST OF ALL ROLE");
+  try {
+    const SQL = `SELECT * FROM role`;
+    connection.query(SQL, (error, result, field) => {
+      if (result.length > 0) {
+        res.json(result);
+      } else
+        res
+          .status(404)
+          .json({ success: false, message: "Can't get the information" });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Update the information of specific role
-//  ROUTE         - [PUT] /api/smart-warehouse/roles/:id
+//  ROUTE         - [PUT] /api/smart-warehouse/roles
 //  ACCESS        - PRIVATE (admin)
 exports.updateRole = (req, res, next) => {
-  res.send("UPDATE ROLE");
+  try {
+    const { id, role_name, detail } = req.body;
+    const SQL = `UPDATE role
+    SET role_name = ${mysql.escape(role_name)}, detail = ${mysql.escape(detail)}
+    WHERE id = ${mysql.escape(id)};`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(200).json({
+        success: true,
+        message: "Update role information successfully",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Delete / deactive specific role
-//  ROUTE         - [DELETE] /api/smart-warehouse/roles/:id
+//  ROUTE         - [DELETE] /api/smart-warehouse/roles
 //  ACCESS        - PRIVATE (admin)
 exports.deleteRole = (req, res, next) => {
   res.send("DELETE ROLE");
@@ -183,8 +354,23 @@ exports.deleteRole = (req, res, next) => {
 //  ROUTE         - [POST] /api/smart-warehouse/roles
 //  ACCESS        - PRIVATE (admin)
 exports.createRole = (req, res, next) => {
-  res.send("CREATE NEW ROLE");
+  try {
+    const { role_name, detail } = req.body;
+    const SQL = `INSERT INTO role(role_name, detail) VALUES (${mysql.escape(
+      role_name
+    )},${mysql.escape(detail)})`;
+    connection.query(SQL, (error, result, field) => {
+      res.status(201).json({
+        success: true,
+        message: "Successfully created a new role",
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
+//########################################################################################################################
 
 //  DESCRIPTION   - When hardware detect user RFID it will send the username
 //                  that get from RFID card to the server. Server will validate

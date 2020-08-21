@@ -29,21 +29,37 @@ router.route("/login").post(userLogIn);
 router.route("/logout").post(userLogOut);
 router.route("/import-product").post(importProduct);
 router.route("/export-product").post(exportProduct);
-router.route("/read-RFID").get(readRFID);
+router.route("/read-rfid").get(readRFID);
 router.route("/product-transaction").get(productTransaction);
 router.route("/product-balance").get(productBalance);
 
 // ADMIN ONLY
-router.route("/users").get(getUser).post(createUser);
-router.route("/users/:id").put(updateUser).delete(deleteUser);
-router.route("/products").get(getProduct).post(createProduct);
-router.route("/products/:id").put(updateProduct).delete(deleteProduct);
-router.route("/roles").get(getRole).post(createRole);
-router.route("/roles/:id").put(updateRole).delete(deleteRole);
+router
+  .route("/users")
+  .get(getUser)
+  .post(createUser)
+  .put(updateUser)
+  .delete(deleteUser);
+router
+  .route("/products")
+  .get(getProduct)
+  .post(createProduct)
+  .put(updateProduct)
+  .delete(deleteProduct);
+router
+  .route("/roles")
+  .get(getRole)
+  .post(createRole)
+  .put(updateRole)
+  .delete(deleteRole);
 
 //------------------- HARDWARE -------------------
-router.route("/detect-user-RFID/:username").post(detectedUserRFID);
-router.route("/detect-product-RFID").post(detectedProductRFID);
+router.route("/detect-user-rfid/:username").post(detectedUserRFID);
+router.route("/detect-product-rfid").post(detectedProductRFID);
+
+router.get("/test", (req, res) => {
+  res.send("AHHHHHHHH");
+});
 
 module.exports = router;
 
