@@ -1,0 +1,102 @@
+const express = require("express");
+const router = express.Router();
+const {
+  createProduct,
+  createRole,
+  createUser,
+  getUser,
+  deleteProduct,
+  deleteRole,
+  deleteUser,
+  detectedProductRFID,
+  detectedUserRFID,
+  exportProduct,
+  getProduct,
+  getRole,
+  importProduct,
+  productBalance,
+  productTransaction,
+  readRFID,
+  updateProduct,
+  updateRole,
+  updateUser,
+  userLogIn,
+  userLogOut,
+} = require("../controllers/smartWarehouseControllers");
+
+//------------------- WEB APPLICATION -------------------
+router.route("/login").post(userLogIn);
+router.route("/logout").post(userLogOut);
+router.route("/import-product").post(importProduct);
+router.route("/export-product").post(exportProduct);
+router.route("/read-RFID").get(readRFID);
+router.route("/product-transaction").get(productTransaction);
+router.route("/product-balance").get(productBalance);
+
+// ADMIN ONLY
+router.route("/users").get(getUser).post(createUser);
+router.route("/users/:id").put(updateUser).delete(deleteUser);
+router.route("/products").get(getProduct).post(createProduct);
+router.route("/products/:id").put(updateProduct).delete(deleteProduct);
+router.route("/roles").get(getRole).post(createRole);
+router.route("/roles/:id").put(updateRole).delete(deleteRole);
+
+//------------------- HARDWARE -------------------
+router.route("/detect-user-RFID/:username").post(detectedUserRFID);
+router.route("/detect-product-RFID").post(detectedProductRFID);
+
+module.exports = router;
+
+/* 
+
+router.get("/checktoken", authenticateToken, (req, res) => {
+  res.send("some content " + req.username);
+});
+
+router.post("/newToken", (req, res) => {
+  const refreshToken = req.body.token;
+  const token = refreshToken && refreshToken.split(" ")[1];
+  console.log("REFRESHTOKEN: ", refreshToken, "****:", token);
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.REFRESHER_TOKEN, (err, username) => {
+    console.log(err);
+    console.log(username);
+    if (err) return res.sendStatus(403);
+    const newAccessToken = generateAccessToken({ username });
+    const newRefreshToken = jwt.sign(
+      { username },
+      process.env.REFRESHER_TOKEN,
+      { expiresIn: "60s" }
+    );
+    res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+  });
+}); */
+
+/* 
+router.post("/detectUserRFID", (req, res) => {
+  console.log("[ NEW POST REQUEST FROM DEVICE ]");
+  const username = req.query.username;
+  const sql = `SELECT username FROM user WHERE username =  ${mysql.escape(
+    username
+  )}`;
+
+  connection.query(sql, (err, result, fields) => {
+    if (err) {
+      res.sendStatus(500);
+      console.log("[ ERROR ] post request /detectUserRFID");
+    } else if (typeof result[0] === "undefined") {
+      res.sendStatus(404);
+      console.log(`[ ERROR ] user with username "${username}" not found`);
+    } else {
+      //res.sendStatus(200);
+      console.log(`[ ACCESS GRANTED ] ${username} can login to platform`);
+      io.in(username).emit("USER_GRANTED", {
+        message: `[access granted]`,
+        granted: true,
+        room: username,
+      });
+      res.send(generateAccessToken({ username }));
+    }
+  });
+}); */
