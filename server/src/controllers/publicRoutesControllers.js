@@ -1,5 +1,9 @@
 const mysql = require("mysql");
+
+//  Connect to MYSQL (smart-warehouse-database)
 const connection = require("../Database_connection/connect");
+
+//  Token
 const { generateAccessToken } = require("../generateToken/index");
 const { generateRefreshToken } = require("../generateToken/index");
 
@@ -48,6 +52,15 @@ exports.detectedUserRFID = (req, res, next) => {
     connection.query(SQL, (error, result, field) => {
       if (result.length === 1) {
         // send access success information to client
+        console.log("ROOM NAME:", username);
+
+        //  Socket.io from server.js to give access to socket.io
+        const io = require("../../server");
+        io.in(username).emit("USER_GRANTED", {
+          message: `[access granted]`,
+          granted: true,
+          room: username,
+        });
         res.send("HARDWARE SEND USERNAME/USER_ID FROM RFID CARD" + username);
       } else {
         res.status(404).send("Access denied");
