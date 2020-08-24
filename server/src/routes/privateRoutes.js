@@ -8,8 +8,6 @@ const {
   deleteProduct,
   deleteRole,
   deleteUser,
-  detectedProductRFID,
-  detectedUserRFID,
   exportProduct,
   getProduct,
   getRole,
@@ -20,12 +18,10 @@ const {
   updateProduct,
   updateRole,
   updateUser,
-  userLogIn,
   userLogOut,
-} = require("../controllers/smartWarehouseControllers");
+} = require("../controllers/privateRoutesControllers");
 
 //------------------- WEB APPLICATION -------------------
-//router.route("/login").post(userLogIn);
 router.route("/logout").post(userLogOut);
 router.route("/import-product").post(importProduct);
 router.route("/export-product").post(exportProduct);
@@ -52,16 +48,6 @@ router
   .post(createRole)
   .put(updateRole)
   .delete(deleteRole);
-
-  //########################################################################################################################
-
-//------------------- HARDWARE -------------------
-router.route("/detect-user-rfid/:username").post(detectedUserRFID);
-router.route("/detect-product-rfid").post(detectedProductRFID);
-
-router.get("/test", (req, res) => {
-  res.send("AHHHHHHHH");
-});
 
 module.exports = router;
 

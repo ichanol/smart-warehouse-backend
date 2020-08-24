@@ -5,7 +5,7 @@
 //                  If request has authorization header, we will check that Is it has a token embedded?
 //                  If it doesn't have a token embedded, server response with
 //                      status code 400 "Bad request, Your token is missing or corrupted"
-//                  If it has a token embedded the process in this middleware is done
+//                  If it has a token embedded then the process in this middleware is done
 
 const isLoginHandler = (req, res, next) => {
   const authHeader = req.headers["authorization"];
