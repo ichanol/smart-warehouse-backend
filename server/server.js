@@ -2,26 +2,36 @@ const app = require("express")();
 const server = require("http").createServer(app);
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mysql = require("mysql");
-const jwt = require("jsonwebtoken");
 const io = require("socket.io")(server);
 const dotenv = require("dotenv");
 
 const connection = require("./src/Database_connection/connect.js");
-const smartWarehouse = require("./src/routes/smartWarehouseRoutes");
+const smartWarehouseRoutes = require("./src/routes/smartWarehouseRoutes");
+const loginRoutes = require("./src/routes/LoginRoutes");
 
-const verifyToken = require("./src/middleware/verifyToken");
+const verifyTokenHandler = require("./src/middleware/verifyTokenHandler");
 const isLoginHandler = require("./src/middleware/isLoginHandler");
 const errorHandler = require("./src/middleware/errorHandler");
 
 dotenv.config();
 
-app.use([isLoginHandler, verifyToken]);
-
 app.use(bodyParser.json());
 app.use(cors());
-app.use(process.env.API_PATH, smartWarehouse);
 
+//  Path for log in only
+//  We don't use isLoginHandler, verifyTokenHandler middleware
+//  Access denied because user don't have token and authorization header
+//  That's why they needed to log in to get the token
+app.use(process.env.API_PATH, loginRoutes);
+
+
+//  Another path for API after user's logged in
+//  We use isLoginHandler to check wheather user has token or not
+//  If user has token, we use verifyTokenHandler to validate that token
+app.use([isLoginHandler, verifyTokenHandler]);
+app.use(process.env.API_PATH, smartWarehouseRoutes);
+
+//  We use errorHandler middleware to send error message if there's any error
 app.use([errorHandler]);
 
 //------------------- Connection -------------------

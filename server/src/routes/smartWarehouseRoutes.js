@@ -25,7 +25,7 @@ const {
 } = require("../controllers/smartWarehouseControllers");
 
 //------------------- WEB APPLICATION -------------------
-router.route("/login").post(userLogIn);
+//router.route("/login").post(userLogIn);
 router.route("/logout").post(userLogOut);
 router.route("/import-product").post(importProduct);
 router.route("/export-product").post(exportProduct);
@@ -52,6 +52,8 @@ router
   .post(createRole)
   .put(updateRole)
   .delete(deleteRole);
+
+  //########################################################################################################################
 
 //------------------- HARDWARE -------------------
 router.route("/detect-user-rfid/:username").post(detectedUserRFID);

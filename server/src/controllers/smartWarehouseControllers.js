@@ -380,8 +380,22 @@ exports.createRole = (req, res, next) => {
 //  ROUTE         - [POST] /api/smart-warehouse/detect-user-RFID/:username
 //  ACCESS        - PRIVATE (hardware)
 exports.detectedUserRFID = (req, res, next) => {
-  console.log("controller active");
-  res.send("HARDWARE SEND USERNAME/USER_ID FROM RFID CARD");
+  try {
+    const { username } = req.body;
+    const SQL = `SELECT username FROM user WHERE username = ${mysql.escape(
+      username
+    )}`;
+    connection.query(SQL, (error, result, field) => {
+      if (result.length === 1) {
+        // send access success information to client
+        res.send("HARDWARE SEND USERNAME/USER_ID FROM RFID CARD" + username);
+      } else {
+        res.status(404).send("Access denied");
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - When hardware read the RFID tags from product successfully.
@@ -391,5 +405,7 @@ exports.detectedUserRFID = (req, res, next) => {
 //  ROUTE         - [POST] /api/smart-warehouse/datect-product-RFID
 //  ACCESS        - PRIVATE (hardware)
 exports.detectedProductRFID = (req, res, next) => {
-  res.send("HARDWARE SEND PRODUCT INFORMATION FROM RFID TAGS");
+  const { data } = req.body;
+  // send prodcut data to client
+  res.send("Product data from RFID reader");
 };
