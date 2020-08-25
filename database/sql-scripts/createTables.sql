@@ -119,37 +119,45 @@ INSERT INTO
     )
 VALUES
     (
-        " adminAcc ",
-        " AdminFirstname ",
-        " AdminLastname ",
-        " adminpassword ",
+        "adminAcc",
+        "AdminFirstname",
+        "AdminLastname",
+        "adminpassword",
         1,
         1
     ),
     (
-        " crewAcc ",
-        " CrewFirstname ",
-        " CrewLastname ",
-        " crewpassword ",
+        "crewAcc",
+        "CrewFirstname",
+        "CrewLastname",
+        "crewpassword",
         2,
         1
     ),
     (
-        " reporterAcc ",
-        " ReporterFirstname ",
-        " ReporterLastname ",
-        " reporterpassword ",
+        "reporterAcc",
+        "ReporterFirstname",
+        "ReporterLastname",
+        "reporterpassword",
         3,
+        1
+    ),
+    (
+        "tip",
+        "TipFirstName",
+        "TipLastName",
+        "tip",
+        1,
         1
     );
 
 INSERT INTO
     action(action_type)
 VALUES
-    (" IMPORT "),
-    (" EXPORT "),
-    (" EXPIRED "),
-    (" DAMAGED ");
+    ("IMPORT"),
+    ("EXPORT"),
+    ("EXPIRED"),
+    ("DAMAGED");
 
 INSERT INTO
     product(
@@ -162,82 +170,82 @@ INSERT INTO
     )
 VALUES
     (
-        " a3KEeZbXBx ",
-        " Drinking Glass ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "a3KEeZbXBx",
+        "Drinking Glass",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " xEBjTv2RhB ",
-        " Post it ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "xEBjTv2RhB",
+        "Post it",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " 7i8xzdx1OO ",
-        " Marker(Black color) ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "7i8xzdx1OO",
+        "Marker(Black color)",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " 7YcgFL8zb9 ",
-        " Paper(A4) ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "7YcgFL8zb9",
+        "Paper(A4)",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " XmUwfOCzKv ",
-        " Coffee maker ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "XmUwfOCzKv",
+        "Coffee maker",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " Y3nSy3Wcsw ",
-        " U Beer ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "Y3nSy3Wcsw",
+        "U Beer",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " WWcQZYpEEw ",
-        " Microwave ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "WWcQZYpEEw",
+        "Microwave",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " BImPJwGAZE ",
-        " Ceramic Plate ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "BImPJwGAZE",
+        "Ceramic Plate",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " 4Eh8SiaaWK ",
-        " Curtain ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "4Eh8SiaaWK",
+        "Curtain",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     ),
     (
-        " Db6yY11WIj ",
-        " Calendar ",
-        " Magic Box Asia ",
-        " Setthiwan 5th flr.",
-        " some detail ",
+        "Db6yY11WIj",
+        "Calendar",
+        "Magic Box Asia",
+        "Setthiwan 5th flr.",
+        "some detail",
         1
     );

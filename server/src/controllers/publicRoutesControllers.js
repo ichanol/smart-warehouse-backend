@@ -19,11 +19,12 @@ exports.userLogIn = (req, res, next) => {
 
     connection.query(SQL, (error, result, field) => {
       if (result.length === 1) {
+        console.log(username, "login");
         res.json({
           success: true,
           message: "Log in",
           accessToken: generateAccessToken(username),
-          REFRESHER_TOKEN: generateRefreshToken(username),
+          refreshToken: generateRefreshToken(username),
         });
       } else {
         res
@@ -78,7 +79,15 @@ exports.detectedUserRFID = (req, res, next) => {
 //  ROUTE         - [POST] /api/smart-warehouse/datect-product-RFID
 //  ACCESS        - PRIVATE (hardware)
 exports.detectedProductRFID = (req, res, next) => {
-  const { data } = req.body;
-  // send prodcut data to client
-  res.send("Product data from RFID reader");
+  try {
+    const { data, username } = req.body;
+    const io = require("../../server");
+    io.in(username).emit("PRODUCT_SCANNER", {
+      success: true,
+      productData: data,
+    });
+    res.send("HARDWARE SEND PRODUCT DATA FROM RFID TAGS");
+  } catch (error) {
+    next(error);
+  }
 };
