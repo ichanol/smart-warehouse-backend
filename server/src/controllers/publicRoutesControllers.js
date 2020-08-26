@@ -51,6 +51,7 @@ exports.detectedUserRFID = (req, res, next) => {
       username
     )}`;
     connection.query(SQL, (error, result, field) => {
+      console.log(SQL);
       if (result.length === 1) {
         // send access success information to client
         console.log("ROOM NAME:", username);
@@ -82,11 +83,32 @@ exports.detectedProductRFID = (req, res, next) => {
   try {
     const { data, username } = req.body;
     const io = require("../../server");
-    io.in(username).emit("PRODUCT_SCANNER", {
-      success: true,
-      productData: data,
+
+    let temp;
+
+    data.map((value, key) => {
+      if (key === 0) {
+        temp = `${mysql.escape(value.productSerialNumber)},`;
+      } else if (key === data.length - 1) {
+        temp = temp + `${mysql.escape(value.productSerialNumber)}`;
+      } else {
+        temp = temp + `${mysql.escape(value.productSerialNumber)},`;
+      }
     });
-    res.send("HARDWARE SEND PRODUCT DATA FROM RFID TAGS");
+
+    const SQL = `SELECT product_name, company_name, location, detail FROM product WHERE status = 1 AND product_id IN (${temp})`;
+
+    connection.query(SQL, (error, result, field) => {
+      result.map((value, key) => {
+        result[key].productSerialNumber = data[key].productSerialNumber;
+        result[key].amount = data[key].amount;
+      });
+      io.in(username).emit("PRODUCT_SCANNER", {
+        success: true,
+        productData: result,
+      });
+      res.send("HARDWARE SEND PRODUCT DATA FROM RFID TAGS");
+    });
   } catch (error) {
     next(error);
   }
