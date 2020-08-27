@@ -71,7 +71,7 @@ CREATE TABLE inventory_log(
 CREATE TABLE current_product_balance(
     id INT NOT NULL AUTO_INCREMENT,
     product_id INT NOT NULL,
-    balance INT NOT NULL,
+    balance INT NOT NULL DEFAULT 0,
     location VARCHAR(255) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY (product_id) REFERENCES product(id)
@@ -249,3 +249,11 @@ VALUES
         "some detail",
         1
     );
+
+INSERT INTO
+    current_product_balance(product_id, location)
+SELECT
+    id,
+    location
+FROM
+    product;

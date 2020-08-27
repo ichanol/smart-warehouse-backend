@@ -6,6 +6,7 @@ const connection = require("../Database_connection/connect");
 //  ACCESS        - PRIVATE
 exports.userLogOut = (req, res, next) => {
   res.send("LOG OUT");
+  connection.end();
 };
 
 //  DESCRIPTION   - Add import products (S/N, amount, etc), update the tables in the database
@@ -22,12 +23,92 @@ exports.exportProduct = (req, res, next) => {
   res.send("EXPORT PRODUCT");
 };
 
+//  DESCRIPTION   - Add export products (S/N, amount, etc), update the tables in the database
+//  ROUTE         - [POST] /api/smart-warehouse/export-product
+//  ACCESS        - PRIVATE (admin, crew)
+exports.updateTransaction = (req, res, next) => {
+  try {
+    const { referenceNumber, actionType, username, productList } = req.body;
+
+    let idForQueryBalance;
+    let temp;
+
+    productList.map((value, key) => {
+      if (key === 0) {
+        idForQueryBalance = `${mysql.escape(value.id)},`;
+      } else if (key === productList.length - 1) {
+        idForQueryBalance = idForQueryBalance + `${mysql.escape(value.id)}`;
+      } else {
+        idForQueryBalance = idForQueryBalance + `${mysql.escape(value.id)},`;
+      }
+    });
+
+    const sql = `SELECT balance FROM current_product_balance WHERE product_id IN (${idForQueryBalance})`;
+    connection.query(sql, (error, result, field) => {
+      productList.map((value, key) => {
+        if (key === 0) {
+          temp = `(
+          ${mysql.escape(referenceNumber)},
+          ${mysql.escape(value.productSerialNumber)},
+          ${mysql.escape(actionType)},
+          ${mysql.escape(value.amount)},
+          ${mysql.escape(result[key].balance + value.amount)},
+          ${mysql.escape(value.location)},
+          ${mysql.escape(username)},
+          ${mysql.escape(value.detail)}
+        ),`;
+        } else if (key === productList.length - 1) {
+          temp =
+            temp +
+            `(
+          ${mysql.escape(referenceNumber)},
+          ${mysql.escape(value.productSerialNumber)},
+          ${mysql.escape(actionType)},
+          ${mysql.escape(value.amount)},
+          ${mysql.escape(result[key].balance + value.amount)},
+          ${mysql.escape(value.location)},
+          ${mysql.escape(username)},
+          ${mysql.escape(value.detail)}
+        )`;
+        } else {
+          temp =
+            temp +
+            `(
+          ${mysql.escape(referenceNumber)},
+          ${mysql.escape(value.productSerialNumber)},
+          ${mysql.escape(actionType)},
+          ${mysql.escape(value.amount)},
+          ${mysql.escape(result[key].balance + value.amount)},
+          ${mysql.escape(value.location)},
+          ${mysql.escape(username)},
+          ${mysql.escape(value.detail)}
+        ),`;
+        }
+      });
+      console.log(result);
+    });
+
+    const SQL = `INSERT INTO inventory_log(reference_number, product_id, action_type, amount, balance, location, responsable, detail) VALUES ${temp}`;
+    connection.query(SQL, (error, result, field) => {
+      console.log(SQL);
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 //  DESCRIPTION   - When client send this request to server, server will send another request
 //                  to the hardware to tell the RFID reader to read RFID tags
 //  ROUTE         - [GET] /api/smart-warehouse/read-RFID
 //  ACCESS        - PRIVATE (admin,crew)
 exports.readRFID = (req, res, next) => {
-  res.send("READ RFID");
+  try {
+    const sql = `SELECT * FROm user`;
+    connection.query(sql).then((result) => console.log(result));
+    res.send("READ RFID");
+  } catch (error) {
+    next(error);
+  }
 };
 
 //  DESCRIPTION   - Show the transaction/history (import/export logs), user can filter the result
@@ -42,7 +123,14 @@ exports.productTransaction = (req, res, next) => {
 //  ROUTE         - [GET] /api/smart-warehouse/product-balance
 //  ACCESS        - PRIVATE (admin, reporter)
 exports.productBalance = (req, res, next) => {
-  res.send("PRODUCT BALANCE");
+  try {
+    const sql = `SELECT * FROM current_product_balance`;
+    connection.query(sql, (error, result, field) => {
+      res.json({ result });
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //########################################################################################################################

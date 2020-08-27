@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 //                  If token is valid. Process of this middleware is done
 const verifyTokenHandler = (req, res, next) => {
   jwt.verify(req.secretToken, process.env.ACCESS_TOKEN, (err, value) => {
-    console.log(err);
-    console.log(value);
     if (err)
       return res
         .status(403)

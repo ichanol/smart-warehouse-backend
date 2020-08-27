@@ -96,7 +96,7 @@ exports.detectedProductRFID = (req, res, next) => {
       }
     });
 
-    const SQL = `SELECT product_name, company_name, location, detail FROM product WHERE status = 1 AND product_id IN (${temp})`;
+    const SQL = `SELECT id, product_name, company_name, location, detail FROM product WHERE status = 1 AND product_id IN (${temp})`;
 
     connection.query(SQL, (error, result, field) => {
       result.map((value, key) => {
