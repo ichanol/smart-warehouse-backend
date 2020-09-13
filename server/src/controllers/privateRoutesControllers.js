@@ -26,14 +26,16 @@ exports.exportProduct = (req, res, next) => {
 //  DESCRIPTION   - Add export products (S/N, amount, etc), update the tables in the database
 //  ROUTE         - [POST] /api/smart-warehouse/export-product
 //  ACCESS        - PRIVATE (admin, crew)
-exports.updateTransaction = (req, res, next) => {
+exports.updateTransaction = async (req, res, next) => {
   try {
     const { referenceNumber, actionType, username, productList } = req.body;
 
+    console.log(productList);
     let idForQueryBalance;
-    let temp;
+    let valueToInsert;
+    let valueToUpdate;
 
-    productList.map((value, key) => {
+    await productList.map((value, key) => {
       if (key === 0) {
         idForQueryBalance = `${mysql.escape(value.id)},`;
       } else if (key === productList.length - 1) {
@@ -43,55 +45,102 @@ exports.updateTransaction = (req, res, next) => {
       }
     });
 
-    const sql = `SELECT balance FROM current_product_balance WHERE product_id IN (${idForQueryBalance})`;
-    connection.query(sql, (error, result, field) => {
-      productList.map((value, key) => {
-        if (key === 0) {
-          temp = `(
-          ${mysql.escape(referenceNumber)},
-          ${mysql.escape(value.productSerialNumber)},
-          ${mysql.escape(actionType)},
-          ${mysql.escape(value.amount)},
-          ${mysql.escape(result[key].balance + value.amount)},
-          ${mysql.escape(value.location)},
-          ${mysql.escape(username)},
-          ${mysql.escape(value.detail)}
-        ),`;
-        } else if (key === productList.length - 1) {
-          temp =
-            temp +
-            `(
-          ${mysql.escape(referenceNumber)},
-          ${mysql.escape(value.productSerialNumber)},
-          ${mysql.escape(actionType)},
-          ${mysql.escape(value.amount)},
-          ${mysql.escape(result[key].balance + value.amount)},
-          ${mysql.escape(value.location)},
-          ${mysql.escape(username)},
-          ${mysql.escape(value.detail)}
-        )`;
-        } else {
-          temp =
-            temp +
-            `(
-          ${mysql.escape(referenceNumber)},
-          ${mysql.escape(value.productSerialNumber)},
-          ${mysql.escape(actionType)},
-          ${mysql.escape(value.amount)},
-          ${mysql.escape(result[key].balance + value.amount)},
-          ${mysql.escape(value.location)},
-          ${mysql.escape(username)},
-          ${mysql.escape(value.detail)}
-        ),`;
-        }
+    const queryProductBalanceData = () => {
+      return new Promise((resolve, reject) => {
+        const SQL = `SELECT balance FROM current_product_balance WHERE product_id IN (${idForQueryBalance})`;
+        connection.query(SQL, (error, result, field) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
       });
-      console.log(result);
+    };
+
+    const productBalanceResult = await queryProductBalanceData();
+
+    await productList.map((value, key) => {
+      if (key === 0) {
+        valueToInsert = `(
+                          ${mysql.escape(referenceNumber)},
+                          ${mysql.escape(value.id)},
+                          ${mysql.escape(actionType)},
+                          ${mysql.escape(value.amount)},
+                          ${mysql.escape(
+                            productBalanceResult[key].balance + value.amount
+                          )},
+                          ${mysql.escape(value.location)},
+                          ${mysql.escape(4)},
+                          ${mysql.escape(value.detail)}
+                        ),`;
+
+        valueToUpdate = `WHEN product_id = ${mysql.escape(
+          value.id
+        )} THEN ${mysql.escape(
+          productBalanceResult[key].balance + value.amount
+        )} `;
+      } else if (key === productList.length - 1) {
+        valueToInsert =
+          valueToInsert +
+          `(
+            ${mysql.escape(referenceNumber)},
+            ${mysql.escape(value.id)},
+            ${mysql.escape(actionType)},
+            ${mysql.escape(value.amount)},
+            ${mysql.escape(productBalanceResult[key].balance + value.amount)},
+            ${mysql.escape(value.location)},
+            ${mysql.escape(4)},
+            ${mysql.escape(value.detail)}
+          )`;
+        valueToUpdate =
+          valueToUpdate +
+          `WHEN product_id = ${mysql.escape(value.id)} THEN ${mysql.escape(
+            productBalanceResult[key].balance + value.amount
+          )} `;
+      } else {
+        valueToInsert =
+          valueToInsert +
+          `(
+            ${mysql.escape(referenceNumber)},
+            ${mysql.escape(value.id)},
+            ${mysql.escape(actionType)},
+            ${mysql.escape(value.amount)},
+            ${mysql.escape(productBalanceResult[key].balance + value.amount)},
+            ${mysql.escape(value.location)},
+            ${mysql.escape(4)},
+            ${mysql.escape(value.detail)}
+          ),`;
+        valueToUpdate =
+          valueToUpdate +
+          `WHEN product_id = ${mysql.escape(value.id)} THEN ${mysql.escape(
+            productBalanceResult[key].balance + value.amount
+          )} `;
+      }
     });
 
-    const SQL = `INSERT INTO inventory_log(reference_number, product_id, action_type, amount, balance, location, responsable, detail) VALUES ${temp}`;
-    connection.query(SQL, (error, result, field) => {
-      console.log(SQL);
-    });
+    const updateCurrentProductBalance = () => {
+      return new Promise((resolve, reject) => {
+        const SQL = `UPDATE current_product_balance SET  balance = CASE ${valueToUpdate} END WHERE product_id IN (${idForQueryBalance})`;
+        connection.query(SQL, (error, result, field) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
+      });
+    };
+    const updateCurrentProductBalanceResult = await updateCurrentProductBalance();
+
+    const saveTransaction = () => {
+      return new Promise((resolve, reject) => {
+        const SQL = `INSERT INTO inventory_log(reference_number, product_id, action_type, amount, balance, location, responsable, detail) VALUES ${valueToInsert}`;
+        connection.query(SQL, (error, result, field) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
+      });
+    };
+    const saveTransactionResult = await saveTransaction();
+
+    await res
+      .status(201)
+      .json({ success: true, message: "Save transaction successfully" });
   } catch (error) {
     next(error);
   }
