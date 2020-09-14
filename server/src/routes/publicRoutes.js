@@ -6,10 +6,10 @@ const {
   detectedUserRFID,
 } = require("../controllers/publicRoutesControllers");
 
-//------------------- WEB APPLICATION -------------------
+/** @WebApplication */
 router.route("/login").post(userLogIn);
 
-//------------------- HARDWARE -------------------
+/** @Hardware */
 router.route("/detect-user-rfid").post(detectedUserRFID);
 router.route("/detect-product-rfid").post(detectedProductRFID);
 

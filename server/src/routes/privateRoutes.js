@@ -8,10 +8,8 @@ const {
   deleteProduct,
   deleteRole,
   deleteUser,
-  exportProduct,
   getProduct,
   getRole,
-  importProduct,
   productBalance,
   productTransaction,
   readRFID,
@@ -25,8 +23,6 @@ const {
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
 router.route("/import-export-product").post(updateTransaction);
-//router.route("/import-product").post(importProduct);
-//router.route("/export-product").post(exportProduct);
 router.route("/read-rfid").get(readRFID);
 router.route("/product-transaction").get(productTransaction);
 router.route("/product-balance").get(productBalance);
