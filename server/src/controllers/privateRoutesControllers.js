@@ -62,13 +62,37 @@ exports.readRFID = (req, res, next) => {
   }
 };
 
-//  DESCRIPTION   - Show the transaction/history (import/export logs), user can filter the result
-//                  by sending query parameters with request
-//  ROUTE         - [GET] /api/smart-warehouse/product-transaction
-//  ACCESS        - PRIVATE (admin reporter)
-exports.productTransaction = (req, res, next) => {
+/**
+ *   @DESCRIPTION   -   Show the transaction/history (import/export logs), user can filter the result
+ *                      by sending query parameters with request
+ *   @ROUTE         -   [GET] /api/smart-warehouse/product-transaction
+ *   @ACCESS        -   PRIVATE (admin reporter)
+ */
+exports.productTransaction = async (req, res, next) => {
   try {
-    res.json({ success: true, message: "HISTORY" });
+    const searchTransactionLog = require("../models/searchTransactionLog");
+    const startDate = req.query.startdate || null;
+    const endDate = req.query.enddate || null;
+
+    const filterArr = [
+      { str: "product_id", value: req.query.productid || null },
+      { str: "responsable", value: req.query.responsable || null },
+      { str: "reference_number", value: req.query.ref || null },
+      { str: "action_type", value: req.query.action || null },
+      { str: "amount", value: req.query.amount || null },
+    ];
+    const result = await searchTransactionLog(
+      mysql,
+      connection,
+      filterArr,
+      startDate,
+      endDate
+    );
+    if (result) {
+      res.json({ success: true, result });
+    } else {
+      res.json({ success: false, message: "No information" });
+    }
   } catch (error) {
     next(error);
   }

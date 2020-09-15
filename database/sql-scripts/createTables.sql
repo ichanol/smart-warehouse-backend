@@ -57,7 +57,7 @@ CREATE TABLE inventory_log(
     product_id INT NOT NULL,
     action_type INT NOT NULL,
     amount INT NOT NULL,
-    timestamp TIMESTAMP,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     balance INT NOT NULL,
     location VARCHAR(255) NOT NULL,
     responsable INT NOT NULL,
@@ -73,6 +73,7 @@ CREATE TABLE current_product_balance(
     product_id INT NOT NULL,
     balance INT NOT NULL DEFAULT 0,
     location VARCHAR(255) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
