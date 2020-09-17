@@ -22,11 +22,11 @@ module.exports = searchTransactionLog = async (
         });
       }
       if (startDate && endDate) {
-        whereClause =
-          whereClause +
-          ` AND timestamp BETWEEN ${mysql.escape(
-            startDate + " 00:00:00"
-          )} AND ${mysql.escape(endDate + " 23:59:59")}`;
+        whereClause = `${
+          whereClause ? whereClause + " AND" : " WHERE"
+        } timestamp BETWEEN ${mysql.escape(
+          startDate + " 00:00:00"
+        )} AND ${mysql.escape(endDate + " 23:59:59")}`;
       } else if (startDate || endDate) {
         whereClause =
           whereClause +
@@ -45,6 +45,7 @@ module.exports = searchTransactionLog = async (
         "SELECT reference_number, product_id, action_type, amount, timestamp, balance, location, responsable, detail FROM inventory_log" +
         whereClause;
       connection.query(SQL, (error, result, field) => {
+        console.log(SQL);
         if (error) return reject(error);
         resolve(result);
       });

@@ -7,13 +7,12 @@ const jwt = require("jsonwebtoken");
 const verifyTokenHandler = (req, res, next) => {
   jwt.verify(req.secretToken, process.env.ACCESS_TOKEN, (err, value) => {
     if (err)
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message:
-            "Unauthorized. Your token is invalid or expired please try again",
-        });
+      return res.status(403).json({
+        success: false,
+        message:
+          "Unauthorized. Your token is invalid or expired please try again",
+      });
+    req.decodedUsername = value.payload;
     next();
   });
 };

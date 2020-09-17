@@ -6,11 +6,11 @@ module.exports = login = async (
 ) => {
   const loginValidation = () => {
     return new Promise((resolve, reject) => {
-      let SQL = `SELECT username FROM user WHERE username = ${mysql.escape(
+      let SQL = `SELECT role, username FROM user WHERE username = ${mysql.escape(
         username
       )}`;
       if (password) {
-        SQL = SQL + `AND password = ${mysql.escape(password)}`;
+        SQL = SQL + `AND password = ${mysql.escape(password)} AND status = 1`;
       }
       connection.query(SQL, (error, result, field) => {
         if (error) return reject(error);
