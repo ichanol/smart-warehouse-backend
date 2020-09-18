@@ -4,6 +4,7 @@ const connection = require("../Database_connection/connect");
 
 const login = require("../models/login");
 const getProductInformation = require("../models/getProductInformation");
+
 const { generateAccessToken } = require("../generateToken/index");
 const { generateRefreshToken } = require("../generateToken/index");
 
@@ -102,6 +103,26 @@ exports.detectedProductRFID = async (req, res, next) => {
         message: "Failed to load product information",
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ *   @DESCRIPTION   -   Generate new access token and refresh token
+ *   @ROUTE         -   [GET] /api/smart-warehouse/renewtoken
+ *   @ACCESS        -   PUBLIC
+ */
+
+exports.reNewToken = (req, res, next) => {
+  try {
+    res.json({
+      success: true,
+      message: "New token",
+      username: req.decodedUsername,
+      newAccessToken: generateAccessToken(req.decodedUsername),
+      newRefreshToken: generateRefreshToken(req.decodedUsername),
+    });
   } catch (error) {
     next(error);
   }

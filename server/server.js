@@ -31,7 +31,7 @@ app.use(process.env.API_PATH, publicRoutes);
 //  For private routes API after user's logged in
 //  We use isLoginHandler to check wheather user has token or not
 //  If user has token, we use verifyTokenHandler to validate that token
-app.use([isLoginHandler, verifyTokenHandler]);
+app.use([isLoginHandler, verifyTokenHandler(process.env.ACCESS_TOKEN)]);
 app.use(process.env.API_PATH, privateRoutes);
 
 //  We use errorHandler middleware to send error message if there's any error

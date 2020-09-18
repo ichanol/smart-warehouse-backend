@@ -4,11 +4,11 @@ module.exports = getProductInformation = async (mysql, connection, data) => {
       let temp;
       data.map((value, key) => {
         if (key === 0) {
-          temp = `${mysql.escape(value.productSerialNumber)}`;
+          temp = `${mysql.escape(value.product_serial_number)}`;
         } else if (key === data.length - 1) {
-          temp = temp + `,${mysql.escape(value.productSerialNumber)}`;
+          temp = temp + `,${mysql.escape(value.product_serial_number)}`;
         } else {
-          temp = temp + `,${mysql.escape(value.productSerialNumber)}`;
+          temp = temp + `,${mysql.escape(value.product_serial_number)}`;
         }
       });
 
@@ -25,8 +25,8 @@ module.exports = getProductInformation = async (mysql, connection, data) => {
 
   if (currentProductBalanceResult.length >= 1) {
     currentProductBalanceResult.map((value, key) => {
-      currentProductBalanceResult[key].productSerialNumber =
-        data[key].productSerialNumber;
+      currentProductBalanceResult[key].product_serial_number =
+        data[key].product_serial_number;
       currentProductBalanceResult[key].amount = data[key].amount;
     });
     return currentProductBalanceResult;
@@ -34,3 +34,7 @@ module.exports = getProductInformation = async (mysql, connection, data) => {
     return false;
   }
 };
+// Balance=>Inventory||stock
+
+// + , - log amount
+// more than

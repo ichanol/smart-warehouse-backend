@@ -19,23 +19,6 @@ exports.userLogOut = (req, res, next) => {
 };
 
 /**
- *   @DESCRIPTION   -   Check wheather user is log in or not
- *   @ROUTE         -   [GET] /api/smart-warehouse/check-login
- *   @ACCESS        -   PRIVATE
- */
-exports.checkIsLogIn = (req, res, next) => {
-  try {
-    res.json({
-      success: true,
-      message: "Alredy logged in",
-      x: req.decodedUsername,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Add import or export products transaction (S/N, amount, etc), update the tables in the database
  *   @ROUTE         -   [POST] /api/smart-warehouse/import-export-product
  *   @ACCESS        -   PRIVATE (admin, crew)

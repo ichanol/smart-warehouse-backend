@@ -18,11 +18,9 @@ const {
   updateUser,
   userLogOut,
   updateTransaction,
-  checkIsLogIn,
 } = require("../controllers/privateRoutesControllers");
 
 //------------------- WEB APPLICATION -------------------
-router.route("/check-login").get(checkIsLogIn);
 router.route("/logout").post(userLogOut);
 router.route("/import-export-product").post(updateTransaction);
 router.route("/read-rfid").get(readRFID);
