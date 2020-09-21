@@ -336,7 +336,6 @@ exports.deleteUser = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   try {
     const { product_id, detail } = req.body;
-    console.log(product_id, detail);
     const SQL = `UPDATE product SET 
                   status = 2,
                   detail = ${mysql.escape(detail)}

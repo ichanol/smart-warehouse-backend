@@ -26,11 +26,13 @@ module.exports = createTransaction = async (
 
   await productList.map((value, key) => {
     if (key === 0) {
-      idForQueryBalance = `${mysql.escape(value.id)},`;
+      idForQueryBalance = `${mysql.escape(parseInt(value.id))}`;
     } else if (key === productList.length - 1) {
-      idForQueryBalance = idForQueryBalance + `${mysql.escape(value.id)}`;
+      idForQueryBalance =
+        idForQueryBalance + `,${mysql.escape(parseInt(value.id))}`;
     } else {
-      idForQueryBalance = idForQueryBalance + `${mysql.escape(value.id)},`;
+      idForQueryBalance =
+        idForQueryBalance + `,${mysql.escape(parseInt(value.id))}`;
     }
   });
 
@@ -49,58 +51,67 @@ module.exports = createTransaction = async (
   await productList.map((value, key) => {
     if (key === 0) {
       valueToInsert = `(
-                          ${mysql.escape(referenceNumber)},
-                          ${mysql.escape(value.id)},
-                          ${mysql.escape(actionType)},
-                          ${mysql.escape(value.amount)},
+                          ${mysql.escape(parseInt(referenceNumber))},
+                          ${mysql.escape(parseInt(value.id))},
+                          ${mysql.escape(parseInt(actionType))},
+                          ${mysql.escape(parseInt(value.amount))},
                           ${mysql.escape(
-                            productBalanceResult[key].balance + value.amount
+                            parseInt(productBalanceResult[key].balance) +
+                              parseInt(value.amount)
                           )},
                           ${mysql.escape(value.location)},
-                          ${mysql.escape(userId.id)},
+                          ${mysql.escape(parseInt(userId.id))},
                           ${mysql.escape(value.detail)}
-                        ),`;
+                        )`;
 
       valueToUpdate = `WHEN product_id = ${mysql.escape(
-        value.id
+        parseInt(value.id)
       )} THEN ${mysql.escape(
-        productBalanceResult[key].balance + value.amount
+        parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
       )} `;
     } else if (key === productList.length - 1) {
       valueToInsert =
         valueToInsert +
-        `(
-            ${mysql.escape(referenceNumber)},
-            ${mysql.escape(value.id)},
-            ${mysql.escape(actionType)},
-            ${mysql.escape(value.amount)},
-            ${mysql.escape(productBalanceResult[key].balance + value.amount)},
-            ${mysql.escape(value.location)},
-            ${mysql.escape(userId.id)},
-            ${mysql.escape(value.detail)}
-          )`;
+        `,(
+          ${mysql.escape(parseInt(referenceNumber))},
+          ${mysql.escape(parseInt(value.id))},
+          ${mysql.escape(parseInt(actionType))},
+          ${mysql.escape(parseInt(value.amount))},
+          ${mysql.escape(
+            parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
+          )},
+          ${mysql.escape(value.location)},
+          ${mysql.escape(parseInt(userId.id))},
+          ${mysql.escape(value.detail)}
+        )`;
       valueToUpdate =
         valueToUpdate +
-        `WHEN product_id = ${mysql.escape(value.id)} THEN ${mysql.escape(
-          productBalanceResult[key].balance + value.amount
+        `WHEN product_id = ${mysql.escape(
+          parseInt(value.id)
+        )} THEN ${mysql.escape(
+          parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
         )} `;
     } else {
       valueToInsert =
         valueToInsert +
-        `(
-            ${mysql.escape(referenceNumber)},
-            ${mysql.escape(value.id)},
-            ${mysql.escape(actionType)},
-            ${mysql.escape(value.amount)},
-            ${mysql.escape(productBalanceResult[key].balance + value.amount)},
-            ${mysql.escape(value.location)},
-            ${mysql.escape(userId.id)},
-            ${mysql.escape(value.detail)}
-          ),`;
+        `,(
+          ${mysql.escape(parseInt(referenceNumber))},
+          ${mysql.escape(parseInt(value.id))},
+          ${mysql.escape(parseInt(actionType))},
+          ${mysql.escape(parseInt(value.amount))},
+          ${mysql.escape(
+            parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
+          )},
+          ${mysql.escape(value.location)},
+          ${mysql.escape(parseInt(userId.id))},
+          ${mysql.escape(value.detail)}
+        )`;
       valueToUpdate =
         valueToUpdate +
-        `WHEN product_id = ${mysql.escape(value.id)} THEN ${mysql.escape(
-          productBalanceResult[key].balance + value.amount
+        `WHEN product_id = ${mysql.escape(
+          parseInt(value.id)
+        )} THEN ${mysql.escape(
+          parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
         )} `;
     }
   });
