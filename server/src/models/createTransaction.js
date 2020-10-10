@@ -2,13 +2,14 @@ module.exports = createTransaction = async (
   mysql,
   connection,
   referenceNumber,
-  actionType,
+  actionID,
   username,
   productList
 ) => {
-  let idForQueryBalance;
-  let valueToInsert;
-  let valueToUpdate;
+  let idForQueryBalance,
+    valueToInsert,
+    valueToUpdate,
+    multiplier = 1;
 
   const getUserId = () => {
     return new Promise((resolve, reject) => {
@@ -22,7 +23,20 @@ module.exports = createTransaction = async (
     });
   };
 
+  const getActionType = () => {
+    return new Promise((resolve, reject) => {
+      const SQL = `SELECT action_type FROM import_export_action WHERE id = ${mysql.escape(
+        actionID
+      )}`;
+      connection.query(SQL, (error, result, field) => {
+        if (error) return reject(error);
+        resolve(result[0].action_type);
+      });
+    });
+  };
+
   const [userId] = await getUserId();
+  const actionType = await getActionType();
 
   await productList.map((value, key) => {
     if (key === 0) {
@@ -48,16 +62,29 @@ module.exports = createTransaction = async (
 
   const productBalanceResult = await queryProductBalanceData();
 
+  if (actionType === "DELETE") {
+    multiplier = -1;
+  }
+
   await productList.map((value, key) => {
+    const isNegative =
+      parseInt(productBalanceResult[key].balance) +
+        parseInt(value.amount * multiplier) <
+      0;
+    if (isNegative)
+      throw {
+        message:
+          "Balance can't be negative number, This mean your export amount is much more larger than product's balance amount",
+      };
     if (key === 0) {
       valueToInsert = `(
                           ${mysql.escape(parseInt(referenceNumber))},
                           ${mysql.escape(parseInt(value.id))},
-                          ${mysql.escape(parseInt(actionType))},
+                          ${mysql.escape(parseInt(actionID))},
                           ${mysql.escape(parseInt(value.amount))},
                           ${mysql.escape(
                             parseInt(productBalanceResult[key].balance) +
-                              parseInt(value.amount)
+                              parseInt(value.amount * multiplier)
                           )},
                           ${mysql.escape(value.location)},
                           ${mysql.escape(parseInt(userId.id))},
@@ -67,7 +94,8 @@ module.exports = createTransaction = async (
       valueToUpdate = `WHEN product_id = ${mysql.escape(
         parseInt(value.id)
       )} THEN ${mysql.escape(
-        parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
+        parseInt(productBalanceResult[key].balance) +
+          parseInt(value.amount * multiplier)
       )} `;
     } else if (key === productList.length - 1) {
       valueToInsert =
@@ -75,10 +103,11 @@ module.exports = createTransaction = async (
         `,(
           ${mysql.escape(parseInt(referenceNumber))},
           ${mysql.escape(parseInt(value.id))},
-          ${mysql.escape(parseInt(actionType))},
+          ${mysql.escape(parseInt(actionID))},
           ${mysql.escape(parseInt(value.amount))},
           ${mysql.escape(
-            parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
+            parseInt(productBalanceResult[key].balance) +
+              parseInt(value.amount * multiplier)
           )},
           ${mysql.escape(value.location)},
           ${mysql.escape(parseInt(userId.id))},
@@ -89,7 +118,8 @@ module.exports = createTransaction = async (
         `WHEN product_id = ${mysql.escape(
           parseInt(value.id)
         )} THEN ${mysql.escape(
-          parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
+          parseInt(productBalanceResult[key].balance) +
+            parseInt(value.amount * multiplier)
         )} `;
     } else {
       valueToInsert =
@@ -97,10 +127,11 @@ module.exports = createTransaction = async (
         `,(
           ${mysql.escape(parseInt(referenceNumber))},
           ${mysql.escape(parseInt(value.id))},
-          ${mysql.escape(parseInt(actionType))},
+          ${mysql.escape(parseInt(actionID))},
           ${mysql.escape(parseInt(value.amount))},
           ${mysql.escape(
-            parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
+            parseInt(productBalanceResult[key].balance) +
+              parseInt(value.amount * multiplier)
           )},
           ${mysql.escape(value.location)},
           ${mysql.escape(parseInt(userId.id))},
@@ -111,7 +142,8 @@ module.exports = createTransaction = async (
         `WHEN product_id = ${mysql.escape(
           parseInt(value.id)
         )} THEN ${mysql.escape(
-          parseInt(productBalanceResult[key].balance) + parseInt(value.amount)
+          parseInt(productBalanceResult[key].balance) +
+            parseInt(value.amount * multiplier)
         )} `;
     }
   });
@@ -125,6 +157,7 @@ module.exports = createTransaction = async (
       });
     });
   };
+
   const updateCurrentProductBalanceResult = await updateCurrentProductBalance();
 
   const saveTransaction = () => {

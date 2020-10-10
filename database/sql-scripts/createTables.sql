@@ -5,8 +5,9 @@ CREATE TABLE role(
     PRIMARY KEY(id)
 );
 
-CREATE TABLE action(
+CREATE TABLE import_export_action(
     id INT NOT NULL AUTO_INCREMENT,
+    action_name VARCHAR(255) NOT NULL,
     action_type VARCHAR(255) NOT NULL,
     PRIMARY KEY(id)
 );
@@ -64,7 +65,7 @@ CREATE TABLE inventory_log(
     detail VARCHAR(512),
     PRIMARY KEY(id),
     FOREIGN KEY (responsable) REFERENCES user(id),
-    FOREIGN KEY (action_type) REFERENCES action(id),
+    FOREIGN KEY (action_type) REFERENCES import_export_action(id),
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
@@ -153,12 +154,12 @@ VALUES
     );
 
 INSERT INTO
-    action(action_type)
+    import_export_action(action_name, action_type)
 VALUES
-    ("IMPORT"),
-    ("EXPORT"),
-    ("EXPIRED"),
-    ("DAMAGED");
+    ("IMPORT", 'ADD'),
+    ("EXPORT", 'DELETE'),
+    ("EXPIRED", 'DELETE'),
+    ("DAMAGED", 'DELETE');
 
 INSERT INTO
     product(
