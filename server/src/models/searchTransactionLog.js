@@ -45,7 +45,6 @@ module.exports = searchTransactionLog = async (
         "SELECT reference_number, product_id, action_type, amount, timestamp, balance, location, responsable, detail FROM inventory_log" +
         whereClause;
       connection.query(SQL, (error, result, field) => {
-        console.log(SQL);
         if (error) return reject(error);
         resolve(result);
       });

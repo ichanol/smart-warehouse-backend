@@ -11,7 +11,7 @@ module.exports = update = async (SQL) => {
   };
   const result = await updateData();
   if (result) {
-    return true;
+    return result;
   } else {
     return false;
   }
