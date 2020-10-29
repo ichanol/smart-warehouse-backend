@@ -12,7 +12,16 @@ module.exports = getProductInformation = async (mysql, connection, data) => {
         }
       });
 
-      const SQL = `SELECT id, product_name, company_name, location, detail FROM product WHERE status = 1 AND product_id IN (${temp})`;
+      const SQL = `SELECT 
+      product.id, 
+      product.product_name, 
+      product.company_name, 
+      product.location, 
+      product.detail, 
+      product_status.status_value AS status 
+      FROM product 
+      INNER JOIN product_status ON product.status = product_status.id 
+      WHERE status = 1 AND product_id IN (${temp})`;
 
       connection.query(SQL, (error, result, field) => {
         if (error) return reject(error);

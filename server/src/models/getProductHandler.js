@@ -81,7 +81,11 @@ module.exports = getProduct = async (req, res, next) => {
 
       const listPerPage = parseInt(req.params.numberPerPage);
       const currentPage = parseInt(req.params.page);
-      const totalRecords = await getTotalRecords("product", 'INNER JOIN product_status ON product.status = product_status.id', whereClause);
+      const totalRecords = await getTotalRecords(
+        "product",
+        "INNER JOIN product_status ON product.status = product_status.id",
+        whereClause
+      );
       const numberOfPages = Math.ceil(
         totalRecords.numberOfRecords / listPerPage
       );
@@ -109,6 +113,21 @@ module.exports = getProduct = async (req, res, next) => {
                             OR product.company_name LIKE '%${req.query.search}%' 
                             OR product.created_at LIKE '%${req.query.search}%' 
                             OR product.updated_at LIKE '%${req.query.search}%'`;
+      const data = await getProductInformation(
+        0,
+        10,
+        orderByClause,
+        whereClause
+      );
+      response.success = true;
+      response.result = data;
+
+      req.preparedResponse = response;
+      next();
+    } else if (req.query?.validate) {
+      const orderByClause = "ORDER BY status ASC, created_at ASC";
+
+      const whereClause = `WHERE product.product_id = '${req.query.validate}'`;
       const data = await getProductInformation(
         0,
         10,

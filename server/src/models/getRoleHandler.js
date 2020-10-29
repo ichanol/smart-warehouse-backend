@@ -115,6 +115,21 @@ module.exports = getRole = async (req, res, next) => {
 
       req.preparedResponse = response;
       next();
+    } else if (req.query?.validate) {
+      const orderByClause = "ORDER BY ROLE.status ASC, ROLE.created_at ASC";
+
+      const whereClause = `WHERE ROLE.role_name = '${req.query.validate}'`;
+      const data = await getRoleInformation(
+        0,
+        10,
+        orderByClause,
+        whereClause
+      );
+      response.success = true;
+      response.result = data;
+
+      req.preparedResponse = response;
+      next();
     } else {
       req.preparedResponse = response;
       next();
