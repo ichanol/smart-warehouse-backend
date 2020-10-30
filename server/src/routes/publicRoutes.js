@@ -15,6 +15,18 @@ const {
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
 
+const multer = require("multer");
+global.__basedir = '/app';
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, __basedir + "/uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
+
 /**  @WebApplication */
 router.route("/login").post(userLogIn);
 
@@ -36,6 +48,6 @@ router.get(
   reNewToken
 );
 
-router.route("/uploadfile").post(uploadFiles);
+router.route("/uploadfile").post([upload.single("uploadDocument"),uploadFiles]);
 
 module.exports = router;

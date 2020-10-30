@@ -130,7 +130,7 @@ exports.reNewToken = (req, res, next) => {
 
 exports.createProduct = async (req, res, next) => {
   const { number } = req.params;
-  const username = 'tip';
+  const username = "tip";
 
   const serialNumberGenerator = (length) => {
     var result = "";
@@ -206,4 +206,58 @@ exports.createProduct = async (req, res, next) => {
   }
 };
 
-exports.uploadFiles = (req, res, next) => {};
+exports.uploadFiles = (req, res, next) => {
+  const fs = require("fs");
+  const readXlsxFile = require("read-excel-file/node");
+  global.__basedir = "/app";
+  console.log(req.file);
+  console.log(req.body.name);
+
+  const nodemailer = require('nodemailer');
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'chanatip.ras@mail.kmutt.ac.th', // your email
+      pass: 'Chanatip733.' // your email password
+    }
+  });
+
+  let mailOptions = {
+    from: 'chanatip.ras@mail.kmutt.ac.th',                // sender
+    to: 'chanatip.ras@mail.kmutt.ac.th',                // list of receivers
+    subject: 'Hello from node express server',              // Mail subject
+    html: '<b>Do you receive this mail?</b><br/><a>55555555<a/>'   // HTML body
+  };
+
+  //------------------------------------------------
+  // -> Import Excel Data to MySQL database
+  function importExcelData2MySQL(filePath) {
+    readXlsxFile(filePath).then((rows) => {
+
+      // Remove Header ROW
+      rows.shift();
+      console.log(rows);
+      const SQL =
+        "INSERT INTO product (product_id, product_name, company_name,location,detail, status, created_by) VALUES ?";
+      connection.query(SQL, [rows], (error, result, field) => {
+        if (error) {
+          console.log(error);
+          res.json({ success: false, message: error });
+        } else {
+          res.json({ success: true, message: result });
+          console.log(result);
+
+          transporter.sendMail(mailOptions, function (err, info) {
+            if(err)
+              console.log(err)
+            else
+              console.log(info);
+         });
+        }
+      });
+    });
+  }
+  //------------------------------------------------
+
+  importExcelData2MySQL(req.file.path);
+};
