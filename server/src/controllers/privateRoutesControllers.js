@@ -123,7 +123,9 @@ exports.productTransaction = async (req, res, next) => {
  */
 exports.productBalance = async (req, res, next) => {
   try {
-    const result = await getAll("current_product_balance", connection);
+    const getCurrentProductBalanceHandler = require('../models/getCurrentProductBalanceHandler')
+    const result = await getCurrentProductBalanceHandler(req);
+  
     if (result) {
       res.json({ success: true, result });
     } else {

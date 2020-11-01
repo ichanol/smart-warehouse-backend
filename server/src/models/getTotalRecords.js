@@ -2,8 +2,8 @@ const connection = require("../Database_connection/connect");
 
 module.exports = getTotalNumberOfRecords = async (
   module,
-  joinClause,
-  whereClause
+  joinClause = "",
+  whereClause = ""
 ) => {
   const queryNumberOfRecords = () => {
     return new Promise((resolve, reject) => {
