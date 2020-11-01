@@ -1,29 +1,52 @@
-CREATE TABLE role(
-    id INT NOT NULL AUTO_INCREMENT,
-    role_name VARCHAR(255) NOT NULL,
-    detail VARCHAR(512) NOT NULL,
-    PRIMARY KEY(id)
-);
-
 CREATE TABLE import_export_action(
     id INT NOT NULL AUTO_INCREMENT,
     action_name VARCHAR(255) NOT NULL,
     action_type VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
 
 CREATE TABLE user_status(
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
+    status_value BOOLEAN NOT NULL,
     detail VARCHAR(512),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE role_status(
+    id INT NOT NULL AUTO_INCREMENT,
+    status_name VARCHAR(255) NOT NULL,
+    status_value BOOLEAN NOT NULL,
+    detail VARCHAR(512),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
 
 CREATE TABLE product_status(
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
+    status_value BOOLEAN NOT NULL,
     detail VARCHAR(512),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
+);
+
+CREATE TABLE role(
+    id INT NOT NULL AUTO_INCREMENT,
+    role_name VARCHAR(255) NOT NULL,
+    detail VARCHAR(512) NOT NULL,
+    status int NOT NULL,
+    permission JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    FOREIGN KEY (status) REFERENCES role_status(id)
 );
 
 CREATE TABLE user(
@@ -35,6 +58,8 @@ CREATE TABLE user(
     role INT NOT NULL,
     status int NOT NULL,
     detail VARCHAR(512),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY (role) REFERENCES role(id),
     FOREIGN KEY (status) REFERENCES user_status(id)
@@ -48,8 +73,12 @@ CREATE TABLE product(
     location VARCHAR(255) NOT NULL,
     detail VARCHAR(512),
     status int NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY (status) REFERENCES product_status(id)
+    FOREIGN KEY (status) REFERENCES product_status(id),
+    FOREIGN KEY (created_by) REFERENCES user(id)
 );
 
 CREATE TABLE inventory_log(
@@ -58,7 +87,7 @@ CREATE TABLE inventory_log(
     product_id INT NOT NULL,
     action_type INT NOT NULL,
     amount INT NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     balance INT NOT NULL,
     location VARCHAR(255) NOT NULL,
     responsable INT NOT NULL,
@@ -80,35 +109,68 @@ CREATE TABLE current_product_balance(
 );
 
 INSERT INTO
-    user_status(status_name, detail)
+    user_status(status_name, detail, status_value)
 VALUES
     (
         "ACTIVE",
-        "This user can use this application normally"
+        "This user can use this application normally",
+        TRUE
     ),
     (
-        "DEACTIVE",
-        "This user has no longer accessable"
+        "INACTIVE",
+        "This user has no longer accessable",
+        FALSE
     );
 
 INSERT INTO
-    product_status(status_name, detail)
+    product_status(status_name, detail, status_value)
 VALUES
     (
         "AVAILABLE",
-        "This product is still in system"
+        "This product is still in system",
+        TRUE
     ),
     (
         "NOT AVAILABLE",
-        "This product no longer in this system"
+        "This product no longer in this system",
+        FALSE
     );
 
 INSERT INTO
-    role(role_name, detail)
+    role_status(status_name, detail, status_value)
 VALUES
-    ("ADMIN", "Permission for admin"),
-    ("CREW", "Permission for crew"),
-    ("REPORTER", "Permission for reporter");
+    (
+        "ACTIVE",
+        "This role can work normally in system",
+        TRUE
+    ),
+    (
+        "INACTIVE",
+        "This role no longer authorized in this system",
+        FALSE
+    );
+
+INSERT INTO
+    role(role_name, detail, status, permission)
+VALUES
+    (
+        "ADMIN",
+        "Permission for admin",
+        1,
+        '{"overview": true, "productList": true, "importExport": true, "transaction": true, "map": true, "userManagement": true, "productManagement": true, "roleManagement": true}'
+    ),
+    (
+        "CREW",
+        "Permission for crew",
+        1,
+        '{"overview": false, "productList": false, "importExport": true, "transaction": true, "map": true, "userManagement":false, "productManagement":false, "roleManagement": false}'
+    ),
+    (
+        "REPORTER",
+        "Permission for reporter",
+        1,
+        '{"overview": true, "productList": true, "importExport": false, "transaction": true, "map": true, "userManagement":false, "productManagement":false, "roleManagement": false}'
+    );
 
 INSERT INTO
     user(
@@ -120,6 +182,14 @@ INSERT INTO
         status
     )
 VALUES
+    (
+        "SYSTEM",
+        "SYSTEM",
+        "SYSTEM",
+        "SYSTEM",
+        1,
+        1
+    ),
     (
         "adminAcc",
         "AdminFirstname",
@@ -168,7 +238,8 @@ INSERT INTO
         company_name,
         location,
         detail,
-        status
+        status,
+        created_by
     )
 VALUES
     (
@@ -177,6 +248,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -185,6 +257,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -193,6 +266,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -201,6 +275,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -209,6 +284,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -217,6 +293,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -225,6 +302,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -233,6 +311,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -241,6 +320,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     ),
     (
@@ -249,6 +329,7 @@ VALUES
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
+        1,
         1
     );
 

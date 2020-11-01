@@ -167,19 +167,8 @@ exports.getUser = async (req, res, next) => {
  *   @ROUTE         -   [GET] /api/smart-warehouse/products
  *   @ACCESS        -   PRIVATE (admin)
  */
-exports.getProduct = async (req, res, next) => {
-  try {
-    const result = await getAll("product");
-    if (result) {
-      res.json({ success: true, result });
-    } else {
-      res
-        .status(404)
-        .json({ success: false, message: "Can't get the information" });
-    }
-  } catch (error) {
-    next(error);
-  }
+exports.getProduct = (req, res, next) => {
+  res.json(req.preparedResponse);
 };
 
 /**
@@ -188,18 +177,7 @@ exports.getProduct = async (req, res, next) => {
  *   @ACCESS        -   PRIVATE (admin)
  */
 exports.getRole = async (req, res, next) => {
-  try {
-    const result = await getAll("role");
-    if (result) {
-      res.json({ success: true, result });
-    } else {
-      res
-        .status(404)
-        .json({ success: false, message: "Can't get the information" });
-    }
-  } catch (error) {
-    next(error);
-  }
+  res.json(req.preparedResponse);
 };
 
 /*************************************************************************************************************************************************** */
@@ -255,12 +233,12 @@ exports.updateUser = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
   try {
     const {
-      id,
       product_id,
       product_name,
       company_name,
       location,
       detail,
+      status,
     } = req.body;
 
     const SQL = `UPDATE product SET 
@@ -268,8 +246,9 @@ exports.updateProduct = async (req, res, next) => {
                   product_name = ${mysql.escape(product_name)},
                   company_name = ${mysql.escape(company_name)},
                   location = ${mysql.escape(location)},
-                  detail = ${mysql.escape(detail)}
-                  WHERE id = ${mysql.escape(id)};`;
+                  detail = ${mysql.escape(detail)},
+                  status = (SELECT id FROM product_status WHERE status_value = ${status})
+                  WHERE product_id = ${mysql.escape(product_id)};`;
 
     const result = await update(SQL);
     if (result) {
@@ -295,14 +274,28 @@ exports.updateProduct = async (req, res, next) => {
  */
 exports.updateRole = async (req, res, next) => {
   try {
-    const { id, role_name, detail } = req.body;
-    const SQL = `UPDATE role SET 
-                  role_name = ${mysql.escape(role_name)},
-                  detail = ${mysql.escape(detail)}
-                  WHERE id = ${mysql.escape(id)};`;
+    let SQL;
+    const { id, role_name, detail, status, permission } = req.body;
+    console.log("----------------------------");
+    console.log(id, role_name, detail, status, permission);
+    console.log("----------------------------");
+    if (id && role_name && permission) {
+      SQL = `UPDATE role SET 
+                    role_name = ${mysql.escape(role_name)},
+                    detail = ${mysql.escape(detail)},
+                    permission = ${mysql.escape(JSON.stringify(permission))}
+                    WHERE id = ${mysql.escape(id)};`;
+    } else {
+      SQL = `UPDATE role SET status = (SELECT id FROM role_status WHERE status_value = ${mysql.escape(
+        status
+      )}) 
+      WHERE id = ${mysql.escape(id)};`;
+    }
 
+    console.log(mysql.escape(status), SQL);
     const result = await update(SQL);
     if (result) {
+      console.group(result);
       res.json({
         success: true,
         message: "Update role information successfully",
@@ -446,13 +439,14 @@ exports.createProduct = async (req, res, next) => {
       detail,
       status,
     } = req.body;
-    const SQL = `INSERT INTO product(product_id, product_name, company_name, location, detail, status) VALUES (
+    const SQL = `INSERT INTO product(product_id, product_name, company_name, location, detail, status, created_by) VALUES (
                   ${mysql.escape(product_id)},
                   ${mysql.escape(product_name)},
                   ${mysql.escape(company_name)},
                   ${mysql.escape(location)},
                   ${mysql.escape(detail)},
-                  ${mysql.escape(status)}
+                  ${mysql.escape(status)},
+                  (SELECT id FROM user WHERE username = ${mysql.escape(req.decodedUsername)})
                   )`;
 
     const result = await update(SQL);
@@ -479,10 +473,12 @@ exports.createProduct = async (req, res, next) => {
  */
 exports.createRole = async (req, res, next) => {
   try {
-    const { role_name, detail } = req.body;
-    const SQL = `INSERT INTO role(role_name, detail) VALUES (
+    const { role_name, detail, permission, status } = req.body;
+    const SQL = `INSERT INTO role(role_name, detail, permission, status) VALUES (
                   ${mysql.escape(role_name)},
-                  ${mysql.escape(detail)}
+                  ${mysql.escape(detail)},
+                  ${mysql.escape(JSON.stringify(permission))},
+                  (SELECT id FROM role_status WHERE status_value = ${status})
                   )`;
 
     const result = await update(SQL);

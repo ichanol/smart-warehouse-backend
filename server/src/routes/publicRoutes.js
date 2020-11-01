@@ -10,6 +10,7 @@ const {
   detectedUserRFID,
   createProduct,
   reNewToken,
+  uploadFiles,
 } = require("../controllers/publicRoutesControllers");
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
@@ -29,11 +30,12 @@ router.route("/create-product/:number").get(createProduct);
  *                  If has then check the refresh token wheather it is valid or not,
  *                  If refresh token is valid, Generate new access token and refresh token
  * */
-//router.use([isLoginHandler, verifyTokenHandler(process.env.REFRESHER_TOKEN)]);
 router.get(
   "/renewtoken",
   [isLoginHandler, verifyTokenHandler(process.env.REFRESHER_TOKEN)],
   reNewToken
 );
+
+router.route("/uploadfile").post(uploadFiles);
 
 module.exports = router;

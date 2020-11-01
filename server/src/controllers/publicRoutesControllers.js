@@ -130,6 +130,7 @@ exports.reNewToken = (req, res, next) => {
 
 exports.createProduct = async (req, res, next) => {
   const { number } = req.params;
+  const username = 'tip';
 
   const serialNumberGenerator = (length) => {
     var result = "";
@@ -174,7 +175,8 @@ exports.createProduct = async (req, res, next) => {
         ${mysql.escape(companyNameGenerator())},
         ${mysql.escape(locationGenerator())},
         ${mysql.escape("detail ...")},
-        ${mysql.escape(1)}
+        ${mysql.escape(1)},
+        (SELECT id FROM user WHERE username = ${mysql.escape(username)})
         )`;
         } else {
           mockData += `(
@@ -183,11 +185,12 @@ exports.createProduct = async (req, res, next) => {
           ${mysql.escape(companyNameGenerator())},
           ${mysql.escape(locationGenerator())},
           ${mysql.escape("detail ...")},
-          ${mysql.escape(1)}
+          ${mysql.escape(1)},
+          (SELECT id FROM user WHERE username = ${mysql.escape(username)})
         ),`;
         }
       }
-      const SQL = `INSERT INTO product(product_id, product_name, company_name, location, detail, status) VALUES ${mockData}`;
+      const SQL = `INSERT INTO product(product_id, product_name, company_name, location, detail, status, created_by) VALUES ${mockData}`;
       connection.query(SQL, (error, result, field) => {
         console.log(SQL);
         if (error) return reject(error);
@@ -202,3 +205,5 @@ exports.createProduct = async (req, res, next) => {
     res.json({ success: false, message: "Failed to create new product" });
   }
 };
+
+exports.uploadFiles = (req, res, next) => {};

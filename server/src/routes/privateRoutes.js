@@ -19,6 +19,8 @@ const {
   userLogOut,
   updateTransaction,
 } = require("../controllers/privateRoutesControllers");
+const getProductHandler = require("../models/getProductHandler");
+const getRoleHandler = require("../models/getRoleHandler");
 
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
@@ -35,14 +37,14 @@ router
   .put(updateUser)
   .delete(deleteUser);
 router
-  .route("/products")
-  .get(getProduct)
+  .route("/products/:numberPerPage?/:page?")
+  .get([getProductHandler, getProduct])
   .post(createProduct)
   .put(updateProduct)
   .delete(deleteProduct);
 router
-  .route("/roles")
-  .get(getRole)
+  .route("/roles/:numberPerPage?/:page?")
+  .get([getRoleHandler, getRole])
   .post(createRole)
   .put(updateRole)
   .delete(deleteRole);
