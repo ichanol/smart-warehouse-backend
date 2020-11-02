@@ -204,48 +204,6 @@ exports.updateUser = async (req, res, next) => {
 };
 
 /**
- *   @DESCRIPTION   -   Update the information of specific product
- *   @ROUTE         -   [PUT] /api/smart-warehouse/products
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.updateProduct = async (req, res, next) => {
-  try {
-    const {
-      product_id,
-      product_name,
-      company_name,
-      location,
-      detail,
-      status,
-    } = req.body;
-
-    const SQL = `UPDATE product SET 
-                  product_id = ${mysql.escape(product_id)},
-                  product_name = ${mysql.escape(product_name)},
-                  company_name = ${mysql.escape(company_name)},
-                  location = ${mysql.escape(location)},
-                  detail = ${mysql.escape(detail)},
-                  status = (SELECT id FROM product_status WHERE status_value = ${status})
-                  WHERE product_id = ${mysql.escape(product_id)};`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.json({
-        success: true,
-        message: "Update product information successfully",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to update product information",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Update the information of specific role
  *   @ROUTE         -   [PUT] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)

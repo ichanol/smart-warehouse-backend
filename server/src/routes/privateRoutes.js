@@ -10,7 +10,6 @@ const {
   getRole,
   productTransaction,
   readRFID,
-  updateProduct,
   updateRole,
   updateUser,
   userLogOut,
@@ -22,7 +21,8 @@ const getRoleHandler = require("../models/getRoleHandler");
 const {
   currentProductBalance,
   getProductManagement,
-  createProduct
+  createProduct,
+  updateProduct,
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
