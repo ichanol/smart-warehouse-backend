@@ -78,11 +78,11 @@ module.exports = getProductHandler = async (req) => {
     );
 
     const response = {
-      success: false,
-      result: null,
-      totalPages: null,
-      currentPage: null,
-      totalRecords: null,
+      success: true,
+      result: productResult,
+      totalPages: numberOfPages,
+      currentPage: currentPage,
+      totalRecords: totalRecords,
     };
 
     if (productResult.length) {

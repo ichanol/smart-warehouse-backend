@@ -8,7 +8,7 @@ const getProductManagement = async (req, res, next) => {
   try {
     const getProductHandler = require("../../models/getProductHandler");
     const result = await getProductHandler(req);
-    
+    res.json({ result });
   } catch (error) {
     next(error);
   }
