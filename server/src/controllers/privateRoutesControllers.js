@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const connection = require("../Database_connection/connect");
-const moment = require('moment')
+const moment = require("moment");
 
 const getAll = require("../models/getAll");
 const update = require("../models/update");
@@ -72,12 +72,12 @@ exports.readRFID = (req, res, next) => {
  */
 exports.productTransaction = async (req, res, next) => {
   try {
-    const today = moment()
+    const today = moment();
     const searchTransactionLog = require("../models/searchTransactionLog");
-    const start = req.query.startdate || '2020-01-01'; // Need to refactor default startDate  
+    const start = req.query.startdate || "2020-01-01"; // Need to refactor default startDate
     const end = req.query.enddate || today;
-    const columnName = req.query.column || 'timestamp';
-    const sortDirection = req.query.sort || 'DESC';
+    const columnName = req.query.column || "timestamp";
+    const sortDirection = req.query.sort || "DESC";
     const keyword = req.query.keyword || null;
     const amstart = req.query.start || 1;
     const amend = req.query.end || 999999;
@@ -91,8 +91,8 @@ exports.productTransaction = async (req, res, next) => {
       { str: "balance", value: req.query.balance || null },
     ];
 
-    const startDate = moment(start).format('yyyy-MM-DD')
-    const endDate = moment(end).format('yyyy-MM-DD')
+    const startDate = moment(start).format("yyyy-MM-DD");
+    const endDate = moment(end).format("yyyy-MM-DD");
 
     const result = await searchTransactionLog(
       mysql,
@@ -104,7 +104,7 @@ exports.productTransaction = async (req, res, next) => {
       sortDirection,
       keyword,
       amstart,
-      amend,
+      amend
     );
     if (result) {
       res.json({ success: true, result });
@@ -123,11 +123,23 @@ exports.productTransaction = async (req, res, next) => {
  */
 exports.productBalance = async (req, res, next) => {
   try {
-    const getCurrentProductBalanceHandler = require('../models/getCurrentProductBalanceHandler')
-    const result = await getCurrentProductBalanceHandler(req);
-  
-    if (result) {
-      res.json({ success: true, result });
+    const getCurrentProductBalanceHandler = require("../models/getCurrentProductBalanceHandler");
+    const {
+      success,
+      result,
+      totalPages,
+      currentPage,
+      totalRecords,
+    } = await getCurrentProductBalanceHandler(req);
+
+    if (success) {
+      res.json({
+        success: true,
+        result,
+        totalPages,
+        currentPage,
+        totalRecords,
+      });
     } else {
       res
         .status(404)
@@ -146,12 +158,19 @@ exports.productBalance = async (req, res, next) => {
  */
 exports.getUser = async (req, res, next) => {
   try {
-    const sortDirection = req.query.sort || 'ASC';
-    const columnName = req.query.column || 'firstname';
+    const sortDirection = req.query.sort || "ASC";
+    const columnName = req.query.column || "firstname";
     const keyword = req.query.keyword || null;
     const role = req.query.role || null;
 
-    const result = await getAll("user", sortDirection, columnName, keyword, role, mysql);
+    const result = await getAll(
+      "user",
+      sortDirection,
+      columnName,
+      keyword,
+      role,
+      mysql
+    );
     if (result) {
       res.json({ success: true, result });
     } else {
@@ -323,7 +342,7 @@ exports.updateRole = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   try {
     const { username, detail } = req.body;
-    console.log(username, detail)
+    console.log(username, detail);
     const SQL = `UPDATE user SET 
                   status = 2,
                   detail = ${mysql.escape(detail)}
@@ -448,7 +467,9 @@ exports.createProduct = async (req, res, next) => {
                   ${mysql.escape(location)},
                   ${mysql.escape(detail)},
                   ${mysql.escape(status)},
-                  (SELECT id FROM user WHERE username = ${mysql.escape(req.decodedUsername)})
+                  (SELECT id FROM user WHERE username = ${mysql.escape(
+                    req.decodedUsername
+                  )})
                   )`;
 
     const result = await update(SQL);
