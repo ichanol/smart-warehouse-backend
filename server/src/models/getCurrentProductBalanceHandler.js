@@ -44,7 +44,7 @@ module.exports = getCurrentProductBalanceHandler = async (req) => {
       totalRecords: totalRecords,
     };
 
-    if (productBalanceResult.length > 0) {
+    if (productBalanceResult.length) {
       return response;
     } else {
       return false;

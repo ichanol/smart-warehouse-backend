@@ -1,6 +1,6 @@
 const connection = require("../Database_connection/connect");
 
-module.exports = getTotalNumberOfRecords = async (
+const getTotalNumberOfRecords = async (
   module,
   joinClause = "",
   whereClause = ""
@@ -14,3 +14,5 @@ module.exports = getTotalNumberOfRecords = async (
     });
   });
 };
+
+module.exports = getTotalNumberOfRecords;

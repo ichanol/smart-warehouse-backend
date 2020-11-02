@@ -8,7 +8,6 @@ const {
   deleteProduct,
   deleteRole,
   deleteUser,
-  getProduct,
   getRole,
   productTransaction,
   readRFID,
@@ -23,6 +22,7 @@ const getRoleHandler = require("../models/getRoleHandler");
 
 const {
   currentProductBalance,
+  getProductManagement,
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
@@ -40,8 +40,8 @@ router
   .put(updateUser)
   .delete(deleteUser);
 router
-  .route("/products/:numberPerPage?/:page?")
-  .get([getProductHandler, getProduct])
+  .route("/products")
+  .get(getProductManagement)
   .post(createProduct)
   .put(updateProduct)
   .delete(deleteProduct);

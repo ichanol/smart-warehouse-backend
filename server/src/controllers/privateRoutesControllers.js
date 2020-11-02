@@ -150,15 +150,6 @@ exports.getUser = async (req, res, next) => {
 };
 
 /**
- *   @DESCRIPTION   -   Get the list of all registered product
- *   @ROUTE         -   [GET] /api/smart-warehouse/products
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.getProduct = (req, res, next) => {
-  res.json(req.preparedResponse);
-};
-
-/**
  *   @DESCRIPTION   -   Get the list of all roles
  *   @ROUTE         -   [GET] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)

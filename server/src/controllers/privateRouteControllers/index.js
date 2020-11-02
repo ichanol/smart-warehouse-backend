@@ -1,3 +1,4 @@
 const currentProductBalance = require("./currentProductBalance");
+const getProductManagement = require("./getProductManagement");
 
-module.exports = { currentProductBalance };
+module.exports = { currentProductBalance, getProductManagement };

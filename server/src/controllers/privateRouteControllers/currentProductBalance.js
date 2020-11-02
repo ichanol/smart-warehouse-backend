@@ -4,7 +4,7 @@
  *   @ACCESS        -   PRIVATE (admin, reporter)
  */
 
-const productBalance = async (req, res, next) => {
+const currentProductBalance = async (req, res, next) => {
   try {
     const getCurrentProductBalanceHandler = require("../../models/getCurrentProductBalanceHandler");
     const {
@@ -33,4 +33,4 @@ const productBalance = async (req, res, next) => {
   }
 };
 
-module.exports = productBalance;
+module.exports = currentProductBalance;
