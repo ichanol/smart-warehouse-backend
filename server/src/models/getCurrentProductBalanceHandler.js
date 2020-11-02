@@ -1,34 +1,6 @@
-const connection = require("../Database_connection/connect");
-const getTotalRecords = require("./getTotalRecords");
-
-const getAllProductBalance = async (
-  whereClause = "",
-  orderByClause = "",
-  limitClause = ""
-) => {
-  return new Promise((resolve, reject) => {
-    const SQL = `SELECT current_product_balance.balance, 
-                        current_product_balance.location, 
-                        current_product_balance.updated_at, 
-                        product.product_name, 
-                        product.product_id, 
-                        product.company_name, 
-                        product.status
-                FROM current_product_balance INNER JOIN product
-                ON current_product_balance.product_id = product.id
-                WHERE product.status = 1 ${whereClause} ${orderByClause} ${limitClause}`;
-
-    connection.query(SQL, (error, result, field) => {
-      if (error) return reject(error);
-      resolve(result);
-    });
-  });
-};
+const { getCurrentProductBalance, getTotalNumberOfRecords } = require("../services");
 
 module.exports = getCurrentProductBalanceHandler = async (req) => {
-  console.log(req.originalUrl);
-  console.log(req.query);
-
   let whereClause = "";
   let orderByClause = "";
   let limitClause = "";
@@ -49,16 +21,16 @@ module.exports = getCurrentProductBalanceHandler = async (req) => {
 
     const listPerPage = parseInt(req.query.numberPerPage);
     const currentPage = parseInt(req.query.page);
-    const totalRecords = await getTotalRecords(
+    const totalRecords = await getTotalNumberOfRecords(
       "current_product_balance",
       "INNER JOIN product ON current_product_balance.product_id = product.id",
       `WHERE product.status = 1 ${whereClause}`
     );
-    const numberOfPages = Math.ceil(totalRecords.numberOfRecords / listPerPage);
+    const numberOfPages = Math.ceil(totalRecords / listPerPage);
     const firstIndex = (currentPage - 1) * listPerPage;
     limitClause = `LIMIT ${firstIndex}, ${listPerPage}`;
-    
-    const productBalanceResult = await getAllProductBalance(
+
+    const productBalanceResult = await getCurrentProductBalance(
       whereClause,
       orderByClause,
       limitClause
@@ -69,16 +41,15 @@ module.exports = getCurrentProductBalanceHandler = async (req) => {
       result: productBalanceResult,
       totalPages: numberOfPages,
       currentPage: currentPage,
-      totalRecords: totalRecords.numberOfRecords,
-    }
-  
+      totalRecords: totalRecords,
+    };
+
     if (productBalanceResult.length > 0) {
       return response;
     } else {
       return false;
     }
   } else {
-    return false
+    return false;
   }
-
 };

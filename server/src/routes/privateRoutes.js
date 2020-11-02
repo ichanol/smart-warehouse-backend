@@ -10,7 +10,6 @@ const {
   deleteUser,
   getProduct,
   getRole,
-  productBalance,
   productTransaction,
   readRFID,
   updateProduct,
@@ -22,12 +21,16 @@ const {
 const getProductHandler = require("../models/getProductHandler");
 const getRoleHandler = require("../models/getRoleHandler");
 
+const {
+  currentProductBalance,
+} = require("../controllers/privateRouteControllers");
+
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
 router.route("/import-export-product").post(updateTransaction);
 router.route("/read-rfid").get(readRFID);
 router.route("/product-transaction").get(productTransaction);
-router.route("/product-balance").get(productBalance);
+router.route("/product-balance").get(currentProductBalance);
 
 // ADMIN ONLY
 router
