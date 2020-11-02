@@ -4,15 +4,45 @@
  *   @ACCESS        -   PRIVATE (admin)
  */
 
+const getProductHandler = require("../../models/getProductHandler");
+const validateProductHandler = require("../../models/validateProductHandler");
+
 const getProductManagement = async (req, res, next) => {
   try {
-    const getProductHandler = require("../../models/getProductHandler");
-    const result = await getProductHandler(req);
-    res.json({ result });
+    if (req.query?.numberPerPage && req.query?.page) {
+      const {
+        success,
+        result,
+        totalPages,
+        currentPage,
+        totalRecords,
+      } = await getProductHandler(req);
+
+      if (success) {
+        res.json({ success, result, totalPages, currentPage, totalRecords });
+      } else {
+        res
+          .status(404)
+          .json({ success: false, message: "Can't get the information" });
+      }
+    } else if (req.query?.validate) {
+      const { success, result } = await validateProductHandler(req);
+
+      if (success) {
+        res.json({ success, result });
+      } else {
+        res
+          .status(204)
+          .json({ success: false, message: "Can't get the information" });
+      }
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Can't get the information" });
+    }
   } catch (error) {
     next(error);
   }
-  //   res.json(req.preparedResponse);
 };
 
 module.exports = getProductManagement;
