@@ -282,36 +282,6 @@ exports.deleteUser = async (req, res, next) => {
 };
 
 /**
- *   @DESCRIPTION   -   Delete / remove specific product
- *   @ROUTE         -   [DELETE] /api/smart-warehouse/products
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.deleteProduct = async (req, res, next) => {
-  try {
-    const { product_id, detail } = req.body;
-    const SQL = `UPDATE product SET 
-                  status = 2,
-                  detail = ${mysql.escape(detail)}
-                  WHERE product_id = ${mysql.escape(product_id)};`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.json({
-        success: true,
-        message: "Remove product successfully",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to remove product",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Delete / deactive specific role
  *   @ROUTE         -   [DELETE] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)

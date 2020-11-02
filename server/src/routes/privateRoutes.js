@@ -4,7 +4,6 @@ const {
   createRole,
   createUser,
   getUser,
-  deleteProduct,
   deleteRole,
   deleteUser,
   getRole,
@@ -23,6 +22,7 @@ const {
   getProductManagement,
   createProduct,
   updateProduct,
+  deleteProduct
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
