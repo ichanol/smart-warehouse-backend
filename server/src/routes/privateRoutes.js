@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createProduct,
   createRole,
   createUser,
   getUser,
@@ -23,6 +22,7 @@ const getRoleHandler = require("../models/getRoleHandler");
 const {
   currentProductBalance,
   getProductManagement,
+  createProduct
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------

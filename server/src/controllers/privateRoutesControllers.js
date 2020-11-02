@@ -402,49 +402,6 @@ exports.createUser = async (req, res, next) => {
   }
 };
 
-/**
- *   @DESCRIPTION   -   Create new product
- *   @ROUTE         -   [POST] /api/smart-warehouse/products
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.createProduct = async (req, res, next) => {
-  try {
-    const {
-      product_id,
-      product_name,
-      company_name,
-      location,
-      detail,
-      status,
-    } = req.body;
-    const SQL = `INSERT INTO product(product_id, product_name, company_name, location, detail, status, created_by) VALUES (
-                  ${mysql.escape(product_id)},
-                  ${mysql.escape(product_name)},
-                  ${mysql.escape(company_name)},
-                  ${mysql.escape(location)},
-                  ${mysql.escape(detail)},
-                  ${mysql.escape(status)},
-                  (SELECT id FROM user WHERE username = ${mysql.escape(
-                    req.decodedUsername
-                  )})
-                  )`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.status(201).json({
-        success: true,
-        message: "Successfully created a new product",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to created a new product",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
 
 /**
  *   @DESCRIPTION   -   Create new role
