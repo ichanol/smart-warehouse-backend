@@ -176,38 +176,6 @@ exports.updateRole = async (req, res, next) => {
 /*************************************************************************************************************************************************** */
 
 /**
- *   @DESCRIPTION   -   Delete / deactive specific user
- *   @ROUTE         -   [DELETE] /api/smart-warehouse/users
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.deleteUser = async (req, res, next) => {
-  try {
-    const { username, detail } = req.body;
-    console.log(username, detail);
-    const SQL = `UPDATE user SET 
-                  status = 2,
-                  detail = ${mysql.escape(detail)}
-                  WHERE username = ${mysql.escape(username)};`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.json({
-        success: true,
-        message:
-          "Deactivate user successfully. This user has no longer available",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to delete user",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Delete / deactive specific role
  *   @ROUTE         -   [DELETE] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)
