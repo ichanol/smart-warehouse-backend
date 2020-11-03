@@ -118,15 +118,6 @@ exports.productTransaction = async (req, res, next) => {
 
 /****************************************************************** @ADMIN_ONLY ******************************************************************/
 
-/**
- *   @DESCRIPTION   -   Get the list of all roles
- *   @ROUTE         -   [GET] /api/smart-warehouse/roles
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.getRole = async (req, res, next) => {
-  res.json(req.preparedResponse);
-};
-
 /*************************************************************************************************************************************************** */
 
 /**

@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   createRole,
   deleteRole,
-  getRole,
   productTransaction,
   readRFID,
   updateRole,
@@ -23,6 +22,7 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  getRoleManagement
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
@@ -46,8 +46,8 @@ router
   .put(updateProduct)
   .delete(deleteProduct);
 router
-  .route("/roles/:numberPerPage?/:page?")
-  .get([getRoleHandler, getRole])
+  .route("/roles")
+  .get(getRoleManagement)
   .post(createRole)
   .put(updateRole)
   .delete(deleteRole);
