@@ -266,41 +266,6 @@ exports.deleteRole = async (req, res, next) => {
 /*************************************************************************************************************************************************** */
 
 /**
- *   @DESCRIPTION   -   Create new user
- *   @ROUTE         -   [POST] /api/smart-warehouse/users
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.createUser = async (req, res, next) => {
-  try {
-    const { username, firstname, lastname, password, role, status } = req.body;
-    const SQL = `INSERT INTO user(username, firstname, lastname, password, role, status) VALUES(
-                  ${mysql.escape(username)},
-                  ${mysql.escape(firstname)},
-                  ${mysql.escape(lastname)},
-                  ${mysql.escape(password)},
-                  ${mysql.escape(role)},
-                  ${mysql.escape(status)}
-                  )`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.status(201).json({
-        success: true,
-        message: "Successfully created a new user account",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to created a new user account",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-/**
  *   @DESCRIPTION   -   Create new role
  *   @ROUTE         -   [POST] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)
