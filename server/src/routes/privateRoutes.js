@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   createRole,
   createUser,
-  getUser,
   deleteRole,
   deleteUser,
   getRole,
@@ -22,7 +21,8 @@ const {
   getProductManagement,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getUserManagement
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
@@ -35,7 +35,7 @@ router.route("/product-balance").get(currentProductBalance);
 // ADMIN ONLY
 router
   .route("/users")
-  .get(getUser)
+  .get(getUserManagement)
   .post(createUser)
   .put(updateUser)
   .delete(deleteUser);

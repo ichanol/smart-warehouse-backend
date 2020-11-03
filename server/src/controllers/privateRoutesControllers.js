@@ -117,37 +117,6 @@ exports.productTransaction = async (req, res, next) => {
 };
 
 /****************************************************************** @ADMIN_ONLY ******************************************************************/
-/**
- *   @DESCRIPTION   -   Get the list of all registered user
- *   @ROUTE         -   [GET] /api/smart-warehouse/users
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.getUser = async (req, res, next) => {
-  try {
-    const sortDirection = req.query.sort || "ASC";
-    const columnName = req.query.column || "firstname";
-    const keyword = req.query.keyword || null;
-    const role = req.query.role || null;
-
-    const result = await getAll(
-      "user",
-      sortDirection,
-      columnName,
-      keyword,
-      role,
-      mysql
-    );
-    if (result) {
-      res.json({ success: true, result });
-    } else {
-      res
-        .status(404)
-        .json({ success: false, message: "Can't get the information" });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
 
 /**
  *   @DESCRIPTION   -   Get the list of all roles
