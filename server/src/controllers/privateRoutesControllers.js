@@ -117,50 +117,6 @@ exports.productTransaction = async (req, res, next) => {
 /****************************************************************** @ADMIN_ONLY ******************************************************************/
 
 /**
- *   @DESCRIPTION   -   Update the information of specific role
- *   @ROUTE         -   [PUT] /api/smart-warehouse/roles
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.updateRole = async (req, res, next) => {
-  try {
-    let SQL;
-    const { id, role_name, detail, status, permission } = req.body;
-    console.log("----------------------------");
-    console.log(id, role_name, detail, status, permission);
-    console.log("----------------------------");
-    if (id && role_name && permission) {
-      SQL = `UPDATE role SET 
-                    role_name = ${mysql.escape(role_name)},
-                    detail = ${mysql.escape(detail)},
-                    permission = ${mysql.escape(JSON.stringify(permission))}
-                    WHERE id = ${mysql.escape(id)};`;
-    } else {
-      SQL = `UPDATE role SET status = (SELECT id FROM role_status WHERE status_value = ${mysql.escape(
-        status
-      )}) 
-      WHERE id = ${mysql.escape(id)};`;
-    }
-
-    console.log(mysql.escape(status), SQL);
-    const result = await update(SQL);
-    if (result) {
-      console.group(result);
-      res.json({
-        success: true,
-        message: "Update role information successfully",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to update role information",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Delete / deactive specific role
  *   @ROUTE         -   [DELETE] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)
