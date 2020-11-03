@@ -6,7 +6,7 @@ const getProduct = async (
   limitClause = ""
 ) => {
   return new Promise((resolve, reject) => {
-    let SQL = `SELECT product.product_id, 
+    const SQL = `SELECT product.product_id, 
                         product.product_name, 
                         product.company_name, 
                         product.location, 

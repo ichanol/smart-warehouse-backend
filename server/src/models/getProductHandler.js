@@ -20,7 +20,7 @@ const getProductHandler = async (req) => {
   }
 
   const filterArray = [
-    { string: "status", value: parseInt(req.query?.status) || null },
+    { string: "status", value: req.query?.status || null },
     { string: "search", value: req.query?.search || null },
   ];
   const filter = filterArray.filter((value) => value.value !== null);
@@ -35,9 +35,10 @@ const getProductHandler = async (req) => {
                                   OR product.created_at LIKE '%${req.query.search}%' 
                                   OR product.updated_at LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
-          if (value.value === 0) {
+          console.log(value.value);
+          if (value.value === "0") {
             whereClause = "WHERE product_status.status_value = 0";
-          } else if (value.value === 1) {
+          } else if (value.value === "1") {
             whereClause = "WHERE product_status.status_value = 1";
           }
         } else {
@@ -45,16 +46,18 @@ const getProductHandler = async (req) => {
         }
       } else {
         if (value.string === "search") {
-          whereClause = ` AND (product.product_id LIKE '%${req.query.search}%' 
-                                  OR product.product_name LIKE '%${req.query.search}%' 
-                                  OR product.company_name LIKE '%${req.query.search}%' 
-                                  OR product.created_at LIKE '%${req.query.search}%' 
-                                  OR product.updated_at LIKE '%${req.query.search}%')`;
+          whereClause =
+            whereClause +
+            ` AND (product.product_id LIKE '%${req.query.search}%' 
+                                            OR product.product_name LIKE '%${req.query.search}%' 
+                                            OR product.company_name LIKE '%${req.query.search}%' 
+                                            OR product.created_at LIKE '%${req.query.search}%' 
+                                            OR product.updated_at LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
-          if (value.value === 0) {
-            whereClause = " AND product_status.status_value = 0";
-          } else if (value.value === 1) {
-            whereClause = " AND product_status.status_value = 1";
+          if (value.value === "0") {
+            whereClause = whereClause + " AND product_status.status_value = 0";
+          } else if (value.value === "1") {
+            whereClause = whereClause + " AND product_status.status_value = 1";
           }
         } else {
           whereClause =
