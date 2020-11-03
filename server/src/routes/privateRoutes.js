@@ -8,7 +8,6 @@ const {
   productTransaction,
   readRFID,
   updateRole,
-  updateUser,
   userLogOut,
   updateTransaction,
 } = require("../controllers/privateRoutesControllers");
@@ -22,7 +21,8 @@ const {
   updateProduct,
   deleteProduct,
   getUserManagement,
-  createUser
+  createUser,
+  updateUser
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
