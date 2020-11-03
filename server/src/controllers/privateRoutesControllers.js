@@ -2,9 +2,7 @@ const mysql = require("mysql");
 const connection = require("../Database_connection/connect");
 const moment = require("moment");
 
-const getAll = require("../models/getAll");
 const update = require("../models/update");
-const getBalance = require("../models/getBalance");
 
 /**
  *   @DESCRIPTION   -   Destroy user credential
@@ -118,8 +116,6 @@ exports.productTransaction = async (req, res, next) => {
 
 /****************************************************************** @ADMIN_ONLY ******************************************************************/
 
-/*************************************************************************************************************************************************** */
-
 /**
  *   @DESCRIPTION   -   Update the information of specific role
  *   @ROUTE         -   [PUT] /api/smart-warehouse/roles
@@ -164,8 +160,6 @@ exports.updateRole = async (req, res, next) => {
   }
 };
 
-/*************************************************************************************************************************************************** */
-
 /**
  *   @DESCRIPTION   -   Delete / deactive specific role
  *   @ROUTE         -   [DELETE] /api/smart-warehouse/roles
@@ -174,40 +168,6 @@ exports.updateRole = async (req, res, next) => {
 exports.deleteRole = async (req, res, next) => {
   try {
     res.json("DELETE ROLE");
-  } catch (error) {
-    next(error);
-  }
-};
-
-/*************************************************************************************************************************************************** */
-
-/**
- *   @DESCRIPTION   -   Create new role
- *   @ROUTE         -   [POST] /api/smart-warehouse/roles
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.createRole = async (req, res, next) => {
-  try {
-    const { role_name, detail, permission, status } = req.body;
-    const SQL = `INSERT INTO role(role_name, detail, permission, status) VALUES (
-                  ${mysql.escape(role_name)},
-                  ${mysql.escape(detail)},
-                  ${mysql.escape(JSON.stringify(permission))},
-                  (SELECT id FROM role_status WHERE status_value = ${status})
-                  )`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.status(201).json({
-        success: true,
-        message: "Successfully created a new role",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to created a new role",
-      });
-    }
   } catch (error) {
     next(error);
   }

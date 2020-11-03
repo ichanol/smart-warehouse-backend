@@ -8,6 +8,7 @@ const createUser = require("./createUser");
 const updateUser = require("./updateUser");
 const deleteUser = require("./deleteUser");
 const getRoleManagement = require("./getRoleManagement");
+const createRole = require("./createRole");
 
 module.exports = {
   updateProduct,
@@ -20,4 +21,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getRoleManagement,
+  createRole,
 };
