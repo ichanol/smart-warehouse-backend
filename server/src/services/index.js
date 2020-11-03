@@ -12,6 +12,11 @@ const getRole = require("./getRole");
 const createNewRole = require("./createNewRole");
 const updateRoleInformation = require("./updateRoleInformation");
 const disableRole = require("./disableRole");
+const getImportExportProductActionType = require("./getImportExportProductActionType");
+const getProductBalanceForUpdate = require("./getProductBalanceForUpdate");
+const getUserId = require("./getUserId");
+const updateCurrentProductBalance = require("./updateCurrentProductBalance");
+const createTransactionByArray = require("./createTransactionByArray");
 
 module.exports = {
   getCurrentProductBalance,
@@ -28,4 +33,9 @@ module.exports = {
   createNewRole,
   updateRoleInformation,
   disableRole,
+  getImportExportProductActionType,
+  getProductBalanceForUpdate,
+  getUserId,
+  updateCurrentProductBalance,
+  createTransactionByArray,
 };
