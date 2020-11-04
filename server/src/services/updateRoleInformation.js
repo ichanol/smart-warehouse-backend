@@ -5,7 +5,6 @@ const updateRoleInformation = async (
   id,
   role_name,
   detail,
-  status,
   permission
 ) => {
   return new Promise((resolve, reject) => {

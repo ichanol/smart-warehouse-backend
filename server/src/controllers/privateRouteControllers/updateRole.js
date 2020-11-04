@@ -8,13 +8,12 @@ const { updateRoleInformation } = require("../../services");
 
 const updateRole = async (req, res, next) => {
   try {
-    const { id, role_name, detail, status, permission } = req.body;
+    const { id, role_name, detail, permission } = req.body;
 
     const result = await updateRoleInformation(
       id,
       role_name,
       detail,
-      status,
       permission
     );
 
