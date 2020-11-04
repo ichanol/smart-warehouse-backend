@@ -20,7 +20,7 @@ module.exports = getRoleHandler = async (req) => {
   }
 
   const filterArray = [
-    { string: "status", value: parseInt(req.query?.status) || null },
+    { string: "status", value: req.query?.status || null },
     { string: "search", value: req.query?.search || null },
   ];
   const filter = filterArray.filter((value) => value.value !== null);
@@ -33,9 +33,9 @@ module.exports = getRoleHandler = async (req) => {
                                 OR ROLE.created_at LIKE '%${req.query.search}%' 
                                 OR ROLE.updated_at LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
-          if (value.value === 0) {
+          if (value.value === "0") {
             whereClause = "WHERE role_status.status_value = 0";
-          } else if (value.value === 1) {
+          } else if (value.value === "1") {
             whereClause = "WHERE role_status.status_value = 1";
           }
         } else {
@@ -43,14 +43,16 @@ module.exports = getRoleHandler = async (req) => {
         }
       } else {
         if (value.string === "search") {
-          whereClause = ` AND (ROLE.role_name LIKE '%${req.query.search}%' 
-                                OR ROLE.created_at LIKE '%${req.query.search}%' 
-                                OR ROLE.updated_at LIKE '%${req.query.search}%')`;
+          whereClause =
+            whereClause +
+            ` AND (ROLE.role_name LIKE '%${req.query.search}%' 
+              OR ROLE.created_at LIKE '%${req.query.search}%' 
+              OR ROLE.updated_at LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
-          if (value.value === 0) {
-            whereClause = " AND role_status.status_value = 0";
-          } else if (value.value === 1) {
-            whereClause = " AND role_status.status_value = 1";
+          if (value.value === "0") {
+            whereClause = whereClause + " AND role_status.status_value = 0";
+          } else if (value.value === "1") {
+            whereClause = whereClause + " AND role_status.status_value = 1";
           }
         } else {
           whereClause =

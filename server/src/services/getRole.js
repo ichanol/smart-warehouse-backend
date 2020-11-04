@@ -6,7 +6,7 @@ const getRole = async (
   limitClause = ""
 ) => {
   return new Promise((resolve, reject) => {
-    let SQL = `SELECT 
+    const SQL = `SELECT 
                       ROLE.id,
                       ROLE.role_name,
                       ROLE.detail,
