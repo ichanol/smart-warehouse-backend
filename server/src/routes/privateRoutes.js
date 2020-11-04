@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createRole,
   deleteRole,
   productTransaction,
   readRFID,
@@ -22,7 +21,8 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  getRoleManagement
+  getRoleManagement,
+  createRole,
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
