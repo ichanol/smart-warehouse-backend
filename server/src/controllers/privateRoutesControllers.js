@@ -117,91 +117,8 @@ exports.productTransaction = async (req, res, next) => {
 };
 
 /****************************************************************** @ADMIN_ONLY ******************************************************************/
-/**
- *   @DESCRIPTION   -   Get the list of all registered user
- *   @ROUTE         -   [GET] /api/smart-warehouse/users
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.getUser = async (req, res, next) => {
-  try {
-    const sortDirection = req.query.sort || "ASC";
-    const columnName = req.query.column || "firstname";
-    const keyword = req.query.keyword || null;
-    const role = req.query.role || null;
-
-    const result = await getAll(
-      "user",
-      sortDirection,
-      columnName,
-      keyword,
-      role,
-      mysql
-    );
-    if (result) {
-      res.json({ success: true, result });
-    } else {
-      res
-        .status(404)
-        .json({ success: false, message: "Can't get the information" });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- *   @DESCRIPTION   -   Get the list of all roles
- *   @ROUTE         -   [GET] /api/smart-warehouse/roles
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.getRole = async (req, res, next) => {
-  res.json(req.preparedResponse);
-};
 
 /*************************************************************************************************************************************************** */
-
-/**
- *   @DESCRIPTION   -   Update the information of specific user
- *   @ROUTE         -   [PUT] /api/smart-warehouse/users
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.updateUser = async (req, res, next) => {
-  try {
-    const {
-      username,
-      firstname,
-      lastname,
-      role,
-      status,
-      password,
-      id,
-    } = req.body;
-
-    const SQL = `UPDATE user SET 
-                  username= ${mysql.escape(username)}, 
-                  firstname = ${mysql.escape(firstname)},
-                  lastname = ${mysql.escape(lastname)},
-                  password = ${mysql.escape(password)},
-                  role = ${mysql.escape(role)},
-                  status = ${mysql.escape(status)} 
-                  WHERE id = ${mysql.escape(id)};`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.json({
-        success: true,
-        message: "Update user information successfully",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to update user information",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
 
 /**
  *   @DESCRIPTION   -   Update the information of specific role
@@ -250,38 +167,6 @@ exports.updateRole = async (req, res, next) => {
 /*************************************************************************************************************************************************** */
 
 /**
- *   @DESCRIPTION   -   Delete / deactive specific user
- *   @ROUTE         -   [DELETE] /api/smart-warehouse/users
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.deleteUser = async (req, res, next) => {
-  try {
-    const { username, detail } = req.body;
-    console.log(username, detail);
-    const SQL = `UPDATE user SET 
-                  status = 2,
-                  detail = ${mysql.escape(detail)}
-                  WHERE username = ${mysql.escape(username)};`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.json({
-        success: true,
-        message:
-          "Deactivate user successfully. This user has no longer available",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to delete user",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Delete / deactive specific role
  *   @ROUTE         -   [DELETE] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)
@@ -295,41 +180,6 @@ exports.deleteRole = async (req, res, next) => {
 };
 
 /*************************************************************************************************************************************************** */
-
-/**
- *   @DESCRIPTION   -   Create new user
- *   @ROUTE         -   [POST] /api/smart-warehouse/users
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.createUser = async (req, res, next) => {
-  try {
-    const { username, firstname, lastname, password, role, status } = req.body;
-    const SQL = `INSERT INTO user(username, firstname, lastname, password, role, status) VALUES(
-                  ${mysql.escape(username)},
-                  ${mysql.escape(firstname)},
-                  ${mysql.escape(lastname)},
-                  ${mysql.escape(password)},
-                  ${mysql.escape(role)},
-                  ${mysql.escape(status)}
-                  )`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.status(201).json({
-        success: true,
-        message: "Successfully created a new user account",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to created a new user account",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
 
 /**
  *   @DESCRIPTION   -   Create new role

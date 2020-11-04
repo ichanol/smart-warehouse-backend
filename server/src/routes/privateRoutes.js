@@ -2,15 +2,10 @@ const express = require("express");
 const router = express.Router();
 const {
   createRole,
-  createUser,
-  getUser,
   deleteRole,
-  deleteUser,
-  getRole,
   productTransaction,
   readRFID,
   updateRole,
-  updateUser,
   userLogOut,
   updateTransaction,
 } = require("../controllers/privateRoutesControllers");
@@ -22,7 +17,12 @@ const {
   getProductManagement,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getUserManagement,
+  createUser,
+  updateUser,
+  deleteUser,
+  getRoleManagement
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
@@ -35,7 +35,7 @@ router.route("/product-balance").get(currentProductBalance);
 // ADMIN ONLY
 router
   .route("/users")
-  .get(getUser)
+  .get(getUserManagement)
   .post(createUser)
   .put(updateUser)
   .delete(deleteUser);
@@ -46,8 +46,8 @@ router
   .put(updateProduct)
   .delete(deleteProduct);
 router
-  .route("/roles/:numberPerPage?/:page?")
-  .get([getRoleHandler, getRole])
+  .route("/roles")
+  .get(getRoleManagement)
   .post(createRole)
   .put(updateRole)
   .delete(deleteRole);

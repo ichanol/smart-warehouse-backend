@@ -4,6 +4,11 @@ const getProduct = require("./getProduct");
 const createNewProduct = require("./createNewProduct");
 const updateProductInformation = require("./updateProductInformation");
 const disableProduct = require("./disableProduct");
+const getUser = require("./getUser");
+const createNewUser = require("./createNewUser");
+const updateUserInformation = require("./updateUserInformation");
+const disableUser = require("./disableUser");
+const getRole = require("./getRole");
 
 module.exports = {
   getCurrentProductBalance,
@@ -12,4 +17,9 @@ module.exports = {
   createNewProduct,
   updateProductInformation,
   disableProduct,
+  getUser,
+  createNewUser,
+  updateUserInformation,
+  disableUser,
+  getRole,
 };

@@ -1,8 +1,9 @@
-const { getTotalNumberOfRecords, getRole } = require("../services");
+const { getUser, getTotalNumberOfRecords } = require("../services");
+const mysql = require("mysql");
 
-module.exports = getRoleHandler = async (req) => {
+const getUserHandler = async (req) => {
   let whereClause = "";
-  let orderByClause = "ORDER BY ROLE.status ASC, ROLE.created_at ASC";
+  let orderByClause = "ORDER BY user.status ASC, user.created_at ASC";
   let limitClause = "";
 
   const response = {
@@ -14,7 +15,7 @@ module.exports = getRoleHandler = async (req) => {
   };
 
   if (req.query?.column) {
-    orderByClause = `ORDER BY ROLE.status ASC, ${req.query.column} ${
+    orderByClause = `ORDER BY user.status ASC, ${req.query.column} ${
       req.query.desc === "true" ? "DESC" : "ASC"
     }`;
   }
@@ -29,28 +30,30 @@ module.exports = getRoleHandler = async (req) => {
     filter.map((value, key) => {
       if (key === 0) {
         if (value.string === "search") {
-          whereClause = `WHERE (ROLE.role_name LIKE '%${req.query.search}%' 
-                                OR ROLE.created_at LIKE '%${req.query.search}%' 
-                                OR ROLE.updated_at LIKE '%${req.query.search}%')`;
+          whereClause = `WHERE (user.username LIKE '%${req.query.search}%' 
+                                        OR user.firstname LIKE '%${req.query.search}%' 
+                                        OR user.lastname LIKE '%${req.query.search}%' 
+                                        OR role.role_name LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
           if (value.value === 0) {
-            whereClause = "WHERE role_status.status_value = 0";
+            whereClause = "WHERE user_status.status_value = 0";
           } else if (value.value === 1) {
-            whereClause = "WHERE role_status.status_value = 1";
+            whereClause = "WHERE user_status.status_value = 1";
           }
         } else {
           whereClause = `WHERE ${value.string} = ${mysql.escape(value.value)}`;
         }
       } else {
         if (value.string === "search") {
-          whereClause = ` AND (ROLE.role_name LIKE '%${req.query.search}%' 
-                                OR ROLE.created_at LIKE '%${req.query.search}%' 
-                                OR ROLE.updated_at LIKE '%${req.query.search}%')`;
+          whereClause = ` AND (user.username LIKE '%${req.query.search}%' 
+                                        OR user.firstname LIKE '%${req.query.search}%' 
+                                        OR user.lastname LIKE '%${req.query.search}%' 
+                                        OR role.role_name LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
           if (value.value === 0) {
-            whereClause = " AND role_status.status_value = 0";
+            whereClause = " AND user_status.status_value = 0";
           } else if (value.value === 1) {
-            whereClause = " AND role_status.status_value = 1";
+            whereClause = " AND user_status.status_value = 1";
           }
         } else {
           whereClause =
@@ -63,15 +66,15 @@ module.exports = getRoleHandler = async (req) => {
   const listPerPage = parseInt(req.query.numberPerPage);
   const currentPage = parseInt(req.query.page);
   const totalRecords = await getTotalNumberOfRecords(
-    "role ROLE",
-    "INNER JOIN role_status ON ROLE.status = role_status.id",
+    "user",
+    "INNER JOIN user_status ON user.status = user_status.id INNER JOIN role ON user.role = role.id",
     whereClause
   );
   const numberOfPages = Math.ceil(totalRecords / listPerPage);
   const firstIndex = (currentPage - 1) * listPerPage;
   limitClause = `LIMIT ${firstIndex}, ${listPerPage}`;
 
-  const productResult = await getRole(whereClause, orderByClause, limitClause);
+  const productResult = await getUser(whereClause, orderByClause, limitClause);
 
   if (productResult.length) {
     response.success = true;
@@ -82,3 +85,5 @@ module.exports = getRoleHandler = async (req) => {
   }
   return response;
 };
+
+module.exports = getUserHandler;
