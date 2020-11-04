@@ -113,18 +113,3 @@ exports.productTransaction = async (req, res, next) => {
     next(error);
   }
 };
-
-/****************************************************************** @ADMIN_ONLY ******************************************************************/
-
-/**
- *   @DESCRIPTION   -   Delete / deactive specific role
- *   @ROUTE         -   [DELETE] /api/smart-warehouse/roles
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.deleteRole = async (req, res, next) => {
-  try {
-    res.json("DELETE ROLE");
-  } catch (error) {
-    next(error);
-  }
-};
