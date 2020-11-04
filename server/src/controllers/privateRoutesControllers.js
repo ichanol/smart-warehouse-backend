@@ -204,48 +204,6 @@ exports.updateUser = async (req, res, next) => {
 };
 
 /**
- *   @DESCRIPTION   -   Update the information of specific product
- *   @ROUTE         -   [PUT] /api/smart-warehouse/products
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.updateProduct = async (req, res, next) => {
-  try {
-    const {
-      product_id,
-      product_name,
-      company_name,
-      location,
-      detail,
-      status,
-    } = req.body;
-
-    const SQL = `UPDATE product SET 
-                  product_id = ${mysql.escape(product_id)},
-                  product_name = ${mysql.escape(product_name)},
-                  company_name = ${mysql.escape(company_name)},
-                  location = ${mysql.escape(location)},
-                  detail = ${mysql.escape(detail)},
-                  status = (SELECT id FROM product_status WHERE status_value = ${status})
-                  WHERE product_id = ${mysql.escape(product_id)};`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.json({
-        success: true,
-        message: "Update product information successfully",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to update product information",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Update the information of specific role
  *   @ROUTE         -   [PUT] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)
@@ -324,36 +282,6 @@ exports.deleteUser = async (req, res, next) => {
 };
 
 /**
- *   @DESCRIPTION   -   Delete / remove specific product
- *   @ROUTE         -   [DELETE] /api/smart-warehouse/products
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.deleteProduct = async (req, res, next) => {
-  try {
-    const { product_id, detail } = req.body;
-    const SQL = `UPDATE product SET 
-                  status = 2,
-                  detail = ${mysql.escape(detail)}
-                  WHERE product_id = ${mysql.escape(product_id)};`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.json({
-        success: true,
-        message: "Remove product successfully",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to remove product",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   Delete / deactive specific role
  *   @ROUTE         -   [DELETE] /api/smart-warehouse/roles
  *   @ACCESS        -   PRIVATE (admin)
@@ -402,49 +330,6 @@ exports.createUser = async (req, res, next) => {
   }
 };
 
-/**
- *   @DESCRIPTION   -   Create new product
- *   @ROUTE         -   [POST] /api/smart-warehouse/products
- *   @ACCESS        -   PRIVATE (admin)
- */
-exports.createProduct = async (req, res, next) => {
-  try {
-    const {
-      product_id,
-      product_name,
-      company_name,
-      location,
-      detail,
-      status,
-    } = req.body;
-    const SQL = `INSERT INTO product(product_id, product_name, company_name, location, detail, status, created_by) VALUES (
-                  ${mysql.escape(product_id)},
-                  ${mysql.escape(product_name)},
-                  ${mysql.escape(company_name)},
-                  ${mysql.escape(location)},
-                  ${mysql.escape(detail)},
-                  ${mysql.escape(status)},
-                  (SELECT id FROM user WHERE username = ${mysql.escape(
-                    req.decodedUsername
-                  )})
-                  )`;
-
-    const result = await update(SQL);
-    if (result) {
-      res.status(201).json({
-        success: true,
-        message: "Successfully created a new product",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Failed to created a new product",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
 
 /**
  *   @DESCRIPTION   -   Create new role
