@@ -10,14 +10,14 @@ const updateProductInformation = async (
   status
 ) => {
   return new Promise((resolve, reject) => {
-    const SQL = `UPDATE product SET 
-    product_id = ${mysql.escape(product_id)},
-    product_name = ${mysql.escape(product_name)},
-    company_name = ${mysql.escape(company_name)},
-    location = ${mysql.escape(location)},
-    detail = ${mysql.escape(detail)},
-    status = (SELECT id FROM product_status WHERE status_value = ${status})
-    WHERE product_id = ${mysql.escape(product_id)};`;
+    const SQL = `UPDATE product 
+                  SET product_id = ${mysql.escape(product_id)},
+                      product_name = ${mysql.escape(product_name)},
+                      company_name = ${mysql.escape(company_name)},
+                      location = ${mysql.escape(location)},
+                      detail = ${mysql.escape(detail)},
+                      status = (SELECT id FROM product_status WHERE status_value = ${status})
+                  WHERE product_id = ${mysql.escape(product_id)};`;
 
     connection.query(SQL, (error, result, field) => {
       if (error) return reject(error);
