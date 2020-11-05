@@ -12,13 +12,13 @@ const updateUserInformation = async (
 ) => {
   return new Promise((resolve, reject) => {
     const SQL = `UPDATE user SET 
-                    username= ${mysql.escape(username)}, 
-                    firstname = ${mysql.escape(firstname)},
-                    lastname = ${mysql.escape(lastname)},
-                    password = ${mysql.escape(password)},
-                    role = ${mysql.escape(role)},
-                    status = ${mysql.escape(status)} 
-                    WHERE id = ${mysql.escape(id)};`;
+                        username= ${mysql.escape(username)}, 
+                        firstname = ${mysql.escape(firstname)},
+                        lastname = ${mysql.escape(lastname)},
+                        password = ${mysql.escape(password)},
+                        role = ${mysql.escape(role)},
+                        status = ${mysql.escape(status)} 
+                  WHERE id = ${mysql.escape(id)};`;
 
     connection.query(SQL, (error, result, field) => {
       if (error) return reject(error);
