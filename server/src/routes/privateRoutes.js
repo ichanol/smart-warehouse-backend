@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   createRole,
   deleteRole,
-  deleteUser,
   getRole,
   productTransaction,
   readRFID,
@@ -22,7 +21,8 @@ const {
   deleteProduct,
   getUserManagement,
   createUser,
-  updateUser
+  updateUser,
+  deleteUser,
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
