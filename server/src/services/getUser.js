@@ -17,7 +17,7 @@ const getUser = async (
                 FROM user INNER JOIN role 
                 ON user.role = role.id 
                 INNER JOIN user_status
-                ON user.status = user_status.id
+                ON user.status = user_status.id WHERE NOT (user.id = 1)
                 ${whereClause} ${orderByClause} ${limitClause}`;
     connection.query(SQL, (error, result, field) => {
       if (error) return reject(error);
