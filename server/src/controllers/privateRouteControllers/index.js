@@ -4,6 +4,7 @@ const createProduct = require("./createProduct");
 const updateProduct = require("./updateProduct");
 const deleteProduct = require("./deleteProduct");
 const getUserManagement = require("./getUserManagement");
+const createUser = require("./createUser");
 
 module.exports = {
   updateProduct,
@@ -12,4 +13,5 @@ module.exports = {
   getProductManagement,
   deleteProduct,
   getUserManagement,
+  createUser,
 };
