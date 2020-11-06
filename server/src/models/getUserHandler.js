@@ -45,7 +45,9 @@ const getUserHandler = async (req) => {
         }
       } else {
         if (value.string === "search") {
-          whereClause = whereClause + ` AND (user.username LIKE '%${req.query.search}%' 
+          whereClause =
+            whereClause +
+            ` AND (user.username LIKE '%${req.query.search}%' 
                                 OR user.firstname LIKE '%${req.query.search}%' 
                                 OR user.lastname LIKE '%${req.query.search}%' 
                                 OR role.role_name LIKE '%${req.query.search}%')`;
@@ -68,7 +70,7 @@ const getUserHandler = async (req) => {
   const totalRecords = await getTotalNumberOfRecords(
     "user",
     "INNER JOIN user_status ON user.status = user_status.id INNER JOIN role ON user.role = role.id",
-    whereClause
+    "WHERE NOT (user.id = 1)" + whereClause
   );
   const numberOfPages = Math.ceil(totalRecords / listPerPage);
   const firstIndex = (currentPage - 1) * listPerPage;
