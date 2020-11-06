@@ -11,6 +11,7 @@ const getRoleManagement = require("./getRoleManagement");
 const createRole = require("./createRole");
 const updateRole = require("./updateRole");
 const deleteRole = require("./deleteRole");
+const importExportProduct = require("./importExportProduct");
 
 module.exports = {
   updateProduct,
@@ -26,4 +27,5 @@ module.exports = {
   createRole,
   updateRole,
   deleteRole,
+  importExportProduct,
 };

@@ -18,35 +18,6 @@ exports.userLogOut = (req, res, next) => {
   }
 };
 
-/**
- *   @DESCRIPTION   -   Add import or export products transaction (S/N, amount, etc), update the tables in the database
- *   @ROUTE         -   [POST] /api/smart-warehouse/import-export-product
- *   @ACCESS        -   PRIVATE (admin, crew)
- */
-exports.updateTransaction = async (req, res, next) => {
-  try {
-    const createTransaction = require("../models/createTransaction");
-    const { referenceNumber, actionType, username, productList } = req.body;
-
-    const isSuccess = await createTransaction(
-      mysql,
-      connection,
-      referenceNumber,
-      actionType,
-      username,
-      productList
-    );
-    if (isSuccess) {
-      res.json({ success: true, message: "Save transaction successfully" });
-    } else {
-      res
-        .status(400)
-        .json({ success: false, message: "Save product list failed" });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
 
 /**
  *   @DESCRIPTION   -   When client send this request to server, server will send another request
