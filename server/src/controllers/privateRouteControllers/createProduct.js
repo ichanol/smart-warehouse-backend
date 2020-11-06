@@ -4,30 +4,13 @@
  *   @ACCESS        -   PRIVATE (admin)
  */
 
-const { createNewProduct } = require("../../services");
+const createProductHandler = require("../../models/createProductHandler");
 
 const createProduct = async (req, res, next) => {
   try {
-    const {
-      product_id,
-      product_name,
-      company_name,
-      location,
-      detail,
-      status,
-    } = req.body;
+    const { success } = await createProductHandler(req);
 
-    const result = await createNewProduct(
-      product_id,
-      product_name,
-      company_name,
-      location,
-      detail,
-      status,
-      req.decodedUsername
-    );
-
-    if (result) {
+    if (success) {
       res.status(201).json({
         success: true,
         message: "Successfully created a new product",

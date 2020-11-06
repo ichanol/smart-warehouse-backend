@@ -4,6 +4,7 @@ const getProduct = require("./getProduct");
 const createNewProduct = require("./createNewProduct");
 const updateProductInformation = require("./updateProductInformation");
 const disableProduct = require("./disableProduct");
+const createNewCurrentProductBalanceRecord = require("./createNewCurrentProductBalanceRecord");
 
 module.exports = {
   getCurrentProductBalance,
@@ -12,4 +13,5 @@ module.exports = {
   createNewProduct,
   updateProductInformation,
   disableProduct,
+  createNewCurrentProductBalanceRecord,
 };
