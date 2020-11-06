@@ -6,7 +6,8 @@ const getUser = async (
   limitClause = ""
 ) => {
   return new Promise((resolve, reject) => {
-    const SQL = `SELECT user.username, 
+    const SQL = `SELECT user.id,
+                        user.username, 
                         user.firstname, 
                         user.lastname, 
                         user.email, 
