@@ -7,6 +7,7 @@
 const getRoleHandler = require("../../models/getRoleHandler");
 const validateRoleHandler = require("../../models/validateRoleHandler");
 const { getRoleName } = require("../../services");
+
 const getRoleManagement = async (req, res, next) => {
   try {
     if (req.query?.numberPerPage && req.query?.page) {
@@ -37,6 +38,7 @@ const getRoleManagement = async (req, res, next) => {
       }
     } else if (req.query.get_role) {
       const result = await getRoleName();
+
       if (result.length) {
         res.json({ success: true, result });
       } else {
