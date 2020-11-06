@@ -5,6 +5,7 @@ const updateUserInformation = async (
   username,
   firstname,
   lastname,
+  email,
   role,
   status,
   password,
@@ -15,6 +16,7 @@ const updateUserInformation = async (
                         username= ${mysql.escape(username)}, 
                         firstname = ${mysql.escape(firstname)},
                         lastname = ${mysql.escape(lastname)},
+                        email = ${mysql.escape(email)},
                         password = ${mysql.escape(password)},
                         role = ${mysql.escape(role)},
                         status = ${mysql.escape(status)} 
