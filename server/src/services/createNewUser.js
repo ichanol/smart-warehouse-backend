@@ -5,16 +5,18 @@ const createNewUser = async (
   username,
   firstname,
   lastname,
+  email,
   password,
   role,
   status
 ) => {
   return new Promise((resolve, reject) => {
-    const SQL = `INSERT INTO user(username, firstname, lastname, password, role, status) 
+    const SQL = `INSERT INTO user(username, firstname, lastname, email, password, role, status) 
                   VALUES(
                         ${mysql.escape(username)},
                         ${mysql.escape(firstname)},
                         ${mysql.escape(lastname)},
+                        ${mysql.escape(email)},
                         ${mysql.escape(password)},
                         ${mysql.escape(role)},
                         ${mysql.escape(status)}
