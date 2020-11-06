@@ -8,7 +8,7 @@ const { disableUser } = require("../../services");
 
 const deleteUser = async (req, res, next) => {
   try {
-    const { username, detail, status } = req.body;
+    const { username, detail, status } = req.body.source;
 
     const result = await disableUser(username, detail, status);
 

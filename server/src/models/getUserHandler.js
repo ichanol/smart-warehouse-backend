@@ -21,7 +21,7 @@ const getUserHandler = async (req) => {
   }
 
   const filterArray = [
-    { string: "status", value: parseInt(req.query?.status) || null },
+    { string: "status", value: req.query?.status || null },
     { string: "search", value: req.query?.search || null },
   ];
   const filter = filterArray.filter((value) => value.value !== null);
@@ -30,30 +30,30 @@ const getUserHandler = async (req) => {
     filter.map((value, key) => {
       if (key === 0) {
         if (value.string === "search") {
-          whereClause = `WHERE (user.username LIKE '%${req.query.search}%' 
-                                        OR user.firstname LIKE '%${req.query.search}%' 
-                                        OR user.lastname LIKE '%${req.query.search}%' 
-                                        OR role.role_name LIKE '%${req.query.search}%')`;
+          whereClause = `AND (user.username LIKE '%${req.query.search}%' 
+                                OR user.firstname LIKE '%${req.query.search}%' 
+                                OR user.lastname LIKE '%${req.query.search}%' 
+                                OR role.role_name LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
-          if (value.value === 0) {
-            whereClause = "WHERE user_status.status_value = 0";
-          } else if (value.value === 1) {
-            whereClause = "WHERE user_status.status_value = 1";
+          if (value.value === "0") {
+            whereClause = "AND user_status.status_value = 0";
+          } else if (value.value === "1") {
+            whereClause = "AND user_status.status_value = 1";
           }
         } else {
-          whereClause = `WHERE ${value.string} = ${mysql.escape(value.value)}`;
+          whereClause = `AND ${value.string} = ${mysql.escape(value.value)}`;
         }
       } else {
         if (value.string === "search") {
-          whereClause = ` AND (user.username LIKE '%${req.query.search}%' 
-                                        OR user.firstname LIKE '%${req.query.search}%' 
-                                        OR user.lastname LIKE '%${req.query.search}%' 
-                                        OR role.role_name LIKE '%${req.query.search}%')`;
+          whereClause = whereClause + ` AND (user.username LIKE '%${req.query.search}%' 
+                                OR user.firstname LIKE '%${req.query.search}%' 
+                                OR user.lastname LIKE '%${req.query.search}%' 
+                                OR role.role_name LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
-          if (value.value === 0) {
-            whereClause = " AND user_status.status_value = 0";
-          } else if (value.value === 1) {
-            whereClause = " AND user_status.status_value = 1";
+          if (value.value === "0") {
+            whereClause = whereClause + " AND user_status.status_value = 0";
+          } else if (value.value === "1") {
+            whereClause = whereClause + " AND user_status.status_value = 1";
           }
         } else {
           whereClause =
