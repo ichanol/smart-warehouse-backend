@@ -9,6 +9,7 @@ const getUser = async (
     const SQL = `SELECT user.username, 
                         user.firstname, 
                         user.lastname, 
+                        user.email, 
                         user.detail, 
                         user.created_at, 
                         user.updated_at, 
