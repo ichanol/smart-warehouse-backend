@@ -18,6 +18,7 @@ const getUserId = require("./getUserId");
 const updateCurrentProductBalance = require("./updateCurrentProductBalance");
 const createTransactionByArray = require("./createTransactionByArray");
 const createNewCurrentProductBalanceRecord = require("./createNewCurrentProductBalanceRecord");
+const getRoleName = require("./getRoleName");
 
 module.exports = {
   getCurrentProductBalance,
@@ -40,4 +41,5 @@ module.exports = {
   updateCurrentProductBalance,
   createTransactionByArray,
   createNewCurrentProductBalanceRecord,
+  getRoleName,
 };
