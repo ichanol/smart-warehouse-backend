@@ -6,7 +6,7 @@
 
 const getRoleHandler = require("../../models/getRoleHandler");
 const validateRoleHandler = require("../../models/validateRoleHandler");
-
+const { getRoleName } = require("../../services");
 const getRoleManagement = async (req, res, next) => {
   try {
     if (req.query?.numberPerPage && req.query?.page) {
@@ -33,6 +33,15 @@ const getRoleManagement = async (req, res, next) => {
       } else {
         res
           .status(204)
+          .json({ success: false, message: "Can't get the information" });
+      }
+    } else if (req.query.get_role) {
+      const result = await getRoleName();
+      if (result.length) {
+        res.json({ success: true, result });
+      } else {
+        res
+          .status(404)
           .json({ success: false, message: "Can't get the information" });
       }
     } else {
