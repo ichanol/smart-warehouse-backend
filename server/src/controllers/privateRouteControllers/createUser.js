@@ -8,12 +8,13 @@ const { createNewUser } = require("../../services");
 
 const createUser = async (req, res, next) => {
   try {
-    const { username, firstname, lastname, password, role, status } = req.body;
+    const { username, firstname, lastname, email, password, role, status } = req.body;
 
     const result = await createNewUser(
       username,
       firstname,
       lastname,
+      email,
       password,
       role,
       status
