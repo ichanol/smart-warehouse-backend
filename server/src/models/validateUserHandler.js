@@ -6,10 +6,17 @@ const validateProductHandler = async (req) => {
     result: null,
   };
 
-  const orderByClause = "ORDER BY user.status ASC, user.created_at ASC";
-  const whereClause = `AND user.username = '${req.query.validate}'`;
+  let whereClause;
 
-  const productResult = await getUser(whereClause, orderByClause);
+  if (req.query.type === "username") {
+    whereClause = `AND user.username = '${req.query.validate}'`;
+  } else if (req.query.type === "email") {
+    whereClause = `AND user.email = '${req.query.validate}'`;
+  } else {
+    return response;
+  }
+
+  const productResult = await getUser(whereClause);
 
   if (productResult.length) {
     response.success = true;
