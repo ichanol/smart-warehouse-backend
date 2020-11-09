@@ -18,7 +18,9 @@ const createNewUser = async (
                         ${mysql.escape(lastname)},
                         ${mysql.escape(email)},
                         ${mysql.escape(password)},
-                        ${mysql.escape(role)},
+                        (SELECT id FROM role WHERE role_name = ${mysql.escape(
+                          role
+                        )}),
                         ${mysql.escape(status)}
                   )`;
     connection.query(SQL, (error, result, field) => {
