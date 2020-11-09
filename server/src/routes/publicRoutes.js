@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+const { uploadFile } = require("../controllers/publicRouteControllers");
+
 const router = express.Router();
 const {
   userLogIn,
@@ -10,13 +12,12 @@ const {
   detectedUserRFID,
   createProduct,
   reNewToken,
-  uploadFiles,
 } = require("../controllers/publicRoutesControllers");
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
 
 const multer = require("multer");
-global.__basedir = '/app';
+global.__basedir = "/app";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, __basedir + "/uploads/");
@@ -48,6 +49,8 @@ router.get(
   reNewToken
 );
 
-router.route("/uploadfile").post([upload.single("uploadDocument"),uploadFiles]);
+router
+  .route("/uploadfile")
+  .post([upload.single("uploadDocument"), uploadFile]);
 
 module.exports = router;
