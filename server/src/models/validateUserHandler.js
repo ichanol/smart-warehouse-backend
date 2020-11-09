@@ -7,7 +7,7 @@ const validateProductHandler = async (req) => {
   };
 
   const orderByClause = "ORDER BY user.status ASC, user.created_at ASC";
-  const whereClause = `WHERE user.username = '${req.query.validate}'`;
+  const whereClause = `AND user.username = '${req.query.validate}'`;
 
   const productResult = await getUser(whereClause, orderByClause);
 
