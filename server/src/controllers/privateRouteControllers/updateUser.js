@@ -16,6 +16,7 @@ const updateUser = async (req, res, next) => {
       role,
       status,
       password,
+      detail,
       id,
     } = req.body;
 
@@ -25,8 +26,7 @@ const updateUser = async (req, res, next) => {
       lastname,
       email,
       role,
-      status,
-      password,
+      detail,
       id
     );
 

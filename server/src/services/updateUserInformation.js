@@ -7,8 +7,7 @@ const updateUserInformation = async (
   lastname,
   email,
   role,
-  status,
-  password,
+  detail,
   id
 ) => {
   return new Promise((resolve, reject) => {
@@ -17,14 +16,14 @@ const updateUserInformation = async (
                         firstname = ${mysql.escape(firstname)},
                         lastname = ${mysql.escape(lastname)},
                         email = ${mysql.escape(email)},
-                        password = ${mysql.escape(password)},
-                        role = ${mysql.escape(role)},
-                        status = ${mysql.escape(status)} 
+                        role = (SELECT id FROM role WHERE role_name = ${mysql.escape(role)}),
+                        detail = ${mysql.escape(detail)}
                   WHERE id = ${mysql.escape(id)};`;
 
     connection.query(SQL, (error, result, field) => {
       if (error) return reject(error);
       console.log(result);
+      console.log(SQL);
       resolve(result);
     });
   });
