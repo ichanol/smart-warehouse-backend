@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const {
-  productTransaction,
   readRFID,
   userLogOut,
 } = require("../controllers/privateRoutesControllers");
@@ -22,14 +21,15 @@ const {
   createRole,
   updateRole,
   deleteRole,
-  importExportProduct
+  importExportProduct,
+  getTransaction
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
 router.route("/import-export-product").post(importExportProduct);
 router.route("/read-rfid").get(readRFID);
-router.route("/product-transaction").get(productTransaction);
+router.route("/product-transaction").get(getTransaction);
 router.route("/product-balance").get(currentProductBalance);
 
 // ADMIN ONLY

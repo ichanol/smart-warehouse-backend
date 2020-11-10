@@ -18,6 +18,7 @@ const getRole = async (
                 FROM role ROLE INNER JOIN role_status ON ROLE.status = role_status.id 
                 ${whereClause} ${orderByClause} ${limitClause}`;
     connection.query(SQL, (error, result, field) => {
+      console.log(SQL)
       if (error) return reject(error);
       resolve(result);
     });
