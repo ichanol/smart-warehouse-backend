@@ -6,6 +6,8 @@ const {
   getUserId,
   updateCurrentProductBalance,
   createTransactionByArray,
+  createTransactionRecord,
+  getTransactionId,
 } = require("../services");
 
 const importExportProductHandler = async (
@@ -21,6 +23,16 @@ const importExportProductHandler = async (
 
   const actionType = await getImportExportProductActionType(actionID);
   const userId = await getUserId(username);
+
+  const saveTransactionRecordResult = await createTransactionRecord(
+    referenceNumber,
+    actionID,
+    userId,
+    "somedetail",
+    1
+  );
+
+  const transactionId = await getTransactionId(referenceNumber);
 
   if (actionType === "DELETE") {
     multiplier = -1;
@@ -43,7 +55,6 @@ const importExportProductHandler = async (
   );
 
   for (let index = 0; index < productList.length; index++) {
-    const temp = [];
     const isNegative =
       parseInt(productBalanceResult[index].balance) +
         parseInt(productList[index].amount * multiplier) <
@@ -54,18 +65,14 @@ const importExportProductHandler = async (
           "Balance can't be negative number, This mean your export amount is much more larger than product's balance amount",
       };
     } else {
-      temp.push(
-        referenceNumber,
+      transactionData.push([
+        transactionId,
         parseInt(productList[index].id),
-        actionID,
         parseInt(productList[index].amount),
         parseInt(productBalanceResult[index].balance) +
           parseInt(productList[index].amount * multiplier),
         productList[index].location,
-        userId,
-        productList[index].detail
-      );
-      transactionData.push(temp);
+      ]);
     }
 
     valueToUpdate =
@@ -78,14 +85,18 @@ const importExportProductHandler = async (
       )} `;
   }
 
+  const saveTransactionResult = await createTransactionByArray(transactionData);
+
   const updateCurrentProductBalanceResult = await updateCurrentProductBalance(
     valueToUpdate,
     idForQueryBalance
   );
 
-  const saveTransactionResult = await createTransactionByArray(transactionData);
-
-  if (saveTransactionResult && updateCurrentProductBalanceResult) {
+  if (
+    saveTransactionResult &&
+    updateCurrentProductBalanceResult &&
+    saveTransactionRecordResult
+  ) {
     return true;
   } else {
     return false;
