@@ -28,8 +28,7 @@ const importExportProductHandler = async (
     referenceNumber,
     actionID,
     userId,
-    "somedetail",
-    1
+    "some mock detail"
   );
 
   const transactionId = await getTransactionId(referenceNumber);
@@ -72,6 +71,7 @@ const importExportProductHandler = async (
         parseInt(productBalanceResult[index].balance) +
           parseInt(productList[index].amount * multiplier),
         productList[index].location,
+        productList[index].detail,
       ]);
     }
 
