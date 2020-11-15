@@ -17,6 +17,16 @@ CREATE TABLE user_status(
     PRIMARY KEY(id)
 );
 
+CREATE TABLE inventory_log_status(
+    id INT NOT NULL AUTO_INCREMENT,
+    status_name VARCHAR(255) NOT NULL,
+    status_value BOOLEAN NOT NULL,
+    detail VARCHAR(512),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+);
+
 CREATE TABLE role_status(
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
@@ -85,18 +95,28 @@ CREATE TABLE product(
 CREATE TABLE inventory_log(
     id INT NOT NULL AUTO_INCREMENT,
     reference_number INT NOT NULL,
-    product_id INT NOT NULL,
     action_type INT NOT NULL,
-    amount INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    balance INT NOT NULL,
-    location VARCHAR(255) NOT NULL,
     responsable INT NOT NULL,
     detail VARCHAR(512),
+    status int NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY (responsable) REFERENCES user(id),
     FOREIGN KEY (action_type) REFERENCES import_export_action(id),
-    FOREIGN KEY (product_id) REFERENCES product(id)
+    FOREIGN KEY (status) REFERENCES inventory_log_status(id)
+);
+
+CREATE TABLE inventory_log_product_list(
+    id INT NOT NULL AUTO_INCREMENT,
+    reference_number INT NOT NULL,
+    product_id INT NOT NULL,
+    amount INT NOT NULL,
+    balance INT NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (reference_number) REFERENCES inventory_log(id)
 );
 
 CREATE TABLE current_product_balance(
@@ -120,6 +140,20 @@ VALUES
     (
         "INACTIVE",
         "This user has no longer accessable",
+        FALSE
+    );
+
+INSERT INTO
+    inventory_log_status(status_name, detail, status_value)
+VALUES
+    (
+        "ACTIVE",
+        "This transaction is valid and active",
+        TRUE
+    ),
+    (
+        "INACTIVE",
+        "This transaction is invalid and inactive, checkout the edited reference",
         FALSE
     );
 
@@ -180,7 +214,8 @@ INSERT INTO
         lastname,
         password,
         role,
-        status
+        status,
+        email
     )
 VALUES
     (
@@ -189,7 +224,8 @@ VALUES
         "SYSTEM",
         "SYSTEM",
         1,
-        1
+        1,
+        "chanatip.ras@mail.kmutt.ac.th"
     ),
     (
         "adminAcc",
@@ -197,7 +233,8 @@ VALUES
         "AdminLastname",
         "adminpassword",
         1,
-        1
+        1,
+        "chanatip.ras@mail.kmutt.ac.th"
     ),
     (
         "crewAcc",
@@ -205,7 +242,8 @@ VALUES
         "CrewLastname",
         "crewpassword",
         2,
-        1
+        1,
+        "chanatip.ras@mail.kmutt.ac.th"
     ),
     (
         "reporterAcc",
@@ -213,7 +251,8 @@ VALUES
         "ReporterLastname",
         "reporterpassword",
         3,
-        1
+        1,
+        "chanatip.ras@mail.kmutt.ac.th"
     ),
     (
         "tip",
@@ -221,7 +260,8 @@ VALUES
         "TipLastName",
         "tip",
         1,
-        1
+        1,
+        "chanatip.ras@mail.kmutt.ac.th"
     );
 
 INSERT INTO
