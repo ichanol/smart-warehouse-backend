@@ -110,15 +110,14 @@ const getTransactionHandler = async (req) => {
     });
   }
 
+  // INNER JOIN product ON inventory_log.product_id = product.id
   const listPerPage = parseInt(req.query.numberPerPage);
   const currentPage = parseInt(req.query.page);
   const totalRecords = await getTotalNumberOfRecords(
     "inventory_log",
-    `INNER JOIN product ON inventory_log.product_id = product.id 
-     INNER JOIN import_export_action ON inventory_log.action_type = import_export_action.id 
+    `INNER JOIN import_export_action ON inventory_log.action_type = import_export_action.id 
      INNER JOIN user ON inventory_log.responsable = user.id
-     INNER JOIN inventory_log_status ON inventory_log.status = inventory_log_status.id`,
-    "GROUP BY reference_number"
+     INNER JOIN inventory_log_status ON inventory_log.status = inventory_log_status.id`
   );
   const numberOfPages = Math.ceil(totalRecords / listPerPage);
   const firstIndex = (currentPage - 1) * listPerPage;
