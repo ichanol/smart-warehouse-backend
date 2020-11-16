@@ -1,8 +1,6 @@
 const connection = require("../Database_connection/connect");
 
-const getTotalNumberOfRecordsForTransaction = async (
-  whereClause = ""
-) => {
+const getTotalNumberOfRecordsForTransaction = async (whereClause = "") => {
   return new Promise((resolve, reject) => {
     const SQL = `SELECT COUNT(*) AS numberOfRecords 
                     FROM inventory_log 
@@ -12,7 +10,7 @@ const getTotalNumberOfRecordsForTransaction = async (
                         INNER JOIN inventory_log_product_list ON inventory_log.id = inventory_log_product_list.reference_number
                         INNER JOIN product ON inventory_log_product_list.product_id = product.id 
                         ${whereClause}
-                        GROUP BY inventory_log.reference_number`
+                        GROUP BY inventory_log.reference_number`;
     connection.query(SQL, (error, result, field) => {
       if (error) return reject(error);
       resolve(result.length);

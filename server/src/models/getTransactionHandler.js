@@ -64,7 +64,7 @@ const getTransactionHandler = async (req) => {
         if (value.string === "search") {
           whereClause =
             whereClause +
-            `AND (product.product_name LIKE '%${req.query.search}%' 
+            ` AND (product.product_name LIKE '%${req.query.search}%' 
               OR product.product_id LIKE '%${req.query.search}%' 
               OR inventory_log_product_list.location LIKE '%${req.query.search}%' 
               OR user.username LIKE '%${req.query.search}%' 
@@ -72,19 +72,19 @@ const getTransactionHandler = async (req) => {
         } else if (value.string === "status") {
           if (value.value === "0") {
             whereClause =
-              whereClause + "AND inventory_log_status.status_value = 0";
+              whereClause + " AND inventory_log_status.status_value = 0";
           } else if (value.value === "1") {
             whereClause =
-              whereClause + "AND inventory_log_status.status_value = 1";
+              whereClause + " AND inventory_log_status.status_value = 1";
           }
         } else if (value.string === "amount" || value.string === "balance") {
           const [firstPart, secondPart] = value.value.split(",");
           whereClause =
             whereClause +
-            `AND ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
+            ` AND ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
         } else {
           whereClause =
-            whereClause + `AND ${value.string} = ${mysql.escape(value.value)}`;
+            whereClause + ` AND ${value.string} = ${mysql.escape(value.value)}`;
         }
       }
     });
@@ -107,7 +107,7 @@ const getTransactionHandler = async (req) => {
     async (value, index) =>
       await getTransactionLog(
         whereClause +
-          `AND inventory_log.reference_number = ${value.reference_number}`,
+          ` AND inventory_log.reference_number = ${value.reference_number}`,
         orderByClause,
         limitClause
       )
