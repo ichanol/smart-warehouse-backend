@@ -10,6 +10,7 @@ const getTotalNumberOfRecords = async (
     connection.query(SQL, (error, result, field) => {
       if (error) return reject(error);
       const [{ numberOfRecords }] = result;
+      console.log(result, SQL)
       resolve(numberOfRecords);
     });
   });

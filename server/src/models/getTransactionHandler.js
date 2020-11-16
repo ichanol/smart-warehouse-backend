@@ -1,9 +1,13 @@
-const { getTotalNumberOfRecords, getTransactionLog } = require("../services");
+const {
+  getTotalNumberOfRecordsForTransaction,
+  getTransactionLog,
+  getTransactionRecord,
+} = require("../services");
 const mysql = require("mysql");
 
 const getTransactionHandler = async (req) => {
   let whereClause = "";
-  let orderByClause = "ORDER BY user.status ASC, user.created_at ASC";
+  let orderByClause = "ORDER BY inventory_log.reference_number DESC";
   let limitClause = "";
 
   const response = {
@@ -14,120 +18,128 @@ const getTransactionHandler = async (req) => {
     totalRecords: null,
   };
 
-  //   mysql,
-  //   connection,
-  //   filterArr,
-  //   startDate,
-  //   endDate,
-  //   columnName,
-  //   sortDirection,
-  //   keyword,
-  //   amstart,
-  //   amend
-  //===================
-
-  //   let whereClause;
-
-  //       const filter = filterArr.filter((value) => value.value !== null);
-  //       if (filter.length >= 1) {
-  //         filter.map((value, key) => {
-  //           if (key === 0) {
-  //             whereClause = ` WHERE ${value.str} = ${mysql.escape(value.value)}`;
-  //           } else {
-  //             whereClause =
-  //               whereClause + ` AND ${value.str} = ${mysql.escape(value.value)}`;
-  //           }
-  //         });
-  //       }
-  //       if (startDate && endDate) {
-  //         whereClause = `${
-  //           whereClause ? whereClause + " AND" : " WHERE"
-  //         } timestamp BETWEEN ${mysql.escape(
-  //           startDate + " 00:00:00"
-  //         )} AND ${mysql.escape(endDate + " 23:59:59")}`;
-  //       } else if (startDate || endDate) {
-  //         whereClause =
-  //           whereClause +
-  //           ` AND timestamp BETWEEN ${
-  //             startDate
-  //               ? mysql.escape(startDate + " 00:00:00")
-  //               : mysql.escape(endDate + " 00:00:00")
-  //           } AND ${
-  //             startDate
-  //               ? mysql.escape(startDate + " 23:59:59")
-  //               : mysql.escape(endDate + " 23:59:59")
-  //           }`;
-  //       }
-
   if (req.query?.column) {
-    orderByClause = `ORDER BY inventory_log.created_at DESC, ${
-      req.query.column
-    } ${req.query.desc === "true" ? "DESC" : "ASC"}`;
+    orderByClause = `, ${req.query.column} ${
+      req.query.desc === "true" ? "DESC" : "ASC"
+    }`;
   }
 
   const filterArray = [
-    { string: "status", value: req.query?.status || null },
-    { string: "search", value: req.query?.search || null },
+    { string: "search", value: req.query.search || null },
+
+    { string: "amount", value: req.query.amount || null },
+    { string: "balance", value: req.query.balance || null },
+
+    { string: "status", value: req.query.status || null },
+    {
+      string: "import_export_action.action_name",
+      value: req.query.action || null,
+    },
   ];
+
   const filter = filterArray.filter((value) => value.value !== null);
 
   if (filter.length) {
     filter.map((value, key) => {
       if (key === 0) {
         if (value.string === "search") {
-          whereClause = `AND (user.username LIKE '%${req.query.search}%' 
-                                OR user.firstname LIKE '%${req.query.search}%' 
-                                OR user.lastname LIKE '%${req.query.search}%' 
-                                OR role.role_name LIKE '%${req.query.search}%')`;
+          whereClause = `WHERE (product.product_name LIKE '%${req.query.search}%' 
+                                OR product.product_id LIKE '%${req.query.search}%' 
+                                OR inventory_log_product_list.location LIKE '%${req.query.search}%' 
+                                OR user.username LIKE '%${req.query.search}%' 
+                                OR inventory_log.reference_number LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
           if (value.value === "0") {
-            whereClause = "AND user_status.status_value = 0";
+            whereClause = "WHERE inventory_log_status.status_value = 0";
           } else if (value.value === "1") {
-            whereClause = "AND user_status.status_value = 1";
+            whereClause = "WHERE inventory_log_status.status_value = 1";
           }
+        } else if (value.string === "amount" || value.string === "balance") {
+          const [firstPart, secondPart] = value.value.split(",");
+          whereClause = `WHERE ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
         } else {
-          whereClause = `AND ${value.string} = ${mysql.escape(value.value)}`;
+          whereClause = `WHERE ${value.string} = ${mysql.escape(value.value)}`;
         }
       } else {
         if (value.string === "search") {
           whereClause =
             whereClause +
-            ` AND (user.username LIKE '%${req.query.search}%' 
-                                OR user.firstname LIKE '%${req.query.search}%' 
-                                OR user.lastname LIKE '%${req.query.search}%' 
-                                OR role.role_name LIKE '%${req.query.search}%')`;
+            `AND (product.product_name LIKE '%${req.query.search}%' 
+              OR product.product_id LIKE '%${req.query.search}%' 
+              OR inventory_log_product_list.location LIKE '%${req.query.search}%' 
+              OR user.username LIKE '%${req.query.search}%' 
+              OR inventory_log.reference_number LIKE '%${req.query.search}%')`;
         } else if (value.string === "status") {
           if (value.value === "0") {
-            whereClause = whereClause + " AND user_status.status_value = 0";
+            whereClause =
+              whereClause + "AND inventory_log_status.status_value = 0";
           } else if (value.value === "1") {
-            whereClause = whereClause + " AND user_status.status_value = 1";
+            whereClause =
+              whereClause + "AND inventory_log_status.status_value = 1";
           }
+        } else if (value.string === "amount" || value.string === "balance") {
+          const [firstPart, secondPart] = value.value.split(",");
+          whereClause =
+            whereClause +
+            `AND ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
         } else {
           whereClause =
-            whereClause + ` AND ${value.string} = ${mysql.escape(value.value)}`;
+            whereClause + `AND ${value.string} = ${mysql.escape(value.value)}`;
         }
       }
     });
   }
 
-  // INNER JOIN product ON inventory_log.product_id = product.id
   const listPerPage = parseInt(req.query.numberPerPage);
   const currentPage = parseInt(req.query.page);
-  const totalRecords = await getTotalNumberOfRecords(
-    "inventory_log",
-    `INNER JOIN import_export_action ON inventory_log.action_type = import_export_action.id 
-     INNER JOIN user ON inventory_log.responsable = user.id
-     INNER JOIN inventory_log_status ON inventory_log.status = inventory_log_status.id`
-  );
+  const totalRecords = await getTotalNumberOfRecordsForTransaction(whereClause);
   const numberOfPages = Math.ceil(totalRecords / listPerPage);
   const firstIndex = (currentPage - 1) * listPerPage;
   limitClause = `LIMIT ${firstIndex}, ${listPerPage}`;
 
-  const productResult = await getUser(whereClause, orderByClause, limitClause);
+  const transactionRecordListResult = await getTransactionRecord(
+    whereClause,
+    orderByClause,
+    limitClause
+  );
 
-  if (productResult.length) {
+  const allRelatedProductTransaction = transactionRecordListResult.map(
+    async (value, index) =>
+      await getTransactionLog(
+        whereClause +
+          `AND inventory_log.reference_number = ${value.reference_number}`,
+        orderByClause,
+        limitClause
+      )
+  );
+
+  const allRelatedProductTransactionResult = await Promise.all(
+    allRelatedProductTransaction
+  );
+
+  const transactionResult = transactionRecordListResult.map((value, index) => {
+    value.data = allRelatedProductTransactionResult[index];
+    value.action_name = value.data[0].action_name;
+    value.username = value.data[0].username;
+    value.detail = value.data[0].detail;
+    value.status_value = value.data[0].status_value;
+    value.created_at = value.data[0].created_at;
+    value.data = allRelatedProductTransactionResult[index].map(
+      (value, index) => {
+        delete value.action_name;
+        delete value.username;
+        delete value.detail;
+        delete value.status_value;
+        delete value.created_at;
+        return value;
+      }
+    );
+    return value;
+  });
+
+  if (transactionResult?.length) {
     response.success = true;
-    response.result = productResult;
+    response.result = transactionResult;
     response.totalPages = numberOfPages;
     response.currentPage = currentPage;
     response.totalRecords = totalRecords;
