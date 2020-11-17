@@ -17,7 +17,8 @@ const getTransactionLog = async (
                         inventory_log_product_list.amount,
                         inventory_log_product_list.balance,
                         inventory_log_product_list.location,
-                        inventory_log_product_list.detail AS product_detail
+                        inventory_log_product_list.detail AS product_detail,
+                        import_export_action.action_type
                     FROM inventory_log 
                     INNER JOIN import_export_action ON inventory_log.action_type = import_export_action.id 
                     INNER JOIN user ON inventory_log.responsable = user.id

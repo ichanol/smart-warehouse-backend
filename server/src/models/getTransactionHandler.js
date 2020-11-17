@@ -108,8 +108,7 @@ const getTransactionHandler = async (req) => {
       await getTransactionLog(
         whereClause +
           ` AND inventory_log.reference_number = ${value.reference_number}`,
-        orderByClause,
-        limitClause
+        orderByClause
       )
   );
 
@@ -124,6 +123,7 @@ const getTransactionHandler = async (req) => {
     value.detail = value.data[0].detail;
     value.status_value = value.data[0].status_value;
     value.created_at = value.data[0].created_at;
+    value.action_type = value.data[0].action_type;
     value.data = allRelatedProductTransactionResult[index].map(
       (value, index) => {
         delete value.action_name;
@@ -131,6 +131,8 @@ const getTransactionHandler = async (req) => {
         delete value.detail;
         delete value.status_value;
         delete value.created_at;
+        delete value.reference_number;
+        delete value.action_type;
         return value;
       }
     );
