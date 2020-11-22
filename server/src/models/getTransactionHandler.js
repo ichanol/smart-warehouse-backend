@@ -7,7 +7,7 @@ const mysql = require("mysql");
 
 const getTransactionHandler = async (req) => {
   let whereClause = "";
-  let orderByClause = "ORDER BY inventory_log.reference_number DESC";
+  let orderByClause = "ORDER BY created_at DESC";
   let limitClause = "";
 
   const response = {
@@ -19,7 +19,7 @@ const getTransactionHandler = async (req) => {
   };
 
   if (req.query?.column) {
-    orderByClause = `, ${req.query.column} ${
+    orderByClause = `ORDER BY ${req.query.column} ${
       req.query.desc === "true" ? "DESC" : "ASC"
     }`;
   }
@@ -27,12 +27,18 @@ const getTransactionHandler = async (req) => {
   const filterArray = [
     { string: "search", value: req.query.search || null },
 
-    { string: "amount", value: req.query.amount || null },
-    { string: "balance", value: req.query.balance || null },
+    {
+      string: "inventory_log_product_list.amount",
+      value: req.query.amount || null,
+    },
+    {
+      string: "inventory_log_product_list.balance",
+      value: req.query.balance || null,
+    },
 
     { string: "status", value: req.query.status || null },
     {
-      string: "import_export_action.action_name",
+      string: "action",
       value: req.query.action || null,
     },
   ];
@@ -40,8 +46,8 @@ const getTransactionHandler = async (req) => {
   const filter = filterArray.filter((value) => value.value !== null);
 
   if (filter.length) {
-    filter.map((value, key) => {
-      if (key === 0) {
+    filter.map((value, index) => {
+      if (index === 0) {
         if (value.string === "search") {
           whereClause = `WHERE (product.product_name LIKE '%${req.query.search}%' 
                                 OR product.product_id LIKE '%${req.query.search}%' 
@@ -54,11 +60,17 @@ const getTransactionHandler = async (req) => {
           } else if (value.value === "1") {
             whereClause = "WHERE inventory_log_status.status_value = 1";
           }
-        } else if (value.string === "amount" || value.string === "balance") {
+        } else if (
+          value.string === "inventory_log_product_list.amount" ||
+          value.string === "inventory_log_product_list.balance"
+        ) {
           const [firstPart, secondPart] = value.value.split(",");
           whereClause = `WHERE ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
-        } else {
-          whereClause = `WHERE ${value.string} = ${mysql.escape(value.value)}`;
+        } else if (value.string === "action") {
+          whereClause = `WHERE import_export_action.action_name IN (${value.value.slice(
+            0,
+            value.value.length - 1
+          )})`;
         }
       } else {
         if (value.string === "search") {
@@ -77,14 +89,21 @@ const getTransactionHandler = async (req) => {
             whereClause =
               whereClause + " AND inventory_log_status.status_value = 1";
           }
-        } else if (value.string === "amount" || value.string === "balance") {
+        } else if (
+          value.string === "inventory_log_product_list.amount" ||
+          value.string === "inventory_log_product_list.balance"
+        ) {
           const [firstPart, secondPart] = value.value.split(",");
           whereClause =
             whereClause +
             ` AND ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
-        } else {
+        } else if (value.string === "action") {
           whereClause =
-            whereClause + ` AND ${value.string} = ${mysql.escape(value.value)}`;
+            whereClause +
+            ` AND import_export_action.action_name IN (${value.value.slice(
+              0,
+              value.value.length - 1
+            )})`;
         }
       }
     });
@@ -106,9 +125,7 @@ const getTransactionHandler = async (req) => {
   const allRelatedProductTransaction = transactionRecordListResult.map(
     async (value, index) =>
       await getTransactionLog(
-        whereClause +
-          ` AND inventory_log.reference_number = ${value.reference_number}`,
-        orderByClause
+        `WHERE inventory_log.reference_number = ${value.reference_number}`
       )
   );
 
@@ -118,24 +135,6 @@ const getTransactionHandler = async (req) => {
 
   const transactionResult = transactionRecordListResult.map((value, index) => {
     value.data = allRelatedProductTransactionResult[index];
-    value.action_name = value.data[0].action_name;
-    value.username = value.data[0].username;
-    value.detail = value.data[0].detail;
-    value.status_value = value.data[0].status_value;
-    value.created_at = value.data[0].created_at;
-    value.action_type = value.data[0].action_type;
-    value.data = allRelatedProductTransactionResult[index].map(
-      (value, index) => {
-        delete value.action_name;
-        delete value.username;
-        delete value.detail;
-        delete value.status_value;
-        delete value.created_at;
-        delete value.reference_number;
-        delete value.action_type;
-        return value;
-      }
-    );
     return value;
   });
 
