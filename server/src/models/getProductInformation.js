@@ -1,4 +1,7 @@
-module.exports = getProductInformation = async (mysql, connection, data) => {
+const connection = require("../Database_connection/connect");
+const mysql = require("mysql");
+
+module.exports = getProductInformation = async (data) => {
   const queryData = () => {
     return new Promise((resolve, reject) => {
       let temp;
@@ -13,15 +16,15 @@ module.exports = getProductInformation = async (mysql, connection, data) => {
       });
 
       const SQL = `SELECT 
-      product.id, 
-      product.product_name, 
-      product.company_name, 
-      product.location, 
-      product.detail, 
-      product_status.status_value AS status 
-      FROM product 
-      INNER JOIN product_status ON product.status = product_status.id 
-      WHERE status = 1 AND product_id IN (${temp})`;
+                        product.id, 
+                        product.product_name, 
+                        product.company_name, 
+                        product.location, 
+                        product.detail, 
+                        product_status.status_value AS status 
+                    FROM product 
+                    INNER JOIN product_status ON product.status = product_status.id 
+                    WHERE status = 1 AND product.product_id IN (${temp})`;
 
       connection.query(SQL, (error, result, field) => {
         if (error) return reject(error);
@@ -32,7 +35,7 @@ module.exports = getProductInformation = async (mysql, connection, data) => {
 
   const currentProductBalanceResult = await queryData();
 
-  if (currentProductBalanceResult.length >= 1) {
+  if (currentProductBalanceResult.length > 0) {
     currentProductBalanceResult.map((value, key) => {
       currentProductBalanceResult[key].product_serial_number =
         data[key].product_serial_number;
@@ -43,7 +46,3 @@ module.exports = getProductInformation = async (mysql, connection, data) => {
     return false;
   }
 };
-// Balance=>Inventory||stock
-
-// + , - log amount
-// more than
