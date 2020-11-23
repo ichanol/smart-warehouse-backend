@@ -12,7 +12,6 @@ const getRole = async (
                       ROLE.detail,
                       ROLE.created_at,
                       ROLE.updated_at,
-                      ROLE.permission,
                       role_status.status_value AS status,
                       (SELECT COUNT(*) AS numberOfRecords FROM user INNER JOIN role ON user.role = role.id WHERE user.role = ROLE.id ) AS totalUser 
                 FROM role ROLE INNER JOIN role_status ON ROLE.status = role_status.id 
