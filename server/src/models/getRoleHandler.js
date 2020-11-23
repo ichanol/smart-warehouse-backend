@@ -1,4 +1,8 @@
-const { getTotalNumberOfRecords, getRole } = require("../services");
+const {
+  getTotalNumberOfRecords,
+  getRole,
+  getRolePermission,
+} = require("../services");
 
 module.exports = getRoleHandler = async (req) => {
   let whereClause = "";
@@ -73,11 +77,21 @@ module.exports = getRoleHandler = async (req) => {
   const firstIndex = (currentPage - 1) * listPerPage;
   limitClause = `LIMIT ${firstIndex}, ${listPerPage}`;
 
-  const productResult = await getRole(whereClause, orderByClause, limitClause);
+  const roleResult = await getRole(whereClause, orderByClause, limitClause);
 
-  if (productResult.length) {
+  const allPermission = roleResult.map(
+     async(value, index) =>  await getRolePermission(value.id)
+  );
+  const allPermissionResult = await Promise.all(allPermission);
+
+  const roleWithPermission = roleResult.map((value, index) => {
+    value.permission = allPermissionResult[index]
+    return value
+  })
+
+  if (roleResult.length) {
     response.success = true;
-    response.result = productResult;
+    response.result = roleWithPermission;
     response.totalPages = numberOfPages;
     response.currentPage = currentPage;
     response.totalRecords = totalRecords;
