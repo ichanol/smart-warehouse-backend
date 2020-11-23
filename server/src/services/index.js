@@ -10,6 +10,7 @@ const updateUserInformation = require("./updateUserInformation");
 const disableUser = require("./disableUser");
 const getRole = require("./getRole");
 const getRoleName = require("./getRoleName");
+const getRolePermission = require("./getRolePermission");
 
 module.exports = {
   getCurrentProductBalance,
@@ -24,4 +25,5 @@ module.exports = {
   disableUser,
   getRole,
   getRoleName,
+  getRolePermission,
 };
