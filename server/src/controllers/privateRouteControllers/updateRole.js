@@ -4,20 +4,23 @@
  *   @ACCESS        -   PRIVATE (admin)
  */
 
-const { updateRoleInformation } = require("../../services");
+const {
+  updateRoleInformation,
+  updateRolePermission,
+} = require("../../services");
 
 const updateRole = async (req, res, next) => {
   try {
     const { id, role_name, detail, permission } = req.body;
 
-    const result = await updateRoleInformation(
+    const updateRoleInformationResult = await updateRoleInformation(id, role_name, detail);
+
+    const updateRolePermissionResult = await updateRolePermission(
       id,
-      role_name,
-      detail,
       permission
     );
 
-    if (result) {
+    if (updateRoleInformationResult && updateRolePermissionResult) {
       res.json({
         success: true,
         message: "Update role information successfully",
