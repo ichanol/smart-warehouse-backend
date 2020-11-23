@@ -25,6 +25,7 @@ const getTotalNumberOfRecordsForTransaction = require("./getTotalNumberOfRecords
 const createTransactionRecord = require("./createTransactionRecord");
 const getTransactionId = require("./getTransactionId");
 const getRolePermission = require("./getRolePermission");
+const updateRolePermission = require("./updateRolePermission");
 
 module.exports = {
   getCurrentProductBalance,
@@ -54,4 +55,5 @@ module.exports = {
   createTransactionRecord,
   getTransactionId,
   getRolePermission,
+  updateRolePermission,
 };
