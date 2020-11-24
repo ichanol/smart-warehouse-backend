@@ -1,7 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
 
-const { createProduct } = require("../controllers/publicRoutesControllers");
 const {
   detectUserId,
   detectProductId,
@@ -23,9 +22,6 @@ router.route("/login").post(userLogin);
 /**  @Hardware */
 router.route("/detect-user-rfid").post(detectUserId);
 router.route("/detect-product-rfid").post(detectProductId);
-
-/**  @MOCK_REQUEST */
-router.route("/create-product/:number").get(createProduct);
 
 /**
  *   @DESCRIPTION - Add middleware to check wheather user has token attached in the request or not,
