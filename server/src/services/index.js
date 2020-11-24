@@ -27,6 +27,7 @@ const getTransactionId = require("./getTransactionId");
 const getRolePermission = require("./getRolePermission");
 const updateRolePermission = require("./updateRolePermission");
 const validateUserIdCard = require("./validateUserIdCard");
+const getProductInformationById = require("./getProductInformationById");
 
 module.exports = {
   getCurrentProductBalance,
@@ -58,4 +59,5 @@ module.exports = {
   getRolePermission,
   updateRolePermission,
   validateUserIdCard,
+  getProductInformationById
 };
