@@ -4,28 +4,16 @@
  *   @ACCESS        -   PUBLIC
  */
 
-const {
-  generateAccessToken,
-  generateRefreshToken,
-} = require("../../generateToken");
-const userLoginHandler = require("../../models/userLoginHandler")
+const userLoginHandler = require("../../models/userLoginHandler");
 
 const userLogin = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const isSuccess = await userLoginHandler(mysql, connection, username, password);
-    if (isSuccess) {
-      res.json({
-        success: true,
-        message: "Log in",
-        accessToken: generateAccessToken(username),
-        refreshToken: generateRefreshToken(username),
-      });
+    const loginResult = await userLoginHandler(username, password);
+    if (loginResult.success) {
+      res.json(loginResult);
     } else {
-      res.status(404).json({
-        success: false,
-        message: "Incorrect username or password",
-      });
+      res.status(404).json(loginResult);
     }
   } catch (error) {
     next(error);
