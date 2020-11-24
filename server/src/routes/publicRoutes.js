@@ -7,7 +7,6 @@ const router = express.Router();
 const {
   userLogIn,
   detectedProductRFID,
-  detectedUserRFID,
   createProduct,
   reNewToken,
   uploadFiles,
@@ -15,11 +14,13 @@ const {
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
 
+const { detectUserId } = require("../controllers/publicRouteControllers");
+
 /**  @WebApplication */
 router.route("/login").post(userLogIn);
 
 /**  @Hardware */
-router.route("/detect-user-rfid").post(detectedUserRFID);
+router.route("/detect-user-rfid").post(detectUserId);
 router.route("/detect-product-rfid").post(detectedProductRFID);
 
 /**  @MOCK_REQUEST */

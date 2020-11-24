@@ -36,40 +36,6 @@ exports.userLogIn = async (req, res, next) => {
 };
 
 /**
- *   @DESCRIPTION   -   When hardware detect user RFID it will send the username that get from RFID card to the server.
- *                      Server will validate wheather that username is valid or not. If username's valid,
- *                      server will send the data to the web application to complete log in process to web application
- *   @ROUTE         -   [POST] /api/smart-warehouse/detect-user-RFID
- *   @ACCESS        -   PRIVATE (hardware)
- */
-exports.detectedUserRFID = async (req, res, next) => {
-  try {
-    const io = require("../../server");
-    const { username } = req.body;
-    const isSuccess = await login(mysql, connection, username);
-
-    if (isSuccess) {
-      io.in(username).emit("USER_GRANTED", {
-        granted: true,
-        message: `[access granted]`,
-        room: username,
-      });
-      res.json({
-        success: true,
-        message: "HARDWARE SEND USERNAME / USER_ID FROM RFID CARD. " + username,
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: "RFID card not valid",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
  *   @DESCRIPTION   -   When hardware read the RFID tags from product successfully.
  *                      It will send request that has a data (S/N, amount, etc) embedded
  *                      in the body of the request to the server. Server will forward all
