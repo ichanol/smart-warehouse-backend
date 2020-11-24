@@ -5,18 +5,16 @@ dotenv.config();
 
 const router = express.Router();
 const {
-  userLogIn,
   createProduct,
   reNewToken,
-  uploadFiles,
 } = require("../controllers/publicRoutesControllers");
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
 
-const { detectUserId, detectProductId } = require("../controllers/publicRouteControllers");
+const { detectUserId, detectProductId, userLogin } = require("../controllers/publicRouteControllers");
 
 /**  @WebApplication */
-router.route("/login").post(userLogIn);
+router.route("/login").post(userLogin);
 
 /**  @Hardware */
 router.route("/detect-user-rfid").post(detectUserId);
@@ -35,7 +33,5 @@ router.get(
   [isLoginHandler, verifyTokenHandler(process.env.REFRESHER_TOKEN)],
   reNewToken
 );
-
-router.route("/uploadfile").post(uploadFiles);
 
 module.exports = router;

@@ -2,37 +2,8 @@ const mysql = require("mysql");
 
 const connection = require("../Database_connection/connect");
 
-const login = require("../models/login");
-
 const { generateAccessToken } = require("../generateToken/index");
 const { generateRefreshToken } = require("../generateToken/index");
-
-/**
- *   @DESCRIPTION   -   Validate user account
- *   @ROUTE         -   [POST] /api/smart-warehouse/login
- *   @ACCESS        -   PUBLIC
- */
-exports.userLogIn = async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const isSuccess = await login(mysql, connection, username, password);
-    if (isSuccess) {
-      res.json({
-        success: true,
-        message: "Log in",
-        accessToken: generateAccessToken(username),
-        refreshToken: generateRefreshToken(username),
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: "Incorrect username or password",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
 
 /**
  *   @DESCRIPTION   -   Generate new access token and refresh token
@@ -131,5 +102,3 @@ exports.createProduct = async (req, res, next) => {
     res.json({ success: false, message: "Failed to create new product" });
   }
 };
-
-exports.uploadFiles = (req, res, next) => {};
