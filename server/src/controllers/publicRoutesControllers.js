@@ -3,7 +3,6 @@ const mysql = require("mysql");
 const connection = require("../Database_connection/connect");
 
 const login = require("../models/login");
-const getProductInformation = require("../models/getProductInformation");
 
 const { generateAccessToken } = require("../generateToken/index");
 const { generateRefreshToken } = require("../generateToken/index");

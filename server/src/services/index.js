@@ -1,3 +1,4 @@
 const validateUserIdCard = require("./validateUserIdCard");
+const getProductInformationById = require("./getProductInformationById");
 
-module.exports = { validateUserIdCard };
+module.exports = { validateUserIdCard, getProductInformationById };

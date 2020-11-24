@@ -6,11 +6,15 @@
  *   @ROUTE         -   [POST] /api/smart-warehouse/detect-product-RFID/
  *   @ACCESS        -   PRIVATE (hardware)
  */
+
+const detectProductHandler = require("../../models/detectProductHandler");
+
 const detectProductId = async (req, res, next) => {
   try {
     const { data, username } = req.body;
     const io = require("../../../server");
-    const result = await getProductInformation(data);
+    const result = await detectProductHandler(data);
+
     if (result) {
       io.in(username).emit("PRODUCT_SCANNER", {
         success: true,
