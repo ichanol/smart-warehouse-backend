@@ -1,29 +1,27 @@
 const express = require("express");
 const dotenv = require("dotenv");
 
-dotenv.config();
-
-const router = express.Router();
 const {
-  userLogIn,
-  createProduct,
-  reNewToken,
-  uploadFiles,
-} = require("../controllers/publicRoutesControllers");
+  detectUserId,
+  detectProductId,
+  userLogin,
+  renewToken,
+} = require("../controllers/publicRouteControllers");
+
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
 
-const { detectUserId, detectProductId } = require("../controllers/publicRouteControllers");
+const router = express.Router();
+
+dotenv.config();
+
 
 /**  @WebApplication */
-router.route("/login").post(userLogIn);
+router.route("/login").post(userLogin);
 
 /**  @Hardware */
 router.route("/detect-user-rfid").post(detectUserId);
 router.route("/detect-product-rfid").post(detectProductId);
-
-/**  @MOCK_REQUEST */
-router.route("/create-product/:number").get(createProduct);
 
 /**
  *   @DESCRIPTION - Add middleware to check wheather user has token attached in the request or not,
@@ -33,9 +31,7 @@ router.route("/create-product/:number").get(createProduct);
 router.get(
   "/renewtoken",
   [isLoginHandler, verifyTokenHandler(process.env.REFRESHER_TOKEN)],
-  reNewToken
+  renewToken
 );
-
-router.route("/uploadfile").post(uploadFiles);
 
 module.exports = router;
