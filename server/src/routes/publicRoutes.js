@@ -1,17 +1,21 @@
 const express = require("express");
 const dotenv = require("dotenv");
 
-dotenv.config();
-
-const router = express.Router();
+const { createProduct } = require("../controllers/publicRoutesControllers");
 const {
-  createProduct,
-  reNewToken,
-} = require("../controllers/publicRoutesControllers");
+  detectUserId,
+  detectProductId,
+  userLogin,
+  renewToken,
+} = require("../controllers/publicRouteControllers");
+
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
 
-const { detectUserId, detectProductId, userLogin } = require("../controllers/publicRouteControllers");
+const router = express.Router();
+
+dotenv.config();
+
 
 /**  @WebApplication */
 router.route("/login").post(userLogin);
@@ -31,7 +35,7 @@ router.route("/create-product/:number").get(createProduct);
 router.get(
   "/renewtoken",
   [isLoginHandler, verifyTokenHandler(process.env.REFRESHER_TOKEN)],
-  reNewToken
+  renewToken
 );
 
 module.exports = router;

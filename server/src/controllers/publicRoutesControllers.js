@@ -2,29 +2,6 @@ const mysql = require("mysql");
 
 const connection = require("../Database_connection/connect");
 
-const { generateAccessToken } = require("../generateToken/index");
-const { generateRefreshToken } = require("../generateToken/index");
-
-/**
- *   @DESCRIPTION   -   Generate new access token and refresh token
- *   @ROUTE         -   [GET] /api/smart-warehouse/renewtoken
- *   @ACCESS        -   PUBLIC
- */
-
-exports.reNewToken = (req, res, next) => {
-  try {
-    res.json({
-      success: true,
-      message: "New token",
-      username: req.decodedUsername,
-      newAccessToken: generateAccessToken(req.decodedUsername),
-      newRefreshToken: generateRefreshToken(req.decodedUsername),
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 exports.createProduct = async (req, res, next) => {
   const { number } = req.params;
   const username = 'tip';
