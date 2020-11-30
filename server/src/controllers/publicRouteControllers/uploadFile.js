@@ -1,9 +1,11 @@
 const nodemailer = require("nodemailer");
 const readXlsxFile = require("read-excel-file/node");
+const fs = require('fs');
+const csv = require("fast-csv");
 const { getEmail, insertInformationFromFile } = require("../../services");
 
 const uploadFile = async (req, res, next) => {
-  console.log(req.file);
+  const fileExtension = req.file.originalname.split(".")[1];
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -22,17 +24,45 @@ const uploadFile = async (req, res, next) => {
     html: "<b>Do you receive this mail?</b><br/><a>55555555<a/>", // HTML body
   };
 
-  const importExcelData2MySQL = async (filePath) => {
-    const rows = await readXlsxFile(filePath);
-    rows.shift();
-    const result = await insertInformationFromFile(rows);
-
+  const sendEmail = () =>
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) console.log(error);
       else console.log(info);
     });
+
+  const importExcelData2MySQL = async (filePath) => {
+    const rows = await readXlsxFile(filePath);
+    rows.shift();
+    const result = await insertInformationFromFile(rows);
+    if (result) {
+      sendEmail();
+    }
   };
-  importExcelData2MySQL(req.file.path);
+
+  const importCsvData2MySQL = (filePath) => {
+    const stream = fs.createReadStream(filePath);
+    const csvData = [];
+    const csvStream = csv
+      .parse()
+      .on("data", (data) => {
+        csvData.push(data);
+      })
+      .on("end", async () => {
+        csvData.shift();
+        const result = await insertInformationFromFile(csvData);
+        if (result) {
+          sendEmail();
+        }
+      });
+    stream.pipe(csvStream);
+  };
+
+  if (fileExtension === "xlsx") {
+    importExcelData2MySQL(req.file.path);
+  } else if (fileExtension === "csv") {
+    console.log("CSV");
+    importCsvData2MySQL(req.file.path);
+  }
 };
 
 module.exports = uploadFile;
