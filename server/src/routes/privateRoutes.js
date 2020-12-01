@@ -4,9 +4,6 @@ const {
   readRFID,
   userLogOut,
 } = require("../controllers/privateRoutesControllers");
-const getProductHandler = require("../models/getProductHandler");
-const getRoleHandler = require("../models/getRoleHandler");
-
 const {
   currentProductBalance,
   getProductManagement,
@@ -22,17 +19,15 @@ const {
   updateRole,
   deleteRole,
   importExportProduct,
-  getTransaction
+  getTransaction,
+  generatePDF,
 } = require("../controllers/privateRouteControllers");
 
-//------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
 router.route("/import-export-product").post(importExportProduct);
 router.route("/read-rfid").get(readRFID);
 router.route("/product-transaction").get(getTransaction);
 router.route("/product-balance").get(currentProductBalance);
-
-// ADMIN ONLY
 router
   .route("/users")
   .get(getUserManagement)
@@ -51,5 +46,6 @@ router
   .post(createRole)
   .put(updateRole)
   .delete(deleteRole);
+router.route("/generate-pdf/:reference_number?").get(generatePDF);
 
 module.exports = router;
