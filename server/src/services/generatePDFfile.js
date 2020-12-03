@@ -6,6 +6,24 @@ const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
+const formatDate = (timeData) => {
+  const time = timeData.toString().slice(0, 23);
+  const newTime = new Date(time);
+  return (
+    newTime.getFullYear() +
+    "/" +
+    (newTime.getMonth() + 1) +
+    "/" +
+    newTime.getDate() +
+    " " +
+    newTime.getHours() +
+    ":" +
+    newTime.getMinutes() +
+    ":" +
+    newTime.getSeconds()
+  );
+};
+
 const generatePDFfile = async (
   referenceNumber,
   [transactionDetail],
@@ -42,7 +60,7 @@ const generatePDFfile = async (
 
       //  Company detail
       newPdf
-        .fontSize(11)
+        .fontSize(10)
         .fill("#666")
         .text("MAGIC BOX ASIA 5th Floor, Sethiwan Tower", 180, 47.5, {
           width: 250,
@@ -80,8 +98,11 @@ const generatePDFfile = async (
         .moveDown(0.2)
         .fill("#666")
         .text(`${moment.utc(transactionDetail.created_at).format("L")}`, {
+        // .text(`${formatDate(transactionDetail.created_at)}`, {
           width: 100,
         });
+
+      console.log(formatDate(transactionDetail.created_at));
       // .moveDown(0.2)
       // .text(`${moment.utc(transactionDetail.created_at).format("LT")}`, {
       //   width: 100,
@@ -106,7 +127,7 @@ const generatePDFfile = async (
       //Transaction detail
       //   newPdf.rect(pdfMarginPt, 165, 250, 70).stroke("#000");
       newPdf
-        .fontSize(11)
+        .fontSize(12)
         .fill("#000")
         .text(`Date: ${transactionDetail.created_at}`, pdfMarginPt, 165, {
           width: 250,
@@ -205,7 +226,14 @@ const generatePDFfile = async (
           .stroke("#ddd");
       });
 
-      newPdf.moveTo(pdfMarginPt, 801.89).lineTo(555.28, 801.89).stroke("#f00");
+      newPdf
+        .fontSize(12)
+        .text(`Note: ${transactionDetail.detail}`, pdfMarginPt, 730, {
+          width: 515.28,
+          height: 71.89,
+        });
+
+      newPdf.moveTo(pdfMarginPt, 801.89).lineTo(555.28, 801.89).stroke("#666");
 
       newPdf.end();
 
