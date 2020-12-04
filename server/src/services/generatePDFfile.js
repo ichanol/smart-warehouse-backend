@@ -26,8 +26,14 @@ const generatePDFfile = async (
           right: pdfMarginPt,
         },
       });
+
+      const dir = "./report";
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+      }
+
       const pdfWirteStream = fs.createWriteStream(
-        `reportPDF/${referenceNumber}.pdf`,
+        `${dir}/${referenceNumber}.pdf`,
         {
           flags: "w+",
         }
@@ -267,6 +273,7 @@ const generatePDFfile = async (
       newPdf.end();
 
       pdfWirteStream.on("finish", () => {
+          console.log('finish')
         resolve(true);
       });
     } catch (error) {

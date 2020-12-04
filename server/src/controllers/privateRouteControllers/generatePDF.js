@@ -13,7 +13,7 @@ const generatePDF = async (req, res, next) => {
       const result = await generatePDFHandler(referenceNumber);
       if (result) {
         res.attachment(`${referenceNumber}.pdf`);
-        res.download(`reportPDF/${referenceNumber}.pdf`);
+        res.download(`./report/${referenceNumber}.pdf`);
       } else {
         res
           .status(404)
