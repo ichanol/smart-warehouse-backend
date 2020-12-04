@@ -1,28 +1,6 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
-const moment = require("moment");
-
-const capitalize = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-};
-
-const formatDate = (timeData) => {
-  const time = timeData.toString().slice(0, 23);
-  const newTime = new Date(time);
-  return (
-    newTime.getFullYear() +
-    "/" +
-    (newTime.getMonth() + 1) +
-    "/" +
-    newTime.getDate() +
-    " " +
-    newTime.getHours() +
-    ":" +
-    newTime.getMinutes() +
-    ":" +
-    newTime.getSeconds()
-  );
-};
+const { fullFormatDate, shortFormatDate, capitalize } = require("../helper");
 
 const generatePDFfile = async (
   referenceNumber,
@@ -32,6 +10,9 @@ const generatePDFfile = async (
 ) => {
   return new Promise((resolve, reject) => {
     try {
+      let page = 1;
+      const totalRecords = productList.length;
+      const totalPages = Math.ceil((totalRecords - 11) / 15) + 1;
       const pdfSizePt = { width: 595.28, height: 841.89 };
       const pdfMarginPt = 40;
       const pdfWidth = pdfSizePt.width - pdfMarginPt * 2;
@@ -53,140 +34,160 @@ const generatePDFfile = async (
       );
 
       newPdf.pipe(pdfWirteStream);
-      console.log(userInformation);
 
-      // Logo
-      newPdf.image("src/images/Logo.jpg", { height: 65, width: 120 });
+      const createHeader = () => {
+        newPdf.image("src/images/Logo.jpg", { height: 65, width: 120 });
 
-      //  Company detail
-      newPdf
-        .fontSize(10)
-        .fill("#666")
-        .text("MAGIC BOX ASIA 5th Floor, Sethiwan Tower", 180, 47.5, {
-          width: 250,
-        })
-        .moveDown(0.15)
-        .text("139 Pan Road, Silom, Bangrak,", {
-          width: 250,
-        })
-        .moveDown(0.15)
-        .text("Bangkok, 10500, THAILAND", {
-          width: 250,
-        })
-        .moveDown(0.15)
-        .text("contact@magicboxasia.com | 02-266-6222", {
-          width: 250,
-        });
-
-      //  Invoice detail
-      newPdf
-        .fontSize(12)
-        .fill("#000")
-        .text("Invoice Number", 465.28, 47.5, {
-          width: 100,
-        })
-        .moveDown(0.2)
-        .fill("#666")
-        .text(`${transactionDetail.reference_number}`, {
-          width: 100,
-        })
-        .moveDown(0.5)
-        .fill("#000")
-        .text("Invoice Date", {
-          width: 100,
-        })
-        .moveDown(0.2)
-        .fill("#666")
-        .text(`${moment.utc(transactionDetail.created_at).format("L")}`, {
-        // .text(`${formatDate(transactionDetail.created_at)}`, {
-          width: 100,
-        });
-
-      console.log(formatDate(transactionDetail.created_at));
-      // .moveDown(0.2)
-      // .text(`${moment.utc(transactionDetail.created_at).format("LT")}`, {
-      //   width: 100,
-      // });
-
-      //  Invoice title
-      newPdf
-        .fontSize(14)
-        .fill("#000")
-        .text(
-          `${capitalize(
-            transactionDetail.action_name
-          )} Product Transaction Record`,
-          40,
-          130,
-          {
-            width: pdfWidth,
-            align: "center",
-          }
-        );
-
-      //Transaction detail
-      //   newPdf.rect(pdfMarginPt, 165, 250, 70).stroke("#000");
-      newPdf
-        .fontSize(12)
-        .fill("#000")
-        .text(`Date: ${transactionDetail.created_at}`, pdfMarginPt, 165, {
-          width: 250,
-          height: 20,
-          ellipsis: true,
-          lineBreak: false,
-        })
-        .moveDown(0.25)
-        .text(
-          `Responsable: ${userInformation.firstname} ${userInformation.lastname}`,
-          {
+        newPdf
+          .fontSize(10)
+          .fill("#666")
+          .text("MAGIC BOX ASIA 5th Floor, Sethiwan Tower", 180, 47.5, {
             width: 250,
-          }
-        )
-        .moveDown(0.25)
-        .text(`Email: ${userInformation.email}`, {
-          width: 250,
-        })
-        .moveTo(pdfMarginPt, 220)
-        .lineWidth(4)
-        .lineTo(555.28, 220)
-        .stroke("#000")
-        .lineWidth(1);
+          })
+          .moveDown(0.15)
+          .text("139 Pan Road, Silom, Bangrak,", {
+            width: 250,
+          })
+          .moveDown(0.15)
+          .text("Bangkok, 10500, THAILAND", {
+            width: 250,
+          })
+          .moveDown(0.15)
+          .text("contact@magicboxasia.com | 02-266-6222", {
+            width: 250,
+          });
+      };
 
-      //  Table title
-      //  595.28
-      newPdf
-        .fontSize(12)
-        .fill("#000")
-        .text("Item", pdfMarginPt, 245 + 5, {
-          width: 215.28,
-        })
-        .text("Location", pdfMarginPt + 215.28, 245 + 5, {
-          width: 100,
-        })
-        .text("Amount (pcs.)", pdfMarginPt + 315.28, 245 + 5, {
-          align: "right",
-          width: 100,
-        })
-        .text("Balance (pcs.)", pdfMarginPt + 415.28, 245 + 5, {
-          align: "right",
-          width: 100,
-        })
-        .moveTo(pdfMarginPt, 245 + 20)
-        .lineTo(555.28, 245 + 20)
-        .stroke("#000");
-
-      productList.map((value, i) => {
+      const createReportIndicator = () =>
         newPdf
           .fontSize(12)
           .fill("#000")
-          .text(value.product_id, pdfMarginPt, 245 + i * 45 + 5 + 20 + 5, {
+          .text("Report Reference", 465.28, 47.5, {
+            width: 100,
+          })
+          .moveDown(0.2)
+          .fill("#666")
+          .text(`${transactionDetail.reference_number}`, {
+            width: 100,
+          })
+          .moveDown(0.5)
+          .fill("#000")
+          .text("Date", {
+            width: 100,
+          })
+          .moveDown(0.2)
+          .fill("#666")
+          .text(`${shortFormatDate(transactionDetail.created_at)}`, {
+            width: 100,
+          });
+
+      const createTableTitle = (y = 245) =>
+        newPdf
+          .fontSize(12)
+          .fill("#000")
+          .text("Item", pdfMarginPt, y + 5, {
             width: 215.28,
           })
+          .text("Location", pdfMarginPt + 215.28, y + 5, {
+            width: 100,
+          })
+          .text("Amount (pcs.)", pdfMarginPt + 315.28, y + 5, {
+            align: "right",
+            width: 100,
+          })
+          .text("Balance (pcs.)", pdfMarginPt + 415.28, y + 5, {
+            align: "right",
+            width: 100,
+          })
+          .moveTo(pdfMarginPt, y + 20)
+          .lineTo(555.28, y + 20)
+          .stroke("#000");
+
+      const createReportTitle = () =>
+        newPdf
+          .fontSize(14)
+          .fill("#000")
+          .text(
+            `${capitalize(
+              transactionDetail.action_name
+            )} Product Transaction Record`,
+            40,
+            130,
+            {
+              width: pdfWidth,
+              align: "center",
+            }
+          );
+
+      const createPageIndicator = () =>
+        newPdf
+          .fontSize(10)
+          .fill("#666")
+          .text(`${page} of ${totalPages}`, 505.28, 781.89, {
+            width: 50,
+            align: "right",
+          })
+          .fill("#000");
+
+      const createTransactionRemark = () =>
+        newPdf
+          .moveDown(2.5)
+          .fontSize(12)
+          .text(`Note: ${transactionDetail.detail}`, pdfMarginPt, newPdf.y, {
+            width: 515.28,
+            height: 40,
+            ellipsis: true,
+          });
+
+      const createReportCompleteDetail = () =>
+        newPdf
+          .fontSize(12)
+          .fill("#000")
+          .text(
+            `Date: ${fullFormatDate(transactionDetail.created_at)}`,
+            pdfMarginPt,
+            165,
+            {
+              width: pdfWidth,
+              height: 20,
+            }
+          )
+          .moveDown(0.25)
+          .text(
+            `Responsable: ${userInformation.firstname} ${userInformation.lastname}`,
+            {
+              width: pdfWidth,
+              height: 20,
+            }
+          )
+          .moveDown(0.25)
+          .text(`Email: ${userInformation.email}`, {
+            width: pdfWidth,
+            height: 20,
+          })
+          .moveTo(pdfMarginPt, 220)
+          .lineWidth(4)
+          .lineTo(555.28, 220)
+          .stroke("#000")
+          .lineWidth(1);
+
+      const createDataRow = (value, multiplier, y = 245) => {
+        newPdf
+          .fontSize(12)
+          .fill("#000")
+          .text(
+            value.product_id,
+            pdfMarginPt,
+            y + multiplier * 45 + 5 + 20 + 5,
+            {
+              width: 215.28,
+            }
+          )
           .fill("#777")
           .text(
             value.product_name,
             pdfMarginPt,
-            245 + i * 45 + 5 + 20 + 15 + 5,
+            y + multiplier * 45 + 5 + 20 + 15 + 5,
             {
               width: 215.28,
             }
@@ -195,7 +196,7 @@ const generatePDFfile = async (
           .text(
             value.location,
             pdfMarginPt + 215.28,
-            245 + i * 45 + 5 + 20 + 10 + 5,
+            y + multiplier * 45 + 5 + 20 + 10 + 5,
             {
               width: 100,
             }
@@ -204,7 +205,7 @@ const generatePDFfile = async (
             (transactionDetail.action_type === "DELETE" ? "- " : "+ ") +
               value.amount.toLocaleString(),
             pdfMarginPt + 315.28,
-            245 + i * 45 + 5 + 20 + 10 + 5,
+            y + multiplier * 45 + 5 + 20 + 10 + 5,
             {
               align: "right",
               width: 100,
@@ -213,7 +214,7 @@ const generatePDFfile = async (
           .text(
             value.balance.toLocaleString(),
             pdfMarginPt + 415.28,
-            245 + i * 45 + 5 + 20 + 10 + 5,
+            y + multiplier * 45 + 5 + 20 + 10 + 5,
             {
               align: "right",
               width: 100,
@@ -221,19 +222,47 @@ const generatePDFfile = async (
           );
 
         newPdf
-          .moveTo(pdfMarginPt, 245 + i * 45 + 5 + 20 + 15 + 5 + 20)
-          .lineTo(555.28, 245 + i * 45 + 5 + 20 + 15 + 5 + 20)
+          .moveTo(pdfMarginPt, y + multiplier * 45 + 5 + 20 + 15 + 5 + 20)
+          .lineTo(555.28, y + multiplier * 45 + 5 + 20 + 15 + 5 + 20)
           .stroke("#ddd");
-      });
+      };
 
-      newPdf
-        .fontSize(12)
-        .text(`Note: ${transactionDetail.detail}`, pdfMarginPt, 730, {
-          width: 515.28,
-          height: 71.89,
-        });
+      createHeader();
+      createReportIndicator();
+      createReportTitle();
+      createReportCompleteDetail();
+      createTableTitle();
 
-      newPdf.moveTo(pdfMarginPt, 801.89).lineTo(555.28, 801.89).stroke("#666");
+      if (productList.length <= 10) {
+        productList.map((value, index) => createDataRow(value, index));
+        createTransactionRemark();
+      } else {
+        for (let i = 0; i <= 10; i++) {
+          const value = productList[0];
+          productList.shift();
+          createDataRow(value, i);
+        }
+        createPageIndicator();
+
+        while (productList[0]) {
+          newPdf.addPage();
+          page += 1;
+          createTableTitle(45);
+
+          for (let i = 0; i < 15; i++) {
+            const value = productList[0];
+            productList.shift();
+            if (value) {
+              createDataRow(value, i, 45);
+            }
+          }
+
+          if (page === totalPages) {
+            createTransactionRemark();
+          }
+          createPageIndicator();
+        }
+      }
 
       newPdf.end();
 

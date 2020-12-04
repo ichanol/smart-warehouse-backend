@@ -25,7 +25,7 @@ const generatePDFHandler = async (referenceNumber) => {
   );
 
   if (result) {
-    console.log(transactionDetail, productList);
+    // console.log(transactionDetail, productList);
     return true;
   } else {
     return false;
