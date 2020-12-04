@@ -1,10 +1,16 @@
 const nodemailer = require("nodemailer");
 const readXlsxFile = require("read-excel-file/node");
-const fs = require('fs');
+const fs = require("fs");
 const csv = require("fast-csv");
-const { getEmail, insertInformationFromFile } = require("../../services");
+
+const {
+  getEmail,
+  insertProductInformationFromFileToProductTable,
+  insertCurrentProductBalanceFromFile,
+} = require("../../services");
 
 const uploadFile = async (req, res, next) => {
+  const data = [];
   const fileExtension = req.file.originalname.split(".")[1];
 
   const transporter = nodemailer.createTransport({
@@ -30,38 +36,49 @@ const uploadFile = async (req, res, next) => {
       else console.log(info);
     });
 
-  const importExcelData2MySQL = async (filePath) => {
+  const readExcel = async (filePath) => {
     const rows = await readXlsxFile(filePath);
     rows.shift();
-    const result = await insertInformationFromFile(rows);
-    if (result) {
-      sendEmail();
-    }
+    data.push(rows);
   };
 
-  const importCsvData2MySQL = (filePath) => {
+  const readCSV = (filePath) => {
     const stream = fs.createReadStream(filePath);
     const csvData = [];
     const csvStream = csv
       .parse()
-      .on("data", (data) => {
-        csvData.push(data);
+      .on("data", (result) => {
+        csvData.push(result);
       })
       .on("end", async () => {
         csvData.shift();
-        const result = await insertInformationFromFile(csvData);
-        if (result) {
-          sendEmail();
-        }
+        data.push(csvData);
       });
     stream.pipe(csvStream);
   };
 
   if (fileExtension === "xlsx") {
-    importExcelData2MySQL(req.file.path);
+    await readExcel(req.file.path);
   } else if (fileExtension === "csv") {
-    console.log("CSV");
-    importCsvData2MySQL(req.file.path);
+    await readCSV(req.file.path);
+  }
+
+  const insertProductResult = await insertProductInformationFromFileToProductTable(
+    data
+  );
+
+  const dataForCurrentProductBalance = data[0].map((value, index) => {
+    const temp = [];
+    temp.push(insertProductResult + index, value[3]);
+    return temp;
+  });
+
+  const insertCurrentProductBalanceResult = await insertCurrentProductBalanceFromFile(
+    dataForCurrentProductBalance
+  );
+
+  if (insertProductResult && insertCurrentProductBalanceResult) {
+    sendEmail();
   }
 };
 

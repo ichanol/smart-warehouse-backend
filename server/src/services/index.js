@@ -1,4 +1,9 @@
 const getEmail = require("./getEmail");
-const insertInformationFromFile = require("./insertInformationFromFile");
+const insertProductInformationFromFileToProductTable = require("./insertProductInformationFromFileToProductTable");
+const insertCurrentProductBalanceFromFile = require("./insertCurrentProductBalanceFromFile");
 
-module.exports = { getEmail, insertInformationFromFile };
+module.exports = {
+  getEmail,
+  insertProductInformationFromFileToProductTable,
+  insertCurrentProductBalanceFromFile,
+};
