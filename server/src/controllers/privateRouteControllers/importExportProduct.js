@@ -8,13 +8,20 @@ const importExportProductHandler = require("../../models/importExportProductHand
 
 const importExportProduct = async (req, res, next) => {
   try {
-    const { referenceNumber, actionType, username, productList } = req.body;
+    const {
+      referenceNumber,
+      actionType,
+      username,
+      productList,
+      transactionRemark,
+    } = req.body;
 
     const isSuccess = await importExportProductHandler(
       referenceNumber,
       actionType,
       username,
-      productList
+      productList,
+      transactionRemark
     );
     if (isSuccess) {
       res.json({ success: true, message: "Save transaction successfully" });
