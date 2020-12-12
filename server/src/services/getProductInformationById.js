@@ -7,7 +7,6 @@ const getProductInformationById = (productId) => {
                     product.product_name, 
                     product.company_name, 
                     product.location, 
-                    product.detail, 
                     product_status.status_value AS status 
                 FROM product 
                 INNER JOIN product_status ON product.status = product_status.id 
