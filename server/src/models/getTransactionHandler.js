@@ -41,6 +41,10 @@ const getTransactionHandler = async (req) => {
       string: "action",
       value: req.query.action || null,
     },
+    {
+      string: "inventory_log.created_at",
+      value: req.query.date || null,
+    },
   ];
 
   const filter = filterArray.filter((value) => value.value !== null);
@@ -60,17 +64,16 @@ const getTransactionHandler = async (req) => {
           } else if (value.value === "1") {
             whereClause = "WHERE inventory_log_status.status_value = 1";
           }
-        } else if (
-          value.string === "inventory_log_product_list.amount" ||
-          value.string === "inventory_log_product_list.balance"
-        ) {
-          const [firstPart, secondPart] = value.value.split(",");
-          whereClause = `WHERE ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
         } else if (value.string === "action") {
           whereClause = `WHERE import_export_action.action_name IN (${value.value.slice(
             0,
             value.value.length - 1
           )})`;
+        } else {
+          const [firstPart, secondPart] = value.value.split(",");
+          whereClause = `WHERE ${value.string} BETWEEN ${mysql.escape(
+            firstPart
+          )} AND ${mysql.escape(secondPart)}`;
         }
       } else {
         if (value.string === "search") {
@@ -89,14 +92,6 @@ const getTransactionHandler = async (req) => {
             whereClause =
               whereClause + " AND inventory_log_status.status_value = 1";
           }
-        } else if (
-          value.string === "inventory_log_product_list.amount" ||
-          value.string === "inventory_log_product_list.balance"
-        ) {
-          const [firstPart, secondPart] = value.value.split(",");
-          whereClause =
-            whereClause +
-            ` AND ${value.string} BETWEEN ${firstPart} AND ${secondPart}`;
         } else if (value.string === "action") {
           whereClause =
             whereClause +
@@ -104,6 +99,13 @@ const getTransactionHandler = async (req) => {
               0,
               value.value.length - 1
             )})`;
+        } else {
+          const [firstPart, secondPart] = value.value.split(",");
+          whereClause =
+            whereClause +
+            ` AND ${value.string} BETWEEN ${mysql.escape(
+              firstPart
+            )} AND ${mysql.escape(secondPart)}`;
         }
       }
     });
