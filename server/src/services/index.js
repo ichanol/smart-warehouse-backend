@@ -31,6 +31,8 @@ const getProductInformationById = require("./getProductInformationById");
 const validateUserLogin = require("./validateUserLogin");
 const generatePDFfile = require("./generatePDFfile");
 const getImportExportAction = require("./getImportExportAction");
+const addRolePermission = require("./addRolePermission");
+const getRoleId = require("./getRoleId");
 
 module.exports = {
   getCurrentProductBalance,
@@ -66,4 +68,6 @@ module.exports = {
   validateUserLogin,
   generatePDFfile,
   getImportExportAction,
+  addRolePermission,
+  getRoleId,
 };

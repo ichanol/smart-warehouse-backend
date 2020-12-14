@@ -46,21 +46,30 @@ CREATE TABLE role(
     id INT NOT NULL AUTO_INCREMENT,
     role_name VARCHAR(255) NOT NULL,
     detail VARCHAR(512) NOT NULL,
-    status int NOT NULL,
+    status int NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY (status) REFERENCES role_status(id)
 );
+CREATE TABLE permission_list(
+    id INT NOT NULL AUTO_INCREMENT,
+    permission_name VARCHAR(255) NOT NULL,
+    detail VARCHAR(512) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+);
 CREATE TABLE role_permission(
     id INT NOT NULL AUTO_INCREMENT,
     role INT NOT NULL,
-    permission VARCHAR(255) NOT NULL,
+    permission INT NOT NULL,
     status BOOLEAN NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
-    FOREIGN KEY (role) REFERENCES role(id)
+    FOREIGN KEY (role) REFERENCES role(id),
+    FOREIGN KEY (permission) REFERENCES permission_list(id)
 );
 CREATE TABLE user(
     id INT NOT NULL AUTO_INCREMENT,
@@ -70,7 +79,7 @@ CREATE TABLE user(
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     role INT NOT NULL,
-    status int NOT NULL,
+    status int NOT NULL DEFAULT 1,
     detail VARCHAR(512),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -85,7 +94,7 @@ CREATE TABLE product(
     company_name VARCHAR(255) NOT NUll,
     location VARCHAR(255) NOT NULL,
     detail VARCHAR(512),
-    status int NOT NULL,
+    status int NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_by INT NOT NULL,
@@ -172,55 +181,83 @@ VALUES (
         "This role no longer authorized in this system",
         FALSE
     );
-INSERT INTO role(role_name, detail, status)
+INSERT INTO role(role_name, detail)
 VALUES (
         "ADMIN",
-        "Permission for admin",
-        1
+        "Permission for admin"
     ),
     (
         "CREW",
-        "Permission for crew",
-        1
+        "Permission for crew"
     ),
     (
         "REPORTER",
-        "Permission for reporter",
-        1
+        "Permission for reporter"
+    );
+INSERT INTO permission_list(permission_name, detail)
+VALUES (
+        'Map',
+        "Access to the map of warehouse and product's location"
+    ),
+    (
+        'Overview',
+        'Access to warehouse overview information eg: Activity logs, monthly summary'
+    ),
+    (
+        'Product List',
+        'Access to current products data that stored in the warehouse'
+    ),
+    (
+        'Transaction',
+        'Access to read and edit the transaction data'
+    ),
+    (
+        'Import Export Product',
+        'Access to create a new transaction(Import product to warehouse or Export product from warehouse)'
+    ),
+    (
+        'Role Management',
+        'Access to read, create and edit role information'
+    ),
+    (
+        'User Management',
+        'Access to read, create and edit user information'
+    ),
+    (
+        'Product Management',
+        'Access to read, create and edit product information'
     );
 INSERT INTO role_permission(role, permission, status)
-VALUES (1, 'Map', TRUE),
-    (1, 'Overview', TRUE),
-    (1, 'Product List', TRUE),
-    (1, 'Transaction', TRUE),
-    (1, 'Import Export Product', TRUE),
-    (1, 'Role Management', TRUE),
-    (1, 'User Management', TRUE),
-    (1, 'Product Management', TRUE),
-    (2, 'Map', TRUE),
-    (2, 'Overview', FALSE),
-    (2, 'Product List', FALSE),
-    (2, 'Transaction', FALSE),
-    (2, 'Import Export Product', TRUE),
-    (2, 'Role Management', FALSE),
-    (2, 'User Management', FALSE),
-    (2, 'Product Management', FALSE),
-    (3, 'Map', FALSE),
-    (3, 'Overview', TRUE),
-    (3, 'Product List', TRUE),
-    (3, 'Transaction', TRUE),
-    (3, 'Import Export Product', FALSE),
-    (3, 'Role Management', FALSE),
-    (3, 'User Management', FALSE),
-    (3, 'Product Management', FALSE)
-;
+VALUES (1, 1, TRUE),
+    (1, 2, TRUE),
+    (1, 3, TRUE),
+    (1, 4, TRUE),
+    (1, 5, TRUE),
+    (1, 6, TRUE),
+    (1, 7, TRUE),
+    (1, 8, TRUE),
+    (2, 1, TRUE),
+    (2, 2, FALSE),
+    (2, 3, FALSE),
+    (2, 4, FALSE),
+    (2, 5, TRUE),
+    (2, 6, FALSE),
+    (2, 7, FALSE),
+    (2, 8, FALSE),
+    (3, 1, FALSE),
+    (3, 2, TRUE),
+    (3, 3, TRUE),
+    (3, 4, TRUE),
+    (3, 5, FALSE),
+    (3, 6, FALSE),
+    (3, 7, FALSE),
+    (3, 8, FALSE);
 INSERT INTO user(
         username,
         firstname,
         lastname,
         password,
         role,
-        status,
         email
     )
 VALUES (
@@ -228,7 +265,6 @@ VALUES (
         "SYSTEM",
         "SYSTEM",
         "SYSTEM",
-        1,
         1,
         "chanatip.ras@mail.kmutt.ac.th"
     ),
@@ -238,7 +274,6 @@ VALUES (
         "AdminLastname",
         "adminpassword",
         1,
-        1,
         "chanatip.ras@mail.kmutt.ac.th"
     ),
     (
@@ -247,7 +282,6 @@ VALUES (
         "CrewLastname",
         "crewpassword",
         2,
-        1,
         "chanatip.ras@mail.kmutt.ac.th"
     ),
     (
@@ -256,7 +290,6 @@ VALUES (
         "ReporterLastname",
         "reporterpassword",
         3,
-        1,
         "chanatip.ras@mail.kmutt.ac.th"
     ),
     (
@@ -264,7 +297,6 @@ VALUES (
         "TipFirstName",
         "TipLastName",
         "tip",
-        1,
         1,
         "chanatip.ras@mail.kmutt.ac.th"
     );
@@ -279,7 +311,6 @@ INSERT INTO product(
         company_name,
         location,
         detail,
-        status,
         created_by
     )
 VALUES (
@@ -288,7 +319,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -297,7 +327,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -306,7 +335,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -315,7 +343,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -324,7 +351,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -333,7 +359,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -342,7 +367,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -351,7 +375,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -360,7 +383,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     ),
     (
@@ -369,7 +391,6 @@ VALUES (
         "Magic Box Asia",
         "Setthiwan 5th flr.",
         "some detail",
-        1,
         1
     );
 INSERT INTO current_product_balance(product_id, location)
