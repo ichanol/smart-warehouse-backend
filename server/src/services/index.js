@@ -19,6 +19,7 @@ const updateCurrentProductBalance = require("./updateCurrentProductBalance");
 const createTransactionByArray = require("./createTransactionByArray");
 const createTransactionRecord = require("./createTransactionRecord");
 const getTransactionId = require("./getTransactionId");
+const getImportExportAction = require("./getImportExportAction");
 
 module.exports = {
   getCurrentProductBalance,
@@ -42,4 +43,5 @@ module.exports = {
   createTransactionByArray,
   createTransactionRecord,
   getTransactionId,
+  getImportExportAction,
 };
