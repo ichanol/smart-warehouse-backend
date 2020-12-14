@@ -30,6 +30,7 @@ const validateUserIdCard = require("./validateUserIdCard");
 const getProductInformationById = require("./getProductInformationById");
 const validateUserLogin = require("./validateUserLogin");
 const generatePDFfile = require("./generatePDFfile");
+const getImportExportAction = require("./getImportExportAction");
 
 module.exports = {
   getCurrentProductBalance,
@@ -64,4 +65,5 @@ module.exports = {
   getProductInformationById,
   validateUserLogin,
   generatePDFfile,
+  getImportExportAction,
 };

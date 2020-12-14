@@ -14,6 +14,7 @@ const deleteRole = require("./deleteRole");
 const importExportProduct = require("./importExportProduct");
 const getTransaction = require("./getTransaction");
 const generatePDF = require("./generatePDF");
+const getImportExportProductActions = require("./getImportExportProductActions");
 
 module.exports = {
   updateProduct,
@@ -32,4 +33,5 @@ module.exports = {
   importExportProduct,
   getTransaction,
   generatePDF,
+  getImportExportProductActions,
 };

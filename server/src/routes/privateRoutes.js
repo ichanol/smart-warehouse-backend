@@ -21,10 +21,11 @@ const {
   importExportProduct,
   getTransaction,
   generatePDF,
+  getImportExportProductActions
 } = require("../controllers/privateRouteControllers");
 
 router.route("/logout").post(userLogOut);
-router.route("/import-export-product").post(importExportProduct);
+router.route("/import-export-product").post(importExportProduct).get(getImportExportProductActions);
 router.route("/read-rfid").get(readRFID);
 router.route("/product-transaction").get(getTransaction);
 router.route("/product-balance").get(currentProductBalance);
