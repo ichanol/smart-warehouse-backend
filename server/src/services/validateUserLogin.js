@@ -3,10 +3,11 @@ const mysql = require("mysql");
 
 const validateUserLogin = (username, password) => {
   return new Promise((resolve, reject) => {
-    const SQL = `SELECT role_permission.permission, 
+    const SQL = `SELECT permission_list.permission_name AS permission, 
                         role_permission.status 
                   FROM user 
                   INNER JOIN role_permission ON user.role = role_permission.role
+                  INNER JOIN permission_list ON permission_list.id = role_permission.permission
                   INNER JOIN user_status ON user.status = user_status.id
                   WHERE user.username = ${mysql.escape(
                     username
