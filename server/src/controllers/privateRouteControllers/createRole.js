@@ -5,12 +5,13 @@
  */
 
 const { createNewRole } = require("../../services");
+const createRoleHandler = require('../../models/createRoleHandler')
 
 const createRole = async (req, res, next) => {
   try {
     const { role_name, detail, permission, status } = req.body;
 
-    const result = await createNewRole(role_name, detail, permission, status);
+    const result = await createRoleHandler(role_name, detail, permission, status);
 
     if (result) {
       res.status(201).json({
