@@ -5,7 +5,7 @@ const addRolePermission = async (permission) => {
     const SQL =
       "INSERT INTO role_permission(role, permission, status) VALUES ?";
 
-    connection.query(SQL, permission, (error, result, field) => {
+    connection.query(SQL, [permission], (error, result, field) => {
       if (error) return reject(error);
       resolve(true);
     });
