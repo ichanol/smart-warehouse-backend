@@ -5,7 +5,8 @@ const getTransactionLog = async (
   orderByClause = "",
 ) => {
   return new Promise((resolve, reject) => {
-    const SQL = `SELECT product.product_id,
+    const SQL = `SELECT product.id,
+                        product.product_id,
                         product.product_name,
                         inventory_log_product_list.amount,
                         inventory_log_product_list.balance,
