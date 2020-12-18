@@ -23,14 +23,15 @@ const {
   updateRole,
   deleteRole,
   importExportProduct,
-  getImportExportProductActions
+  getImportExportProductActions,
+  updateTransaction
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
 router.route("/import-export-product").post(importExportProduct).get(getImportExportProductActions);
 router.route("/read-rfid").get(readRFID);
-router.route("/product-transaction").get(productTransaction);
+router.route("/product-transaction").get(productTransaction).post(updateTransaction);
 router.route("/product-balance").get(currentProductBalance);
 
 // ADMIN ONLY
