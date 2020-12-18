@@ -4,7 +4,7 @@ const mysql = require("mysql");
 const updateTransactionStatus = async (reference_number) => {
   return new Promise((resolve, reject) => {
     const SQL = `UPDATE inventory_log SET 
-                        status = 2,
+                        status = 2
                         WHERE reference_number = ${mysql.escape(
                           reference_number
                         )};`;
