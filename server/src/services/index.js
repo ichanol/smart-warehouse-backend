@@ -34,6 +34,7 @@ const getImportExportAction = require("./getImportExportAction");
 const addRolePermission = require("./addRolePermission");
 const getRoleId = require("./getRoleId");
 const getPermission = require("./getPermission");
+const updateTransactionStatus = require("./updateTransactionStatus");
 
 module.exports = {
   getCurrentProductBalance,
@@ -72,4 +73,5 @@ module.exports = {
   addRolePermission,
   getRoleId,
   getPermission,
+  updateTransactionStatus,
 };
