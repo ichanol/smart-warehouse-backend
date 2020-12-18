@@ -13,6 +13,7 @@ const updateRole = require("./updateRole");
 const deleteRole = require("./deleteRole");
 const importExportProduct = require("./importExportProduct");
 const getImportExportProductActions = require("./getImportExportProductActions");
+const updateTransaction = require("./updateTransaction");
 
 module.exports = {
   updateProduct,
@@ -30,4 +31,5 @@ module.exports = {
   deleteRole,
   importExportProduct,
   getImportExportProductActions,
+  updateTransaction,
 };
