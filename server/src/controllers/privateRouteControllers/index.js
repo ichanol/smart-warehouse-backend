@@ -1,3 +1,4 @@
 const uploadFile = require("./uploadFile");
+const downloadTemplate = require("./downloadTemplate");
 
-module.exports = { uploadFile };
+module.exports = { uploadFile, downloadTemplate };

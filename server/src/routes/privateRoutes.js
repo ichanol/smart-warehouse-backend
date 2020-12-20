@@ -37,7 +37,10 @@ const {
 const getProductHandler = require("../models/getProductHandler");
 const getRoleHandler = require("../models/getRoleHandler");
 
-const { uploadFile } = require("../controllers/privateRouteControllers");
+const {
+  uploadFile,
+  downloadTemplate,
+} = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
@@ -66,6 +69,9 @@ router
   .put(updateRole)
   .delete(deleteRole);
 
-router.route("/uploadfile/:type").post([upload.single("uploadDocument"), uploadFile]);
+router
+  .route("/uploadfile/:type")
+  .get(downloadTemplate)
+  .post([upload.single("uploadDocument"), uploadFile]);
 
 module.exports = router;
