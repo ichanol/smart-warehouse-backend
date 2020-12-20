@@ -1,5 +1,20 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+
+global.__basedir = "/app";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, __basedir + "/upload/");
+  },
+  filename: (req, file, cb) => {
+    console.log("MULTER", file);
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
+
 const {
   createProduct,
   createRole,
@@ -21,6 +36,8 @@ const {
 } = require("../controllers/privateRoutesControllers");
 const getProductHandler = require("../models/getProductHandler");
 const getRoleHandler = require("../models/getRoleHandler");
+
+const { uploadFile } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
@@ -48,5 +65,7 @@ router
   .post(createRole)
   .put(updateRole)
   .delete(deleteRole);
+
+router.route("/uploadfile/:type").post([upload.single("uploadDocument"), uploadFile]);
 
 module.exports = router;

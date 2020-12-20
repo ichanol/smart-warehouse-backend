@@ -3,8 +3,6 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const { uploadFile } = require("../controllers/publicRouteControllers");
-
 const router = express.Router();
 const {
   userLogIn,
@@ -15,19 +13,6 @@ const {
 } = require("../controllers/publicRoutesControllers");
 const verifyTokenHandler = require("../middleware/verifyTokenHandler");
 const isLoginHandler = require("../middleware/isLoginHandler");
-
-const multer = require("multer");
-global.__basedir = "/app";
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, __basedir + "/uploads/");
-  },
-  filename: (req, file, cb) => {
-    console.log('MULTER',file)
-    cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
 
 /**  @WebApplication */
 router.route("/login").post(userLogIn);
@@ -49,9 +34,5 @@ router.get(
   [isLoginHandler, verifyTokenHandler(process.env.REFRESHER_TOKEN)],
   reNewToken
 );
-
-router
-  .route("/uploadfile")
-  .post([upload.single("uploadDocument"), uploadFile]);
 
 module.exports = router;
