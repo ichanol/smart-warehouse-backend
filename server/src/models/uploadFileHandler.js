@@ -29,14 +29,14 @@ const uploadFileHandler = async (req) => {
     data.push(await readCSV(req.file.path));
   }
 
-  if (req.params === "user") {
+  if (req.params.type === "user") {
     const insertUserResult = await insertUserInformationFromFileToUserTable(
       data
     );
     if (insertUserResult) {
       success = true;
     }
-  } else if (req.params === "product") {
+  } else if (req.params.type === "product") {
     const insertProductResult = await insertProductInformationFromFileToProductTable(
       data
     );
@@ -54,7 +54,7 @@ const uploadFileHandler = async (req) => {
     if (insertProductResult && insertCurrentProductBalanceResult) {
       success = true;
     }
-  } else if (req.params === "role") {
+  } else if (req.params.type === "role") {
     const insertRoleResult = await insertRoleInformationFromFileToRoleTable(
       data
     );
