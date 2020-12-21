@@ -25,8 +25,10 @@ const updateTransactionHandler = async (
     undoValueToUpdate = "",
     oldMultiplier = 1;
 
+  oldProductList.sort((a, b) => a.id - b.id);
+
   if (oldActionType === "ADD") {
-    multiplier = -1;
+    oldMultiplier = -1;
   }
 
   for (let index = 0; index < oldProductList.length; index++) {
