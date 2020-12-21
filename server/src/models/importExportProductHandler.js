@@ -25,6 +25,8 @@ const importExportProductHandler = async (
   const actionType = await getImportExportProductActionType(actionID);
   const userId = await getUserId(username);
 
+  productList.sort((a, b) => a.id - b.id);
+
   const saveTransactionRecordResult = await createTransactionRecord(
     referenceNumber,
     actionID,
