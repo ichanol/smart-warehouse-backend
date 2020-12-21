@@ -1,5 +1,20 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+
+global.__basedir = "/app";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, __basedir + "/upload/");
+  },
+  filename: (req, file, cb) => {
+    console.log("MULTER", file);
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
+
 const {
   readRFID,
   userLogOut,
@@ -22,9 +37,12 @@ const {
   getTransaction,
   generatePDF,
   getImportExportProductActions,
-  updateTransaction
+  updateTransaction,
+  uploadFile,
+  downloadTemplate,
 } = require("../controllers/privateRouteControllers");
 
+//------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
 router.route("/import-export-product").post(importExportProduct).get(getImportExportProductActions);
 router.route("/read-rfid").get(readRFID);
@@ -49,5 +67,10 @@ router
   .put(updateRole)
   .delete(deleteRole);
 router.route("/generate-pdf/:reference_number?").get(generatePDF);
+
+router
+  .route("/uploadfile/:type")
+  .get(downloadTemplate)
+  .post([upload.single("uploadDocument"), uploadFile]);
 
 module.exports = router;

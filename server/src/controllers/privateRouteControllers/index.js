@@ -16,6 +16,8 @@ const getTransaction = require("./getTransaction");
 const generatePDF = require("./generatePDF");
 const getImportExportProductActions = require("./getImportExportProductActions");
 const updateTransaction = require("./updateTransaction");
+const uploadFile = require("./uploadFile");
+const downloadTemplate = require("./downloadTemplate");
 
 module.exports = {
   updateProduct,
@@ -36,4 +38,6 @@ module.exports = {
   generatePDF,
   getImportExportProductActions,
   updateTransaction,
+  uploadFile,
+  downloadTemplate,
 };
