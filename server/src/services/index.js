@@ -35,6 +35,9 @@ const addRolePermission = require("./addRolePermission");
 const getRoleId = require("./getRoleId");
 const getPermission = require("./getPermission");
 const updateTransactionStatus = require("./updateTransactionStatus");
+const getEmail = require("./getEmail");
+const insertProductInformationFromFileToProductTable = require("./insertProductInformationFromFileToProductTable");
+const insertCurrentProductBalanceFromFile = require("./insertCurrentProductBalanceFromFile");
 
 module.exports = {
   getCurrentProductBalance,
@@ -74,4 +77,7 @@ module.exports = {
   getRoleId,
   getPermission,
   updateTransactionStatus,
+  getEmail,
+  insertProductInformationFromFileToProductTable,
+  insertCurrentProductBalanceFromFile,
 };
