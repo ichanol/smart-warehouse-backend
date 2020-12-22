@@ -10,7 +10,8 @@ const getTransactionLog = async (
                         product.product_name,
                         inventory_log_product_list.amount,
                         inventory_log_product_list.balance,
-                        warehouse_stock_area.area_name AS location,
+                        warehouse_stock_area.area_name AS location_name,
+                        warehouse_stock_area.id AS location,
                         inventory_log_product_list.detail AS product_detail
                     FROM inventory_log 
                     INNER JOIN import_export_action ON inventory_log.action_type = import_export_action.id 
