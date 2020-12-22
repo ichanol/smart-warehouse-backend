@@ -15,7 +15,8 @@ const importExportProductHandler = async (
   actionID,
   username,
   productList,
-  transactionRemark = ""
+  transactionRemark = "",
+  warehouse
 ) => {
   const transactionData = [];
   let idForQueryBalance,
@@ -31,7 +32,8 @@ const importExportProductHandler = async (
     referenceNumber,
     actionID,
     userId,
-    transactionRemark
+    transactionRemark,
+    warehouse
   );
 
   const transactionId = await getTransactionId(referenceNumber);
