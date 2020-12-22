@@ -12,11 +12,11 @@ const createTransactionRecord = async (
     const SQL = `INSERT INTO inventory_log(reference_number, 
                                             action_type, 
                                             responsable, 
-                                            detail,warehouse) 
+                                            detail, warehouse) 
                 VALUES(${mysql.escape(referenceNumber)}, 
                         ${mysql.escape(actionID)}, 
                         ${mysql.escape(userId)}, 
-                        ${mysql.escape(detail)}),
+                        ${mysql.escape(detail)},
                         ${mysql.escape(warehouse)})`;
 
     connection.query(SQL, (error, result, field) => {

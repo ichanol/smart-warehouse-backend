@@ -14,6 +14,7 @@ const importExportProduct = async (req, res, next) => {
       username,
       productList,
       transactionRemark,
+      warehouse,
     } = req.body;
 
     const isSuccess = await importExportProductHandler(
@@ -21,7 +22,8 @@ const importExportProduct = async (req, res, next) => {
       actionType,
       username,
       productList,
-      transactionRemark
+      transactionRemark,
+      warehouse
     );
     if (isSuccess) {
       res.json({ success: true, message: "Save transaction successfully" });
