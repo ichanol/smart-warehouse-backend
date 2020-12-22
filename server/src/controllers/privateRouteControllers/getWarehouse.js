@@ -9,7 +9,7 @@ const { getWarehouseList, getWarehouseSubArea } = require("../../services");
 const getWarehouse = async (req, res, next) => {
   try {
     if (req.query.getWarehouseArea) {
-      const result = await getWarehouseSubArea(getWarehouseArea);
+      const result = await getWarehouseSubArea(req.query.getWarehouseArea);
       if (result) {
         res.json({ success: true, result });
       } else {
