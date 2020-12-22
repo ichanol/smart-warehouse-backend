@@ -11,6 +11,7 @@ const getTransactionRecord = async (
                         MAX(import_export_action.action_name) AS action_name, 
                         MAX(import_export_action.action_type) AS action_type, 
                         MAX(inventory_log.detail) AS detail, 
+                        MAX(warehouse) AS warehouse, 
                         MAX(user.username) AS username,
                         MAX(inventory_log_status.status_value) AS status_value
                   FROM inventory_log
