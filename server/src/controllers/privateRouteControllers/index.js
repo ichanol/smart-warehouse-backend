@@ -18,6 +18,7 @@ const getImportExportProductActions = require("./getImportExportProductActions")
 const updateTransaction = require("./updateTransaction");
 const uploadFile = require("./uploadFile");
 const downloadTemplate = require("./downloadTemplate");
+const getWarehouse = require("./getWarehouse");
 
 module.exports = {
   updateProduct,
@@ -40,4 +41,5 @@ module.exports = {
   updateTransaction,
   uploadFile,
   downloadTemplate,
+  getWarehouse,
 };

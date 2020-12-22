@@ -43,6 +43,8 @@ const readXLSX = require("./readXLSX");
 const sendEmail = require("./sendEmail");
 const insertRoleInformationFromFileToRoleTable = require("./insertRoleInformationFromFileToRoleTable");
 const insertUserInformationFromFileToUserTable = require("./insertUserInformationFromFileToUserTable");
+const getWarehouseList = require("./getWarehouseList");
+const getWarehouseSubArea = require("./getWarehouseSubArea");
 
 module.exports = {
   getCurrentProductBalance,
@@ -90,4 +92,6 @@ module.exports = {
   sendEmail,
   insertRoleInformationFromFileToRoleTable,
   insertUserInformationFromFileToUserTable,
+  getWarehouseList,
+  getWarehouseSubArea,
 };

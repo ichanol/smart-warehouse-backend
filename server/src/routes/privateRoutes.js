@@ -40,13 +40,20 @@ const {
   updateTransaction,
   uploadFile,
   downloadTemplate,
+  getWarehouse,
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
 router.route("/logout").post(userLogOut);
-router.route("/import-export-product").post(importExportProduct).get(getImportExportProductActions);
+router
+  .route("/import-export-product")
+  .post(importExportProduct)
+  .get(getImportExportProductActions);
 router.route("/read-rfid").get(readRFID);
-router.route("/product-transaction").get(getTransaction).post(updateTransaction);
+router
+  .route("/product-transaction")
+  .get(getTransaction)
+  .post(updateTransaction);
 router.route("/product-balance").get(currentProductBalance);
 router
   .route("/users")
@@ -67,6 +74,7 @@ router
   .put(updateRole)
   .delete(deleteRole);
 router.route("/generate-pdf/:reference_number?").get(generatePDF);
+router.route("/warehouse").get(getWarehouse);
 
 router
   .route("/uploadfile/:type")
