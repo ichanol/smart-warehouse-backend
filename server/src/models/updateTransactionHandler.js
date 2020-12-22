@@ -20,6 +20,7 @@ const updateTransactionHandler = async (
     action_type: oldActionType,
     reference_number: oldReferenceNumber,
     data: oldProductList,
+    warehouse,
   } = sourceTransaction;
   let idForQueryBalanceToRecalculate = "",
     undoValueToUpdate = "",
@@ -85,7 +86,8 @@ const updateTransactionHandler = async (
         actionID,
         username,
         productList,
-        transactionRemark
+        transactionRemark,
+        warehouse
       );
     }
   } else {
