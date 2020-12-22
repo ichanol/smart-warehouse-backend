@@ -1,3 +1,29 @@
+CREATE TABLE activity_type(
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    detail VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+);
+CREATE TABLE warehouse_list(
+    id INT NOT NULL AUTO_INCREMENT,
+    warehouse_name VARCHAR(255) NOT NULL,
+    detail VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+);
+CREATE TABLE warehouse_stock_area(
+    id INT NOT NULL AUTO_INCREMENT,
+    area_name VARCHAR(255) NOT NULL,
+    detail VARCHAR(255),
+    warehouse INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    FOREIGN KEY (warehouse) REFERENCES warehouse_list(id)
+);
 CREATE TABLE import_export_action(
     id INT NOT NULL AUTO_INCREMENT,
     action_name VARCHAR(255) NOT NULL,
@@ -87,12 +113,22 @@ CREATE TABLE user(
     FOREIGN KEY (role) REFERENCES role(id),
     FOREIGN KEY (status) REFERENCES user_status(id)
 );
+CREATE TABLE activity_log(
+    id INT NOT NULL AUTO_INCREMENT,
+    user INT NOT NULL,
+    activity INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    detail VARCHAR(255),
+    PRIMARY KEY(id),
+    FOREIGN KEY (activity) REFERENCES activity_type(id),
+    FOREIGN KEY (user) REFERENCES user(id)
+);
 CREATE TABLE product(
     id INT NOT NULL AUTO_INCREMENT,
     product_id VARCHAR(255) NOT NULL,
     product_name VARCHAR(255) NOT NULL,
     company_name VARCHAR(255) NOT NUll,
-    location VARCHAR(255) NOT NULL,
+    location INT NOT NULL,
     detail VARCHAR(512),
     status int NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -100,6 +136,7 @@ CREATE TABLE product(
     created_by INT NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY (status) REFERENCES product_status(id),
+    FOREIGN KEY (location) REFERENCES warehouse_stock_area(id),
     FOREIGN KEY (created_by) REFERENCES user(id)
 );
 CREATE TABLE inventory_log(
@@ -109,10 +146,12 @@ CREATE TABLE inventory_log(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responsable INT NOT NULL,
     detail VARCHAR(512),
+    warehouse INT NOT NULL,
     status int NOT NULL DEFAULT 1,
     PRIMARY KEY(id),
     FOREIGN KEY (responsable) REFERENCES user(id),
     FOREIGN KEY (action_type) REFERENCES import_export_action(id),
+    FOREIGN KEY (warehouse) REFERENCES warehouse_list(id),
     FOREIGN KEY (status) REFERENCES inventory_log_status(id)
 );
 CREATE TABLE inventory_log_product_list(
@@ -122,21 +161,63 @@ CREATE TABLE inventory_log_product_list(
     detail VARCHAR(512),
     amount INT NOT NULL,
     balance INT NOT NULL,
-    location VARCHAR(255) NOT NULL,
+    location INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (location) REFERENCES warehouse_stock_area(id),
     FOREIGN KEY (reference_number) REFERENCES inventory_log(id)
 );
 CREATE TABLE current_product_balance(
     id INT NOT NULL AUTO_INCREMENT,
     product_id INT NOT NULL,
     balance INT NOT NULL DEFAULT 0,
-    location VARCHAR(255) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
+INSERT INTO activity_type(name)
+VALUES ('login'),
+    ('logout'),
+    ('scan id card'),
+    ('import/export product'),
+    ('create new user information'),
+    ('create new product information'),
+    ('create new role information'),
+    ('update user information'),
+    ('update product information'),
+    ('update role information'),
+    ('edit / update transaction');
+INSERT INTO warehouse_list(warehouse_name, detail)
+VALUES(
+        'Magic Box Solution',
+        'Magic Box Solution warehouse'
+    ),
+    (
+        'ENE KMUTT',
+        'Electronics and telecommunication engineering warehouse'
+    );
+INSERT INTO warehouse_stock_area(area_name, detail, warehouse)
+VALUES('MBX-001', '', 1),
+    ('MBX-002', '', 1),
+    ('MBX-003', '', 1),
+    ('MBX-004', '', 1),
+    ('MBX-005', '', 1),
+    ('MBX-006', '', 1),
+    ('MBX-007', '', 1),
+    ('MBX-008', '', 1),
+    ('MBX-009', '', 1),
+    ('MBX-010', '', 1),
+    ('ENE-001', '', 2),
+    ('ENE-002', '', 2),
+    ('ENE-003', '', 2),
+    ('ENE-004', '', 2),
+    ('ENE-005', '', 2),
+    ('ENE-006', '', 2),
+    ('ENE-007', '', 2),
+    ('ENE-008', '', 2),
+    ('ENE-009', '', 2),
+    ('ENE-010', '', 2);
 INSERT INTO user_status(status_name, detail, status_value)
 VALUES (
         "ACTIVE",
@@ -393,7 +474,6 @@ VALUES (
         "some detail",
         1
     );
-INSERT INTO current_product_balance(product_id, location)
-SELECT id,
-    location
+INSERT INTO current_product_balance(product_id)
+SELECT id
 FROM product;
