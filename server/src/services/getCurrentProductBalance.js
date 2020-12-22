@@ -7,7 +7,6 @@ const getCurrentProductBalance = async (
 ) => {
   return new Promise((resolve, reject) => {
     const SQL = `SELECT current_product_balance.balance, 
-                          current_product_balance.location, 
                           current_product_balance.updated_at, 
                           product.product_name, 
                           product.product_id, 
