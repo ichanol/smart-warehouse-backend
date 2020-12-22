@@ -6,10 +6,11 @@ const getProductInformationById = (productId) => {
                     product.id, 
                     product.product_name, 
                     product.company_name, 
-                    product.location, 
+                    warehouse_stock_area.area_name, 
                     product_status.status_value AS status 
                 FROM product 
-                INNER JOIN product_status ON product.status = product_status.id 
+                INNER JOIN product_status ON product.status = product_status.id
+                INNER JOIN warehouse_stock_area ON product.location = warehouse_stock_area.id
                 WHERE status = 1 AND product.product_id IN (?)`;
     connection.query(SQL, [productId], (error, result, field) => {
       if (error) return reject(error);
