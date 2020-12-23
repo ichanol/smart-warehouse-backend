@@ -398,7 +398,7 @@ VALUES (
         "a3KEeZbXBx",
         "Drinking Glass",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        1,
         "some detail",
         1
     ),
@@ -406,7 +406,7 @@ VALUES (
         "xEBjTv2RhB",
         "Post it",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        2,
         "some detail",
         1
     ),
@@ -414,7 +414,7 @@ VALUES (
         "7i8xzdx1OO",
         "Marker(Black color)",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        3,
         "some detail",
         1
     ),
@@ -422,7 +422,7 @@ VALUES (
         "7YcgFL8zb9",
         "Paper(A4)",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        4,
         "some detail",
         1
     ),
@@ -430,7 +430,7 @@ VALUES (
         "XmUwfOCzKv",
         "Coffee maker",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        5,
         "some detail",
         1
     ),
@@ -438,7 +438,7 @@ VALUES (
         "Y3nSy3Wcsw",
         "U Beer",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        6,
         "some detail",
         1
     ),
@@ -446,7 +446,7 @@ VALUES (
         "WWcQZYpEEw",
         "Microwave",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        7,
         "some detail",
         1
     ),
@@ -454,7 +454,7 @@ VALUES (
         "BImPJwGAZE",
         "Ceramic Plate",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        8,
         "some detail",
         1
     ),
@@ -462,7 +462,7 @@ VALUES (
         "4Eh8SiaaWK",
         "Curtain",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        9,
         "some detail",
         1
     ),
@@ -470,7 +470,7 @@ VALUES (
         "Db6yY11WIj",
         "Calendar",
         "Magic Box Asia",
-        "Setthiwan 5th flr.",
+        10,
         "some detail",
         1
     );
