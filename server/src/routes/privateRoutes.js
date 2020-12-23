@@ -41,6 +41,7 @@ const {
   uploadFile,
   downloadTemplate,
   getWarehouse,
+  dashboardController,
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
@@ -75,6 +76,8 @@ router
   .delete(deleteRole);
 router.route("/generate-pdf/:reference_number?").get(generatePDF);
 router.route("/warehouse").get(getWarehouse);
+
+router.route("/dashboard").get(dashboardController);
 
 router
   .route("/uploadfile/:type")

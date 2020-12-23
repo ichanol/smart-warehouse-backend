@@ -45,6 +45,8 @@ const insertRoleInformationFromFileToRoleTable = require("./insertRoleInformatio
 const insertUserInformationFromFileToUserTable = require("./insertUserInformationFromFileToUserTable");
 const getWarehouseList = require("./getWarehouseList");
 const getWarehouseSubArea = require("./getWarehouseSubArea");
+const topExportProduct = require("./topExportProduct");
+const topImportProduct = require("./topImportProduct");
 
 module.exports = {
   getCurrentProductBalance,
@@ -94,4 +96,6 @@ module.exports = {
   insertUserInformationFromFileToUserTable,
   getWarehouseList,
   getWarehouseSubArea,
+  topExportProduct,
+  topImportProduct,
 };
