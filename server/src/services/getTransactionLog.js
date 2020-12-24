@@ -12,8 +12,7 @@ const getTransactionLog = async (
                         inventory_log_product_list.balance,
                         warehouse_stock_area.area_name AS location_name,
                         warehouse_stock_area.id AS location,
-                        inventory_log_product_list.detail AS product_detail,
-                        inventory_log.refer
+                        inventory_log_product_list.detail AS product_detail
                     FROM inventory_log 
                     INNER JOIN import_export_action ON inventory_log.action_type = import_export_action.id 
                     INNER JOIN user ON inventory_log.responsable = user.id
