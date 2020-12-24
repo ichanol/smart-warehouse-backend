@@ -48,6 +48,7 @@ const getWarehouseSubArea = require("./getWarehouseSubArea");
 const topExportProduct = require("./topExportProduct");
 const topImportProduct = require("./topImportProduct");
 const saveActivity = require("./saveActivity");
+const getActivityLogs = require("./getActivityLogs");
 
 module.exports = {
   getCurrentProductBalance,
@@ -100,4 +101,5 @@ module.exports = {
   topExportProduct,
   topImportProduct,
   saveActivity,
+  getActivityLogs,
 };
