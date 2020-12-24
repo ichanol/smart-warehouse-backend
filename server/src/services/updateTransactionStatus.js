@@ -5,7 +5,7 @@ const updateTransactionStatus = async (reference_number, refer) => {
   return new Promise((resolve, reject) => {
     const SQL = `UPDATE inventory_log SET 
                         status = 2,
-                        set refer = ${mysql.escape(refer)}
+                        refer = ${mysql.escape(refer)}
                         WHERE reference_number = ${mysql.escape(
                           reference_number
                         )};`;
