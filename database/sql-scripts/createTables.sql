@@ -148,6 +148,7 @@ CREATE TABLE inventory_log(
     detail VARCHAR(512),
     warehouse INT NOT NULL,
     status int NOT NULL DEFAULT 1,
+    refer int,
     PRIMARY KEY(id),
     FOREIGN KEY (responsable) REFERENCES user(id),
     FOREIGN KEY (action_type) REFERENCES import_export_action(id),
