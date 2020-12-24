@@ -79,7 +79,11 @@ const updateTransactionHandler = async (
   );
 
   if (undoCurrentProductBalanceResult) {
-    const isUpdateSuccess = await updateTransactionStatus(oldReferenceNumber, referenceNumber);
+    const refer = productList ? referenceNumber : null;
+    const isUpdateSuccess = await updateTransactionStatus(
+      oldReferenceNumber,
+      refer
+    );
     if (isUpdateSuccess && productList) {
       return await importExportProductHandler(
         referenceNumber,
