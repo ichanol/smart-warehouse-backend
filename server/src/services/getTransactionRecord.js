@@ -13,7 +13,8 @@ const getTransactionRecord = async (
                         MAX(inventory_log.detail) AS detail, 
                         MAX(warehouse) AS warehouse, 
                         MAX(user.username) AS username,
-                        MAX(inventory_log_status.status_value) AS status_value
+                        MAX(inventory_log_status.status_value) AS status_value,
+                        MAX(inventory_log.refer) AS refer
                   FROM inventory_log
                   INNER JOIN import_export_action ON inventory_log.action_type = import_export_action.id
                   INNER JOIN user ON inventory_log.responsable = user.id
