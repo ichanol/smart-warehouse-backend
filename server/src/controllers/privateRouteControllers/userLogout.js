@@ -6,7 +6,7 @@
 
 const { saveActivity, getUserId } = require("../../services");
 
-const userLogout = (req, res, next) => {
+const userLogout = async(req, res, next) => {
   try {
     const io = require("../../../server");
 
