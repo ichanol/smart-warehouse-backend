@@ -6,6 +6,7 @@ CREATE TABLE activity_type(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE warehouse_list(
     id INT NOT NULL AUTO_INCREMENT,
     warehouse_name VARCHAR(255) NOT NULL,
@@ -14,6 +15,7 @@ CREATE TABLE warehouse_list(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE warehouse_stock_area(
     id INT NOT NULL AUTO_INCREMENT,
     area_name VARCHAR(255) NOT NULL,
@@ -24,6 +26,7 @@ CREATE TABLE warehouse_stock_area(
     PRIMARY KEY(id),
     FOREIGN KEY (warehouse) REFERENCES warehouse_list(id)
 );
+
 CREATE TABLE import_export_action(
     id INT NOT NULL AUTO_INCREMENT,
     action_name VARCHAR(255) NOT NULL,
@@ -32,6 +35,7 @@ CREATE TABLE import_export_action(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE user_status(
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
@@ -41,6 +45,7 @@ CREATE TABLE user_status(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE inventory_log_status(
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
@@ -50,6 +55,7 @@ CREATE TABLE inventory_log_status(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE role_status(
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
@@ -59,6 +65,7 @@ CREATE TABLE role_status(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE product_status(
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
@@ -68,6 +75,7 @@ CREATE TABLE product_status(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE role(
     id INT NOT NULL AUTO_INCREMENT,
     role_name VARCHAR(255) NOT NULL,
@@ -78,14 +86,17 @@ CREATE TABLE role(
     PRIMARY KEY(id),
     FOREIGN KEY (status) REFERENCES role_status(id)
 );
+
 CREATE TABLE permission_list(
     id INT NOT NULL AUTO_INCREMENT,
     permission_name VARCHAR(255) NOT NULL,
     detail VARCHAR(512) NOT NULL,
+    url_path VARCHAR(512),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
 CREATE TABLE role_permission(
     id INT NOT NULL AUTO_INCREMENT,
     role INT NOT NULL,
@@ -97,6 +108,7 @@ CREATE TABLE role_permission(
     FOREIGN KEY (role) REFERENCES role(id),
     FOREIGN KEY (permission) REFERENCES permission_list(id)
 );
+
 CREATE TABLE user(
     id INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
@@ -113,6 +125,7 @@ CREATE TABLE user(
     FOREIGN KEY (role) REFERENCES role(id),
     FOREIGN KEY (status) REFERENCES user_status(id)
 );
+
 CREATE TABLE activity_log(
     id INT NOT NULL AUTO_INCREMENT,
     user INT NOT NULL,
@@ -123,6 +136,7 @@ CREATE TABLE activity_log(
     FOREIGN KEY (activity) REFERENCES activity_type(id),
     FOREIGN KEY (user) REFERENCES user(id)
 );
+
 CREATE TABLE product(
     id INT NOT NULL AUTO_INCREMENT,
     product_id VARCHAR(255) NOT NULL,
@@ -139,6 +153,7 @@ CREATE TABLE product(
     FOREIGN KEY (location) REFERENCES warehouse_stock_area(id),
     FOREIGN KEY (created_by) REFERENCES user(id)
 );
+
 CREATE TABLE inventory_log(
     id INT NOT NULL AUTO_INCREMENT,
     reference_number INT NOT NULL,
@@ -155,6 +170,7 @@ CREATE TABLE inventory_log(
     FOREIGN KEY (warehouse) REFERENCES warehouse_list(id),
     FOREIGN KEY (status) REFERENCES inventory_log_status(id)
 );
+
 CREATE TABLE inventory_log_product_list(
     id INT NOT NULL AUTO_INCREMENT,
     reference_number INT NOT NULL,
@@ -169,6 +185,7 @@ CREATE TABLE inventory_log_product_list(
     FOREIGN KEY (location) REFERENCES warehouse_stock_area(id),
     FOREIGN KEY (reference_number) REFERENCES inventory_log(id)
 );
+
 CREATE TABLE current_product_balance(
     id INT NOT NULL AUTO_INCREMENT,
     product_id INT NOT NULL,
@@ -177,8 +194,11 @@ CREATE TABLE current_product_balance(
     PRIMARY KEY(id),
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
-INSERT INTO activity_type(name)
-VALUES ('login'),
+
+INSERT INTO
+    activity_type(name)
+VALUES
+    ('login'),
     ('logout'),
     ('scan id card'),
     ('import/export product'),
@@ -189,8 +209,11 @@ VALUES ('login'),
     ('update product information'),
     ('update role information'),
     ('edit / update transaction');
-INSERT INTO warehouse_list(warehouse_name, detail)
-VALUES(
+
+INSERT INTO
+    warehouse_list(warehouse_name, detail)
+VALUES
+    (
         'Magic Box Solution',
         'Magic Box Solution warehouse'
     ),
@@ -198,8 +221,11 @@ VALUES(
         'ENE KMUTT',
         'Electronics and telecommunication engineering warehouse'
     );
-INSERT INTO warehouse_stock_area(area_name, detail, warehouse)
-VALUES('MBX-001', '', 1),
+
+INSERT INTO
+    warehouse_stock_area(area_name, detail, warehouse)
+VALUES
+    ('MBX-001', '', 1),
     ('MBX-002', '', 1),
     ('MBX-003', '', 1),
     ('MBX-004', '', 1),
@@ -219,8 +245,11 @@ VALUES('MBX-001', '', 1),
     ('ENE-008', '', 2),
     ('ENE-009', '', 2),
     ('ENE-010', '', 2);
-INSERT INTO user_status(status_name, detail, status_value)
-VALUES (
+
+INSERT INTO
+    user_status(status_name, detail, status_value)
+VALUES
+    (
         "ACTIVE",
         "This user can use this application normally",
         TRUE
@@ -230,8 +259,11 @@ VALUES (
         "This user has no longer accessable",
         FALSE
     );
-INSERT INTO inventory_log_status(status_name, detail, status_value)
-VALUES (
+
+INSERT INTO
+    inventory_log_status(status_name, detail, status_value)
+VALUES
+    (
         "ACTIVE",
         "This transaction is valid and active",
         TRUE
@@ -241,8 +273,11 @@ VALUES (
         "This transaction is invalid and inactive, checkout the edited reference",
         FALSE
     );
-INSERT INTO product_status(status_name, detail, status_value)
-VALUES (
+
+INSERT INTO
+    product_status(status_name, detail, status_value)
+VALUES
+    (
         "AVAILABLE",
         "This product is still in system",
         TRUE
@@ -252,8 +287,11 @@ VALUES (
         "This product no longer in this system",
         FALSE
     );
-INSERT INTO role_status(status_name, detail, status_value)
-VALUES (
+
+INSERT INTO
+    role_status(status_name, detail, status_value)
+VALUES
+    (
         "ACTIVE",
         "This role can work normally in system",
         TRUE
@@ -263,8 +301,11 @@ VALUES (
         "This role no longer authorized in this system",
         FALSE
     );
-INSERT INTO role(role_name, detail)
-VALUES (
+
+INSERT INTO
+    role(role_name, detail)
+VALUES
+    (
         "ADMIN",
         "Permission for admin"
     ),
@@ -276,41 +317,55 @@ VALUES (
         "REPORTER",
         "Permission for reporter"
     );
-INSERT INTO permission_list(permission_name, detail)
-VALUES (
+
+INSERT INTO
+    permission_list(permission_name, detail, url_path)
+VALUES
+    (
         'Map',
-        "Access to the map of warehouse and product's location"
+        "Access to the map of warehouse and product's location",
+        '/map'
     ),
     (
         'Overview',
-        'Access to warehouse overview information eg: Activity logs, monthly summary'
+        'Access to warehouse overview information eg: Activity logs, monthly summary',
+        '/overview'
     ),
     (
         'Product List',
-        'Access to current products data that stored in the warehouse'
+        'Access to current products data that stored in the warehouse',
+        '/product-list'
     ),
     (
         'Transaction',
-        'Access to read and edit the transaction data'
+        'Access to read and edit the transaction data',
+        '/transaction'
     ),
     (
         'Import Export Product',
-        'Access to create a new transaction(Import product to warehouse or Export product from warehouse)'
+        'Access to create a new transaction(Import product to warehouse or Export product from warehouse)',
+        '/import-export'
     ),
     (
         'Role Management',
-        'Access to read, create and edit role information'
+        'Access to read, create and edit role information',
+        '/role-management'
     ),
     (
         'User Management',
-        'Access to read, create and edit user information'
+        'Access to read, create and edit user information',
+        '/user-management'
     ),
     (
         'Product Management',
-        'Access to read, create and edit product information'
+        'Access to read, create and edit product information',
+        '/product-management'
     );
-INSERT INTO role_permission(role, permission, status)
-VALUES (1, 1, TRUE),
+
+INSERT INTO
+    role_permission(role, permission, status)
+VALUES
+    (1, 1, TRUE),
     (1, 2, TRUE),
     (1, 3, TRUE),
     (1, 4, TRUE),
@@ -334,7 +389,9 @@ VALUES (1, 1, TRUE),
     (3, 6, FALSE),
     (3, 7, FALSE),
     (3, 8, FALSE);
-INSERT INTO user(
+
+INSERT INTO
+    user(
         username,
         firstname,
         lastname,
@@ -342,7 +399,8 @@ INSERT INTO user(
         role,
         email
     )
-VALUES (
+VALUES
+    (
         "SYSTEM",
         "SYSTEM",
         "SYSTEM",
@@ -382,12 +440,17 @@ VALUES (
         1,
         "chanatip.ras@mail.kmutt.ac.th"
     );
-INSERT INTO import_export_action(action_name, action_type)
-VALUES ("IMPORT", 'ADD'),
+
+INSERT INTO
+    import_export_action(action_name, action_type)
+VALUES
+    ("IMPORT", 'ADD'),
     ("EXPORT", 'DELETE'),
     ("EXPIRED", 'DELETE'),
     ("DAMAGED", 'DELETE');
-INSERT INTO product(
+
+INSERT INTO
+    product(
         product_id,
         product_name,
         company_name,
@@ -395,7 +458,8 @@ INSERT INTO product(
         detail,
         created_by
     )
-VALUES (
+VALUES
+    (
         "a3KEeZbXBx",
         "Drinking Glass",
         "Magic Box Asia",
@@ -475,6 +539,10 @@ VALUES (
         "some detail",
         1
     );
-INSERT INTO current_product_balance(product_id)
-SELECT id
-FROM product;
+
+INSERT INTO
+    current_product_balance(product_id)
+SELECT
+    id
+FROM
+    product;
