@@ -43,6 +43,8 @@ const createUser = async (req, res, next) => {
         io.emit("ACTIVITY_LOG", {
           message: activityDetail,
           time: Date.now(),
+          id: 5,
+          username: req.decodedUsername,
         });
       }
     } else {

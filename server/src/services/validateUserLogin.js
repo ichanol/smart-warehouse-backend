@@ -4,7 +4,8 @@ const mysql = require("mysql");
 const validateUserLogin = (username, password) => {
   return new Promise((resolve, reject) => {
     const SQL = `SELECT permission_list.permission_name AS permission, 
-                        role_permission.status 
+                        role_permission.status,
+                        permission_list.url_path AS url 
                   FROM user 
                   INNER JOIN role_permission ON user.role = role_permission.role
                   INNER JOIN permission_list ON permission_list.id = role_permission.permission

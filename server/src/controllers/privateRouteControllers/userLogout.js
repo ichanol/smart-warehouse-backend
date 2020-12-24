@@ -6,12 +6,12 @@
 
 const { saveActivity, getUserId } = require("../../services");
 
-const userLogout = async(req, res, next) => {
+const userLogout = async (req, res, next) => {
   try {
     const io = require("../../../server");
 
     res.json({ success: true, message: "Log out" });
-    
+
     const userId = await getUserId(req.decodedUsername);
     const activityDetail = `${req.decodedUsername} logged out.`;
     const saveActivityResult = await saveActivity(userId, 2, activityDetail);
@@ -19,6 +19,8 @@ const userLogout = async(req, res, next) => {
       io.emit("ACTIVITY_LOG", {
         message: activityDetail,
         time: Date.now(),
+        id: 2,
+        username: req.decodedUsername,
       });
     }
   } catch (error) {

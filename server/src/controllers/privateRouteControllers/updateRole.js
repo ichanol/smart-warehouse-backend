@@ -41,6 +41,8 @@ const updateRole = async (req, res, next) => {
         io.emit("ACTIVITY_LOG", {
           message: activityDetail,
           time: Date.now(),
+          id: 10,
+          username: req.decodedUsername,
         });
       }
     } else {

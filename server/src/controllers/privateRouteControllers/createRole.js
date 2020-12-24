@@ -4,7 +4,7 @@
  *   @ACCESS        -   PRIVATE (admin)
  */
 
-const createRoleHandler = require('../../models/createRoleHandler')
+const createRoleHandler = require("../../models/createRoleHandler");
 const { saveActivity, getUserId } = require("../../services");
 
 const createRole = async (req, res, next) => {
@@ -13,7 +13,12 @@ const createRole = async (req, res, next) => {
 
     const { role_name, detail, permission, status } = req.body;
 
-    const result = await createRoleHandler(role_name, detail, permission, status);
+    const result = await createRoleHandler(
+      role_name,
+      detail,
+      permission,
+      status
+    );
 
     if (result) {
       res.status(201).json({
@@ -27,6 +32,8 @@ const createRole = async (req, res, next) => {
         io.emit("ACTIVITY_LOG", {
           message: activityDetail,
           time: Date.now(),
+          id: 7,
+          username: req.decodedUsername,
         });
       }
     } else {

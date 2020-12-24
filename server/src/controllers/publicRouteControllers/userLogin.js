@@ -24,6 +24,8 @@ const userLogin = async (req, res, next) => {
         io.emit("ACTIVITY_LOG", {
           message: activityDetail,
           time: Date.now(),
+          id: 1,
+          username: username,
         });
       }
     } else {

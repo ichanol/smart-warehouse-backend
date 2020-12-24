@@ -37,6 +37,8 @@ const importExportProduct = async (req, res, next) => {
         io.emit("ACTIVITY_LOG", {
           message: activityDetail,
           time: Date.now(),
+          id: 4,
+          username: req.decodedUsername,
         });
       }
     } else {

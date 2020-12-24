@@ -21,12 +21,16 @@ const deleteRole = async (req, res, next) => {
       });
 
       const userId = await getUserId(req.decodedUsername);
-      const activityDetail = `${req.decodedUsername} update role. ${role_name}'s ${status ? "active" : "inactive"}.`;
+      const activityDetail = `${
+        req.decodedUsername
+      } update role. ${role_name}'s ${status ? "active" : "inactive"}.`;
       const saveActivityResult = await saveActivity(userId, 10, activityDetail);
       if (saveActivityResult) {
         io.emit("ACTIVITY_LOG", {
           message: activityDetail,
           time: Date.now(),
+          id: 10,
+          username: req.decodedUsername,
         });
       }
     } else {

@@ -28,6 +28,8 @@ const detectUserId = async (req, res, next) => {
         io.emit("ACTIVITY_LOG", {
           message: activityDetail,
           time: Date.now(),
+          id: 3,
+          username: username,
         });
       }
       res.json({
