@@ -17,7 +17,6 @@ const upload = multer({ storage: storage });
 
 const {
   readRFID,
-  userLogOut,
 } = require("../controllers/privateRoutesControllers");
 const {
   currentProductBalance,
@@ -42,10 +41,11 @@ const {
   downloadTemplate,
   getWarehouse,
   dashboardController,
+  userLogout
 } = require("../controllers/privateRouteControllers");
 
 //------------------- WEB APPLICATION -------------------
-router.route("/logout").post(userLogOut);
+router.route("/logout").post(userLogout);
 router
   .route("/import-export-product")
   .post(importExportProduct)

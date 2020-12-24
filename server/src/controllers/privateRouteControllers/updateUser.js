@@ -4,10 +4,16 @@
  *   @ACCESS        -   PRIVATE (admin)
  */
 
-const { updateUserInformation } = require("../../services");
+const {
+  updateUserInformation,
+  saveActivity,
+  getUserId,
+} = require("../../services");
 
 const updateUser = async (req, res, next) => {
   try {
+    const io = require("../../../server");
+
     const {
       username,
       firstname,
@@ -35,6 +41,16 @@ const updateUser = async (req, res, next) => {
         success: true,
         message: "Update user information successfully",
       });
+
+      const userId = await getUserId(req.decodedUsername);
+      const activityDetail = `${req.decodedUsername} update ${username} account.`;
+      const saveActivityResult = await saveActivity(userId, 8, activityDetail);
+      if (saveActivityResult) {
+        io.emit("ACTIVITY_LOG", {
+          message: activityDetail,
+          time: Date.now(),
+        });
+      }
     } else {
       res.status(400).json({
         success: false,

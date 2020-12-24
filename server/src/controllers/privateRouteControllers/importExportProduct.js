@@ -5,9 +5,12 @@
  */
 
 const importExportProductHandler = require("../../models/importExportProductHandler");
+const { saveActivity, getUserId } = require("../../services");
 
 const importExportProduct = async (req, res, next) => {
   try {
+    const io = require("../../../server");
+
     const {
       referenceNumber,
       actionType,
@@ -27,6 +30,15 @@ const importExportProduct = async (req, res, next) => {
     );
     if (isSuccess) {
       res.json({ success: true, message: "Save transaction successfully" });
+      const userId = await getUserId(req.decodedUsername);
+      const activityDetail = `${req.decodedUsername} create new Transaction`;
+      const saveActivityResult = await saveActivity(userId, 4, activityDetail);
+      if (saveActivityResult) {
+        io.emit("ACTIVITY_LOG", {
+          message: activityDetail,
+          time: Date.now(),
+        });
+      }
     } else {
       res
         .status(400)

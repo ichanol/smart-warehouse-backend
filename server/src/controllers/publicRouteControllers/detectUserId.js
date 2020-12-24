@@ -7,6 +7,7 @@
  */
 
 const { validateUserIdCard } = require("../../services");
+const { saveActivity, getUserId } = require("../../services");
 
 const detectUserId = async (req, res, next) => {
   try {
@@ -20,6 +21,15 @@ const detectUserId = async (req, res, next) => {
         message: `[access granted]`,
         room: username,
       });
+      const userId = await getUserId(username);
+      const activityDetail = `${username}'s card Detected`;
+      const saveActivityResult = await saveActivity(userId, 3, activityDetail);
+      if (saveActivityResult) {
+        io.emit("ACTIVITY_LOG", {
+          message: activityDetail,
+          time: Date.now(),
+        });
+      }
       res.json({
         success: true,
         message: "HARDWARE SEND USERNAME / USER_ID FROM RFID CARD. " + username,

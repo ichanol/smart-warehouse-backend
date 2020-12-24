@@ -5,9 +5,12 @@
  */
 
 const updateTransactionHandler = require("../../models/updateTransactionHandler");
+const { saveActivity, getUserId } = require("../../services");
 
 const updateTransaction = async (req, res, next) => {
   try {
+    const io = require("../../../server");
+
     const {
       referenceNumber,
       actionType,
@@ -23,10 +26,26 @@ const updateTransaction = async (req, res, next) => {
       username,
       productList,
       transactionRemark,
-      sourceTransaction,
+      sourceTransaction
     );
     if (isSuccess) {
       res.json({ success: true, message: "Save transaction successfully" });
+
+      const userId = await getUserId(req.decodedUsername);
+      const activityDetail = `${req.decodedUsername} update transaction. ${
+        productList
+          ? referenceNumber +
+            " was created. Refer to " +
+            sourceTransaction.reference_number
+          : sourceTransaction.reference_number + " was cancel(inactive)"
+      }.`;
+      const saveActivityResult = await saveActivity(userId, 11, activityDetail);
+      if (saveActivityResult) {
+        io.emit("ACTIVITY_LOG", {
+          message: activityDetail,
+          time: Date.now(),
+        });
+      }
     } else {
       res
         .status(400)

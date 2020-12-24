@@ -4,10 +4,16 @@
  *   @ACCESS        -   PRIVATE (admin)
  */
 
-const { updateProductInformation } = require("../../services");
+const {
+  updateProductInformation,
+  saveActivity,
+  getUserId,
+} = require("../../services");
 
 const updateProduct = async (req, res, next) => {
   try {
+    const io = require("../../../server");
+
     const {
       product_id,
       product_name,
@@ -31,6 +37,16 @@ const updateProduct = async (req, res, next) => {
         success: true,
         message: "Update product information successfully",
       });
+
+      const userId = await getUserId(req.decodedUsername);
+      const activityDetail = `${req.decodedUsername} update ${product_id}'s information.`;
+      const saveActivityResult = await saveActivity(userId, 9, activityDetail);
+      if (saveActivityResult) {
+        io.emit("ACTIVITY_LOG", {
+          message: activityDetail,
+          time: Date.now(),
+        });
+      }
     } else {
       res.status(400).json({
         success: false,

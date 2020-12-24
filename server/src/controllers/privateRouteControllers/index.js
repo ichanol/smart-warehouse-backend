@@ -20,6 +20,7 @@ const uploadFile = require("./uploadFile");
 const downloadTemplate = require("./downloadTemplate");
 const getWarehouse = require("./getWarehouse");
 const dashboardController = require("./dashboardController");
+const userLogout = require("./userLogout");
 
 module.exports = {
   updateProduct,
@@ -44,4 +45,5 @@ module.exports = {
   downloadTemplate,
   getWarehouse,
   dashboardController,
+  userLogout,
 };

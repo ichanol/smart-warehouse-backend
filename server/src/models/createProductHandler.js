@@ -20,7 +20,6 @@ const createProductHandler = async (req) => {
   req.query.validate = product_id;
 
   const { success: isProductIdValid } = await validateProductHandler(req);
-  console.log(isProductIdValid);
 
   if (!isProductIdValid) {
     const createNewProductResult = await createNewProduct(
