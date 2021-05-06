@@ -200,7 +200,7 @@ const generatePDFfile = async (
           )
           .fill("#000")
           .text(
-            value.location,
+            value.location_name,
             pdfMarginPt + 215.28,
             y + multiplier * 45 + 5 + 20 + 10 + 5,
             {

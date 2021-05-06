@@ -43,7 +43,7 @@ const uploadFileHandler = async (req) => {
 
     const dataForCurrentProductBalance = data[0].map((value, index) => {
       const temp = [];
-      temp.push(insertProductResult + index, value[3]);
+      temp.push(insertProductResult + index);
       return temp;
     });
 

@@ -1,6 +1,6 @@
-const app = require("express")();
+const express = require("express");
+const app = express();
 const server = require("http").createServer(app);
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const io = require("socket.io")(server);
 const dotenv = require("dotenv");
@@ -19,7 +19,7 @@ const errorHandler = require("./src/middleware/errorHandler");
 
 dotenv.config();
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
 
 //  For public routes only

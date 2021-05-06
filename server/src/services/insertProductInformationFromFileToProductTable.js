@@ -5,6 +5,7 @@ const insertProductInformationFromFileToProductTable = async (data) => {
     const SQL =
       "INSERT INTO product (product_id, product_name, company_name, location, detail, status, created_by) VALUES ?";
     connection.query(SQL, data, (error, result, field) => {
+      console.log(error)
       if (error) return reject(error);
       resolve(result.insertId);
     });

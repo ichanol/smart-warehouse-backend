@@ -24,6 +24,7 @@ const getTransactionRecord = async (
                   ${whereClause} GROUP BY inventory_log.reference_number ${orderByClause} ${limitClause}`;
 
     connection.query(SQL, (error, result, field) => {
+      console.log(SQL)
       if (error) return reject(error);
       resolve(result);
     });

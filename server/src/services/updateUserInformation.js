@@ -22,8 +22,6 @@ const updateUserInformation = async (
 
     connection.query(SQL, (error, result, field) => {
       if (error) return reject(error);
-      console.log(result);
-      console.log(SQL);
       resolve(result);
     });
   });
